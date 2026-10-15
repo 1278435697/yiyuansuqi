@@ -1,0 +1,5 @@
+/* Tailwind 工具类入口（4.1 技术栈：Tailwind CSS）。
+ * preflight 已禁用，仅提供工具类，不影响 Element Plus 与既有国风主题。 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

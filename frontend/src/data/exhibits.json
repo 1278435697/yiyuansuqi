@@ -1,0 +1,210 @@
+{
+  "hall": {
+    "width": 24,
+    "depth": 16,
+    "height": 6,
+    "name": "衣溯 · 华夏服饰数字博物馆（单厅常设展）"
+  },
+  "exhibits": [
+    {
+      "id": "quju",
+      "dynasty": "先秦 · 战国",
+      "dynastyShort": "先秦",
+      "name": "曲裾深衣",
+      "category": "深衣 / 礼制常服",
+      "pattern": "凤纹绣、菱格几何纹",
+      "material": "绢、绣罗（平绣 / 锁绣）",
+      "colors": ["#a2543a", "#6d3320", "#d9b06a"],
+      "history": "深衣盛行于战国至西汉，上衣下裳连为一体，衣襟接长绕体而下，称「曲裾」。江陵马山一号楚墓与曾侯乙墓出土的凤纹绣绢衣，是迄今所见最早的凤纹刺绣实物之一。深衣「续衽钩边」的形制，也是后世汉服交领右衽体系的源头。",
+      "highlights": ["交领右衽，衣襟绕体一周", "凤纹绣与菱格纹并施", "礼制与日常穿着兼具"],
+      "position": { "x": -6.6, "y": 0, "z": -1 },
+      "tryonId": "quju-shenyi",
+      "images": [
+        { "src": "/assets/exhibits/pre-qin/g1.jpg", "caption": "战国·凤纹绣绢䋇衣" },
+        { "src": "/assets/exhibits/pre-qin/g2.jpg", "caption": "战国·龙凤虎纹绣罗单衣袖" }
+      ],
+      "credits": [
+        {
+          "text": "战国·凤纹绣绢䋇衣 / 龙凤虎纹绣罗单衣袖",
+          "museum": "中国国家博物馆",
+          "exhibition": "《凤凰故国——青铜时代曾楚艺术展》",
+          "url": "https://www.chnmuseum.cn/portals/0/web/zt/202409fhgg/"
+        }
+      ]
+    },
+    {
+      "id": "yuanlingpao",
+      "dynasty": "唐",
+      "dynastyShort": "唐",
+      "name": "圆领袍",
+      "category": "官常服 / 男装",
+      "pattern": "团窠联珠纹、暗花绫",
+      "material": "绢、绫、锦（织成）",
+      "colors": ["#3f6d7a", "#284852", "#c9a227"],
+      "history": "圆领袍自北朝传入，唐代成为上自天子、下至庶民的通用常服，多以幞头配之。唐开元年间壁画与陶俑中，文官着圆领窄袖袍、腰束革带，体现「胡汉交融」的时代气象。同期女着男装、蹀躞带胡服女俑，更是唐代开放风气的直观见证。",
+      "highlights": ["圆领右衽、窄袖", "配幞头与革带", "男女皆可着，胡汉交融"],
+      "position": { "x": -2.2, "y": 0, "z": -1 },
+      "tryonId": "yuanlingpao-tang",
+      "images": [
+        { "src": "/assets/exhibits/tang/g2.png", "caption": "唐·彩绘陶文官俑（圆领袍）" },
+        { "src": "/assets/exhibits/tang/g1.jpg", "caption": "唐·蹀躞带胡服女立俑" }
+      ],
+      "credits": [
+        {
+          "text": "唐·彩绘陶文官俑 / 蹀躞带胡服女立俑",
+          "museum": "中国国家博物馆",
+          "exhibition": "《大唐风华》展（西安博物院、陕西历史博物馆藏）",
+          "url": "https://www.chnmuseum.cn/Portals/0/web/zt/20180904dtfh/"
+        }
+      ]
+    },
+    {
+      "id": "beizi",
+      "dynasty": "宋",
+      "dynastyShort": "宋",
+      "name": "素罗单衣 · 背子",
+      "category": "女装 / 外搭长衣",
+      "pattern": "素织暗花、四经绞罗",
+      "material": "罗（蚕丝绞织）",
+      "colors": ["#8a7a55", "#5f5238", "#d9b06a"],
+      "history": "背子为宋代女性典型外衣，直领对襟、两腋开衩、长及膝下，内着抹胸。江西德安南宋周氏墓出土的素罗单衣，以四经绞罗织成，质轻透凉，领口缀罗质纽扣，代表宋代丝织「轻薄精雅」的审美取向。",
+      "highlights": ["直领对襟、两腋开衩", "四经绞罗，轻薄透气", "配抹胸外穿"],
+      "position": { "x": 2.2, "y": 0, "z": -1 },
+      "tryonId": "beizi-song",
+      "images": [
+        { "src": "/assets/exhibits/song/g1.png", "caption": "南宋·素罗单衣（背子）" },
+        { "src": "/assets/exhibits/song/g2.png", "caption": "南宋·罗质纽扣（工艺细节）" }
+      ],
+      "credits": [
+        {
+          "text": "南宋·素罗单衣 / 罗质纽扣",
+          "museum": "中国丝绸博物馆",
+          "exhibition": "「一物 Vol.38 素罗单衣」（江西德安南宋周氏墓出土）",
+          "url": "https://www.chinasilkmuseum.com/gskt/info_319.aspx?itemid=28354"
+        }
+      ]
+    },
+    {
+      "id": "mamianqun",
+      "dynasty": "明",
+      "dynastyShort": "明",
+      "name": "刺绣龙纹袍 · 马面裙",
+      "category": "礼服 / 袄裙",
+      "pattern": "盘金绣龙纹、妆花缎、织金",
+      "material": "妆花缎、织金缎、纱",
+      "colors": ["#b8341f", "#7d1c0e", "#c9a227"],
+      "history": "明代确立「袄裙」形制：上着短袄或长袍，下配马面裙。山东博物馆孔府旧藏明代服饰，以织金妆花缎为典型，纹样多作龙纹、云蟒，尽显衍圣公府的仪礼规格。马面裙两侧打褶、中间平幅「马面」，兼顾行走与端庄。",
+      "highlights": ["盘金绣龙纹，仪礼规格", "马面裙两褶一平幅", "织金妆花缎工艺"],
+      "position": { "x": 6.6, "y": 0, "z": -1 },
+      "tryonId": "aoqun-ming",
+      "images": [
+        { "src": "/assets/exhibits/ming/g1.jpg", "caption": "明·刺绣龙纹袍（孔府旧藏）" },
+        { "src": "/assets/exhibits/ming/g2.jpg", "caption": "明·织金妆花缎马面裙（孔府旧藏）" },
+        { "src": "/assets/exhibits/ming/g3.jpg", "caption": "明·大红纱绣龙纹圆领袍（孔府旧藏）" }
+      ],
+      "credits": [
+        {
+          "text": "明·刺绣龙纹袍 / 织金妆花缎马面裙 / 大红纱绣龙纹圆领袍",
+          "museum": "山东博物馆",
+          "exhibition": "明代服饰（孔府旧藏）",
+          "url": "http://www.sdmuseum.com/col/col353160/index.html"
+        }
+      ]
+    },
+    {
+      "id": "ming_longpao",
+      "dynasty": "明",
+      "dynastyShort": "明",
+      "name": "大红绣龙凤圆领袍",
+      "category": "礼服 / 圆领袍",
+      "pattern": "满绣龙凤、团龙补子、下摆横襕",
+      "material": "绢、绣线（平绣 / 盘金）",
+      "colors": ["#b8341f", "#c9a227", "#e8cf9b"],
+      "history": "明代圆领袍为官员礼服与外服常制，形制为圆领、大袖、右衽，胸前缀补子以别品级。此袍通体大红，胸前作团龙补子，两肩至下摆满绣龙凤、花卉与云纹，下摆处加横襕一道，是明代礼服「上补下襕」的典型样式。",
+      "highlights": ["圆领大袖、右衽", "胸背团龙补子", "满绣龙凤、下摆横襕"],
+      "position": { "x": -4.4, "y": 0, "z": -4.6 },
+      "images": [
+        { "src": "/assets/exhibits/ming/g4.jpg", "caption": "明·大红绣龙凤圆领袍（孔府旧藏）" },
+        { "src": "/assets/exhibits/ming/g5.jpg", "caption": "明·圆领龙纹袍（孔府旧藏）" }
+      ],
+      "credits": [
+        {
+          "text": "明·大红绣龙凤圆领袍 / 圆领龙纹袍",
+          "museum": "山东博物馆",
+          "exhibition": "明代服饰（孔府旧藏）",
+          "url": "http://www.sdmuseum.com/col/col353160/index.html"
+        }
+      ]
+    },
+    {
+      "id": "ming_brownrobe",
+      "dynasty": "明",
+      "dynastyShort": "明",
+      "name": "酱褐金龙云纹袍",
+      "category": "常服 / 圆领袍",
+      "pattern": "金线绣云龙纹、团龙",
+      "material": "绢、金线绣",
+      "colors": ["#6b4526", "#c9a227", "#d9b06a"],
+      "history": "明代中后期，圆领袍广用于日常与礼仪场合，质地与纹样因身份而异。此袍以酱褐色暗花绢为地，两肩、胸背与下摆满布金线云龙纹，龙身盘曲、云纹穿插，色调沉稳而纹样威重，体现明代织绣「以色别等、以纹表意」的服饰制度。",
+      "highlights": ["酱褐暗花地", "金线绣云龙纹", "圆领大袖、色泽沉稳"],
+      "position": { "x": 0, "y": 0, "z": -4.6 },
+      "images": [
+        { "src": "/assets/exhibits/ming/g6.jpg", "caption": "明·酱褐金龙云纹袍（孔府旧藏）" },
+        { "src": "/assets/exhibits/ming/g7.jpg", "caption": "明·大袖裙式袍（孔府旧藏）" }
+      ],
+      "credits": [
+        {
+          "text": "明·酱褐金龙云纹袍 / 大袖裙式袍",
+          "museum": "山东博物馆",
+          "exhibition": "明代服饰（孔府旧藏）",
+          "url": "http://www.sdmuseum.com/col/col353160/index.html"
+        }
+      ]
+    },
+    {
+      "id": "ming_bufu",
+      "dynasty": "明",
+      "dynastyShort": "明",
+      "name": "宝蓝方补服",
+      "category": "常服 / 补服",
+      "pattern": "胸背方补（彩绣禽鸟）、暗花地",
+      "material": "绢、妆花",
+      "colors": ["#1f3f8f", "#c9a227", "#c0392b"],
+      "history": "补服是明代标识官员品级的重要服饰：于圆领袍胸前、背后各缀一块方形补子，文官绣禽、武官绣兽，以别等差。此件宝蓝色暗花地圆领袍，胸前方补彩绣禽鸟与云纹，配大红系带，是明代「以补定品」制度的实物见证。",
+      "highlights": ["宝蓝暗花地", "胸背方补，以补定品", "圆领大袖、配系带"],
+      "position": { "x": 4.4, "y": 0, "z": -4.6 },
+      "images": [
+        { "src": "/assets/exhibits/ming/g8.jpg", "caption": "明·宝蓝方补服（孔府旧藏）" },
+        { "src": "/assets/exhibits/ming/g9.jpg", "caption": "明·圆领补服（孔府旧藏）" }
+      ],
+      "credits": [
+        {
+          "text": "明·宝蓝方补服 / 圆领补服",
+          "museum": "山东博物馆",
+          "exhibition": "明代服饰（孔府旧藏）",
+          "url": "http://www.sdmuseum.com/col/col353160/index.html"
+        }
+      ]
+    }
+  ],
+  "gallery": [
+    {
+      "src": "/assets/gallery/ming_1.jpg",
+      "caption": "明·深青暗花大袖袍（孔府旧藏）",
+      "museum": "山东博物馆",
+      "url": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "src": "/assets/gallery/ming_2.jpg",
+      "caption": "明·红地织金妆花缎马面裙（孔府旧藏）",
+      "museum": "山东博物馆",
+      "url": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "src": "/assets/gallery/ming_3.jpg",
+      "caption": "明·金饰冠（孔府旧藏）",
+      "museum": "山东博物馆",
+      "url": "http://www.sdmuseum.com/col/col353160/index.html"
+    }
+  ]
+}

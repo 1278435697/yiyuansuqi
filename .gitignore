@@ -1,0 +1,31 @@
+# ===== deps / venv =====
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+node_modules/
+
+# ===== build artifacts & logs =====
+frontend/dist/
+*.log
+
+# ===== secrets (never commit) =====
+.env
+*.pem
+
+# ===== local db files & runtime data =====
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+backend/data/chroma/
+
+# ===== user uploads (private photos, PII) =====
+backend/uploads/
+backend/data/uploads/
+backend/data/results/
+
+# ===== backups & archives =====
+backups/
+_archive_*/

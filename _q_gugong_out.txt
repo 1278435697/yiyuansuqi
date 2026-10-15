@@ -1,0 +1,17 @@
+﻿2026-10-13 15:36:54,327 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:36:54,328 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:36:54,329 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:36:54,329 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:36:54,330 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:36:54,330 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:36:54,332 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:36:54,336 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE (news.title LIKE concat('%%', %(title_1)s, '%%'))
+2026-10-13 15:36:54,336 INFO sqlalchemy.engine.Engine [generated in 0.00034s] {'title_1': '圆领袍'}
+id: 7 | source: 中国丝绸博物馆 | url: 
+  title: 国博唐代陶俑印证圆领袍：胡服改制的官服常制
+  cover: /images/news_yuanlingpao.jpg
+2026-10-13 15:36:54,338 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

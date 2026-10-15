@@ -1,0 +1,14 @@
+﻿清华艺博pairs: 0
+---上博---
+上博links: 53
+   常设展览 | frontend/pg/display/index?scrollTarget=.gallery-east-title
+   特别展览 | frontend/pg/display/offline-exhibit
+   服务设施东馆 | frontend/pg/service/visit-east?scrollTarget=.equipment-title
+   服务设施人民广场馆 | frontend/pg/service/visit-west?scrollTarget=.equipment-title
+   服务项目东馆 | frontend/pg/service/visit-east?scrollTarget=.service-title
+   服务项目人民广场馆 | frontend/pg/service/visit-west?scrollTarget=.service-title
+   数字文物库 | frontend/pg/lib1/index
+   全景展厅 | frontend/pg/infomation/three-dimensions?type=special
+   文物保护与考古科学 | frontend/pg/research/archeology
+
+=== DONE ===

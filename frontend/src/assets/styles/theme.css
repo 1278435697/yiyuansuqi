@@ -1,0 +1,359 @@
+/* 衣溯AI · 浅色纸白主题（背景大图 + 纸白遮罩 + 深红金章企业级配色）
+   配色对齐 background-demo.html：深红 #7a221c / 金 #c9a227 / 纸白卡片 */
+
+:root {
+  --ys-bg: #f5efe4;
+  --ys-bg-deep: #efe6d6;
+  --ys-ink: #3a2f24;
+  --ys-ink-2: #5c4c3a;
+  --ys-ink-3: #9a8a70;
+  --ys-red: #7a221c;
+  --ys-red-deep: #8f2f23;
+  --ys-gold: #c9a227;
+  --ys-line: rgba(201, 162, 39, 0.30);
+  --ys-card: rgba(255, 253, 248, 0.92);
+  --ys-shadow: 0 4px 14px rgba(90, 60, 30, 0.10);
+  /* Element Plus 浅色变量 */
+  --el-bg-color: #fffdf8;
+  --el-bg-color-overlay: #fffdf8;
+  --el-bg-color-page: #f5efe4;
+  --el-text-color-primary: #3a2f24;
+  --el-text-color-regular: #5c4c3a;
+  --el-text-color-secondary: #9a8a70;
+  --el-border-color: #d8cbb0;
+  --el-border-color-light: #e4dcc8;
+  --el-border-color-lighter: #ece2d2;
+  --el-fill-color-blank: #fffdf8;
+  --el-fill-color-light: #f7f0e2;
+  --el-fill-color-lighter: #f7f0e2;
+  --el-mask-color: rgba(74, 44, 23, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5efe4;
+  color: var(--ys-ink);
+  font-family: "Songti SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 深红印章头（对齐 demo header.top #7a221c 0.92） */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 28px;
+  background: rgba(122, 34, 28, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.5);
+  box-shadow: 0 2px 14px rgba(60, 20, 12, 0.25);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.brand-seal {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, #c9a227, #a07d16);
+  color: #fffdf4;
+  font-weight: 700;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2px rgba(255, 246, 220, 0.55), 0 2px 8px rgba(60, 20, 12, 0.3);
+  letter-spacing: 2px;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #f5efe4;
+}
+
+.brand-text p {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(245, 239, 228, 0.72);
+}
+
+.app-nav {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.app-nav a {
+  padding: 8px 12px;
+  color: rgba(245, 239, 228, 0.88);
+  text-decoration: none;
+  font-size: 15px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.app-nav a:hover {
+  color: #ffe9a8;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.app-nav a.router-link-active {
+  color: #ffe9a8;
+  font-weight: 700;
+  background: rgba(255, 244, 214, 0.18);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-chip {
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 1px solid rgba(201, 162, 39, 0.6);
+  border-radius: 20px;
+  background: rgba(90, 24, 18, 0.6);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #f5efe4;
+}
+
+.chip-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+/* ========== 全站页面开场动画 ========== */
+/* 路由切换：旧页淡出 → 新页淡入上浮 */
+.page-enter-active { transition: opacity .42s ease-out, transform .42s ease-out; }
+.page-enter-from { opacity: 0; transform: translateY(18px); }
+.page-enter-to { opacity: 1; transform: translateY(0); }
+.page-leave-active { transition: opacity .18s ease-in; }
+.page-leave-to { opacity: 0; }
+
+/* 页面 hero（面料页 / 首页等）：整块上浮 + 内部文字错峰渐显 */
+.page-hero,
+.hero-banner {
+  animation: heroRise .6s cubic-bezier(.22, .8, .3, 1) .08s both;
+}
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-hero h2,
+.hero-banner .hero-title {
+  animation: heroText .65s ease-out .3s both;
+}
+.page-hero p,
+.hero-banner .hero-kicker,
+.hero-banner .hero-sub,
+.hero-banner .hero-cta {
+  animation: heroText .6s ease-out .42s both;
+}
+@keyframes heroText {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 通用区块标题行（档案页 section-head 等）轻微入场 */
+.section-head {
+  animation: headIn .5s ease-out .15s both;
+}
+@keyframes headIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 通用开场动效组件 ===== */
+/* 逐字标题：容器不被外部 hero 动画重复驱动 */
+.reveal-title { animation: none !important; }
+
+/* kicker：字距展开渐显 */
+.anim-kicker {
+  display: inline-block;
+  opacity: 0;
+  animation: aKicker .7s ease-out forwards;
+}
+@keyframes aKicker {
+  from { opacity: 0; letter-spacing: .5em; }
+  to { opacity: .85; letter-spacing: inherit; }
+}
+
+/* 通用上浮渐显（配 style="animation-delay" 控制错峰） */
+.anim-rise { opacity: 0; animation: aRise .6s ease-out both; }
+@keyframes aRise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 容器子元素阶梯上浮（首屏区块用，至多 8 个） */
+.anim-stagger > * {
+  opacity: 0;
+  animation: aRise .55s ease-out both;
+}
+.anim-stagger > *:nth-child(1) { animation-delay: .18s; }
+.anim-stagger > *:nth-child(2) { animation-delay: .26s; }
+.anim-stagger > *:nth-child(3) { animation-delay: .34s; }
+.anim-stagger > *:nth-child(4) { animation-delay: .42s; }
+.anim-stagger > *:nth-child(5) { animation-delay: .5s; }
+.anim-stagger > *:nth-child(6) { animation-delay: .58s; }
+.anim-stagger > *:nth-child(7) { animation-delay: .66s; }
+.anim-stagger > *:nth-child(8) { animation-delay: .74s; }
+
+.app-footer {
+  padding: 18px;
+  text-align: center;
+  color: var(--ys-ink-3);
+  font-size: 13px;
+  border-top: 1px solid var(--ys-line);
+}
+
+/* 通用卡片（对齐 demo .card rgba(255,253,248,0.92)） */
+.ys-card {
+  background: var(--ys-card);
+  border: 1px solid #e6dcc8;
+  border-radius: 10px;
+  box-shadow: var(--ys-shadow);
+  padding: 20px;
+  color: var(--ys-ink);
+}
+
+.ys-card + .ys-card {
+  margin-top: 16px;
+}
+
+/* 区块标题（对齐 demo h2.section 深红 + 金左条） */
+.ys-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ys-red);
+}
+
+.ys-title::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--ys-gold);
+  border-radius: 2px;
+}
+
+/* 标签（对齐 demo .card .tag 金底白字） */
+.ys-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+  font-size: 12px;
+  color: #fff;
+  background: #c9a227;
+  border: 1px solid #c9a227;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ys-empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--ys-ink-3);
+}
+
+/* Element Plus 主题微调 */
+.el-button--primary {
+  --el-button-bg-color: var(--ys-red);
+  --el-button-border-color: var(--ys-red);
+  --el-button-hover-bg-color: var(--ys-red-deep);
+  --el-button-hover-border-color: var(--ys-red-deep);
+  --el-button-text-color: #fff4dd;
+}
+
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  background-color: #fffdf8 !important;
+  box-shadow: 0 0 0 1px var(--ys-line) inset !important;
+}
+
+.el-input__inner,
+.el-textarea__inner,
+.el-select__placeholder,
+.el-select__selected-item {
+  color: var(--ys-ink) !important;
+}
+
+.el-dropdown-menu,
+.el-popper,
+.el-picker-panel {
+  background: #fffdf8 !important;
+  border-color: var(--ys-line) !important;
+}
+
+.el-dropdown-menu__item {
+  color: var(--ys-ink-2) !important;
+}
+
+.el-dropdown-menu__item:not(.is-disabled):hover {
+  background: rgba(201, 162, 39, 0.14) !important;
+  color: var(--ys-red) !important;
+}
+
+.el-table {
+  --el-table-bg-color: transparent;
+  --el-table-tr-bg-color: transparent;
+  --el-table-header-bg-color: rgba(201, 162, 39, 0.12);
+  --el-table-header-text-color: var(--ys-red);
+  --el-table-text-color: var(--ys-ink-2);
+  --el-table-border-color: rgba(201, 162, 39, 0.2);
+  --el-table-row-hover-bg-color: rgba(201, 162, 39, 0.08);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .app-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .app-main {
+    padding: 16px 12px 32px;
+  }
+}

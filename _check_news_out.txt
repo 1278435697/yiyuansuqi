@@ -1,0 +1,24 @@
+﻿2026-10-12 20:16:20,365 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-12 20:16:20,366 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-12 20:16:20,367 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-12 20:16:20,368 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-12 20:16:20,369 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-12 20:16:20,369 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-12 20:16:20,370 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-12 20:16:20,411 INFO sqlalchemy.engine.Engine SELECT news.source AS news_source, count(news.id) AS count_1 
+FROM news GROUP BY news.source
+2026-10-12 20:16:20,411 INFO sqlalchemy.engine.Engine [generated in 0.00038s] {}
+SOURCES: [('中国丝绸博物馆', 1), ('宜昌博物馆', 1), ('故宫博物院', 12), ('敦煌研究院', 1), ('文博在线', 1), ('文物天地', 1), ('考古学报', 2), ('非遗资讯', 1)]
+2026-10-12 20:16:20,415 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.source AS news_source, news.is_focus AS news_is_focus 
+FROM news 
+WHERE news.is_focus IS true ORDER BY news.id DESC 
+ LIMIT %(param_1)s
+2026-10-12 20:16:20,416 INFO sqlalchemy.engine.Engine [generated in 0.00029s] {'param_1': 8}
+FOCUS: [(2, '敦煌服饰研究展再现唐代供养人衣冠', '敦煌研究院', True), (1, '湖南博物院首次动态呈现西汉素纱单衣数字孪生', '文博在线', True)]
+2026-10-12 20:16:20,419 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news ORDER BY news.publish_time DESC, news.id DESC 
+ LIMIT %(param_1)s
+2026-10-12 20:16:20,419 INFO sqlalchemy.engine.Engine [generated in 0.00026s] {'param_1': 5}
+LATEST: [(15, '关于武英殿停止开放的公告', datetime.datetime(2026, 10, 12, 0, 0), '故宫博物院', False), (11, '2026年国际标准化组织文化遗产保护技术委员', datetime.datetime(2026, 10, 9, 0, 0), '故宫博物院', False), (16, '关于“仁风景从——故宫博物院藏捐献文物展”延', datetime.datetime(2026, 10, 8, 0, 0), '故宫博物院', False), (4, '宋代黄昇墓服饰研究：一棺看清南宋衣冠', datetime.datetime(2026, 10, 1, 18, 11, 29), '文物天地', False), (3, '定陵出土织金妆花缎研究新进展', datetime.datetime(2026, 10, 1, 18, 11, 29), '考古学报', False)]
+2026-10-12 20:16:20,422 INFO sqlalchemy.engine.Engine ROLLBACK
+

@@ -1,0 +1,8 @@
+﻿DUMP_EXIT=0
+141778 /tmp/news_dump.sql
+
+CSV_ROWS= 60
+
+local: news_dump_20261014.sql 141778
+local: news_table_20261014.csv 136940
+=== DONE ===

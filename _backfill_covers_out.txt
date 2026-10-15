@@ -1,0 +1,35 @@
+﻿2026-10-13 15:11:59,519 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:11:59,519 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:11:59,521 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:11:59,521 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:11:59,522 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:11:59,523 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:11:59,525 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:11:59,531 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s AND news.cover_image = %(cover_image_1)s
+2026-10-13 15:11:59,532 INFO sqlalchemy.engine.Engine [generated in 0.00028s] {'source_1': '故宫博物院', 'cover_image_1': ''}
+待补图: 20
+2026-10-13 15:12:00,852 INFO sqlalchemy.engine.Engine UPDATE news SET cover_image=%(cover_image)s WHERE news.id = %(news_id)s
+2026-10-13 15:12:00,852 INFO sqlalchemy.engine.Engine [generated in 0.00037s] [{'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 9}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 10}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 11}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 12}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 13}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 14}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 15}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 16}  ... displaying 10 of 20 total bound parameter sets ...  {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 27}, {'cover_image': 'https://img.dpm.org.cn/Uploads/image/2024/04/30/1714450493JdsBlxksO1.png', 'news_id': 28}]
+2026-10-13 15:12:00,865 INFO sqlalchemy.engine.Engine COMMIT
+已补图: 20
+2026-10-13 15:12:00,872 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:12:00,874 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s ORDER BY news.publish_time DESC, news.id DESC 
+ LIMIT %(param_1)s
+2026-10-13 15:12:00,875 INFO sqlalchemy.engine.Engine [generated in 0.00025s] {'source_1': '故宫博物院', 'param_1': 10}
+  - 2026-10-12 关于武英殿停止开放的公告 img=Y
+  - 2026-10-09 2026年国际标准化组织文化遗产保护技术 img=Y
+  - 2026-10-08 关于“仁风景从——故宫博物院藏捐献文物展 img=Y
+  - 2026-09-18 吉羊开泰 紫禁呈祥 “2027年故宫日历 img=Y
+  - 2026-09-09 故宫博物院亮相2026中国文化旅游产业博 img=Y
+  - 2026-08-31 “典则：唐宋书画展”在故宫博物院文华殿展 img=Y
+  - 2026-08-27 关于延禧宫暂停开放的公告 img=Y
+  - 2026-08-08 雕版馆临时闭馆公告 img=Y
+  - 2026-07-31 关于太和门施工的公告 img=Y
+  - 2026-07-27 故宫博物院关于2026年7月27日开放的 img=Y
+2026-10-13 15:12:00,877 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

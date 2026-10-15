@@ -1,0 +1,15 @@
+﻿--- crontab before ---
+0 */2 * * * cd /www/wwwroot/yisu/backend && /www/wwwroot/yisu/backend/591cde3d08cdc971dd6324b305e8aede_venv/bin/python3 app/ai_engine/news_fetcher.py >> /tmp/yisu_news_fetch.log 2>&1
+
+--- after remove ---
+LANG=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+
+58 6 * * *  /www/server/cron/3ab48c27ec99cb9787749c362afae517 >> /www/server/cron/3ab48c27ec99cb9787749c362afae517.log 2>&1
+1 0 * * *  /www/server/cron/7c8f94258cc704608535b6e39c49f829 >> /www/server/cron/7c8f94258cc704608535b6e39c49f829.log 2>&1
+
+--- add exit --- 
+--- crontab after ---
+0 8 * * * cd /www/wwwroot/yisu/backend && 591cde3d08cdc971dd6324b305e8aede_venv/bin/python3 app/ai_engine/news_fetcher.py >> /tmp/yisu_news_fetch.log 2>&1
+
+=== DONE ===

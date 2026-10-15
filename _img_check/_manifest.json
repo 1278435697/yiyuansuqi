@@ -1,0 +1,157 @@
+[
+ {
+  "name": "妆花缎",
+  "image": "/images/relics/relic_geo_dingling_zhuanghua.jpg",
+  "file": "01_妆花缎.jpg"
+ },
+ {
+  "name": "漳绒",
+  "image": "/images/fabrics/fabric_rong.jpg",
+  "file": "02_漳绒.jpg"
+ },
+ {
+  "name": "葛布",
+  "image": "/images/fabrics/fabric_gebu.jpg",
+  "file": "03_葛布.jpg"
+ },
+ {
+  "name": "大麻布",
+  "image": "/images/fabrics/fabric_damabu.jpg",
+  "file": "04_大麻布.jpg"
+ },
+ {
+  "name": "苎麻布",
+  "image": "/images/fabrics/fabric_zhumabu.jpg",
+  "file": "05_苎麻布.jpg"
+ },
+ {
+  "name": "棉布",
+  "image": "/images/fabrics/fabric_mianbu.jpg",
+  "file": "06_棉布.jpg"
+ },
+ {
+  "name": "绢",
+  "image": "/images/fabrics/silk_juan.jpg",
+  "file": "07_绢.jpg"
+ },
+ {
+  "name": "纱",
+  "image": "/images/fabrics/silk_sha.jpg",
+  "file": "08_纱.jpg"
+ },
+ {
+  "name": "縠",
+  "image": "/images/fabrics/silk_hu.jpg",
+  "file": "09_縠.jpg"
+ },
+ {
+  "name": "罗",
+  "image": "/images/fabrics/silk_luo.jpg",
+  "file": "10_罗.jpg"
+ },
+ {
+  "name": "绮",
+  "image": "/images/fabrics/silk_qi.jpg",
+  "file": "11_绮.jpg"
+ },
+ {
+  "name": "经锦",
+  "image": "/images/fabrics/brocade_jingjin.jpg",
+  "file": "12_经锦.jpg"
+ },
+ {
+  "name": "纬锦",
+  "image": "/images/fabrics/brocade_weijin.jpg",
+  "file": "13_纬锦.jpg"
+ },
+ {
+  "name": "绫",
+  "image": "/images/fabrics/silk_ling.jpg",
+  "file": "14_绫.jpg"
+ },
+ {
+  "name": "宋锦",
+  "image": "/images/fabrics/brocade_songjin.jpg",
+  "file": "15_宋锦.jpg"
+ },
+ {
+  "name": "纳石失",
+  "image": "/images/fabrics/brocade_nashishi.jpg",
+  "file": "16_纳石失.jpg"
+ },
+ {
+  "name": "云锦",
+  "image": "/images/fabrics/brocade_yunjin.jpg",
+  "file": "17_云锦.jpg"
+ },
+ {
+  "name": "缎",
+  "image": "/images/fabrics/silk_duan.jpg",
+  "file": "18_缎.jpg"
+ },
+ {
+  "name": "缂丝",
+  "image": "/images/fabrics/kesi.jpg",
+  "file": "19_缂丝.jpg"
+ },
+ {
+  "name": "兽皮毛皮",
+  "image": "/images/fabrics/fur_shoupi.jpg",
+  "file": "20_兽皮毛皮.jpg"
+ },
+ {
+  "name": "毛毡",
+  "image": "/images/fabrics/felt_maozhan.jpg",
+  "file": "21_毛毡.jpg"
+ },
+ {
+  "name": "毛罽",
+  "image": "/images/fabrics/felt_maoji.jpg",
+  "file": "22_毛罽.jpg"
+ },
+ {
+  "name": "氆氇",
+  "image": "/images/fabrics/felt_pulu.jpg",
+  "file": "23_氆氇.jpg"
+ },
+ {
+  "name": "蜀锦",
+  "image": "/images/fabrics/fabric_shujin.jpg",
+  "file": "24_蜀锦.jpg"
+ },
+ {
+  "name": "纨",
+  "image": "/images/fabrics/fabric_wan.jpg",
+  "file": "25_纨.jpg"
+ },
+ {
+  "name": "茧绸",
+  "image": "/images/fabrics/fabric_jianchou.jpg",
+  "file": "26_茧绸.jpg"
+ },
+ {
+  "name": "绸",
+  "image": "/images/fabrics/fabric_chou.jpg",
+  "file": "27_绸.jpg"
+ },
+ {
+  "name": "褐",
+  "image": "/images/fabrics/fabric_he.jpg",
+  "file": "28_褐.jpg"
+ },
+ {
+  "name": "蕉布",
+  "image": "/images/fabrics/fabric_jiaobu.jpg",
+  "file": "29_蕉布.jpg"
+ },
+ {
+  "name": "羽缎 / 羽纱",
+  "image": "/images/fabrics/fabric_yuduan.jpg",
+  "file": "30_羽缎___羽纱.jpg"
+ },
+ {
+  "name": "库缎",
+  "image": "/images/fabrics/fabric_kuduan.jpg",
+  "file": "31_库缎.jpg"
+ }
+]

@@ -1,0 +1,37 @@
+﻿2026-10-13 15:39:19,356 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:39:19,356 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:39:19,357 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:39:19,357 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:39:19,358 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:39:19,358 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:39:19,360 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:39:19,364 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news ORDER BY news.publish_time DESC
+2026-10-13 15:39:19,364 INFO sqlalchemy.engine.Engine [generated in 0.00039s] {}
+总条数: 23
+id=7 SHORT content= 174 summary= 51 | 国博唐代陶俑印证圆领袍：胡服改制的官服常制
+id=59 EMPTY content=   0 summary= 95 | “丝连古今，路通天下——中国丝绸文化艺术展”开幕
+id=60 EMPTY content=   0 summary= 89 | 丝绸与丝路文化当代数融创新工作坊在中国丝绸博物馆
+id=61 EMPTY content=   0 summary= 81 | 探秘西域丝路行，国丝暑期研学一日营圆满结营！
+id=62 EMPTY content=   0 summary= 85 | "七夕感恩之夜"活动举行
+id=63 EMPTY content=   0 summary= 86 | 国丝举办“丝路遗韵之夜”活动
+id=64 EMPTY content=   0 summary= 75 | 中国丝绸博物馆与哈萨克斯坦国家中央博物馆签署合作
+id=65 EMPTY content=   0 summary= 77 | “天方织绣：摩洛哥传统服饰展”在中国丝绸博物馆开
+id=66 EMPTY content=   0 summary=104 | 绣美之江：浙江省刺绣、抽纱非遗艺术与生活作品展
+id=67 EMPTY content=   0 summary= 80 | “月照银山：丝绸之路上的高昌与龟兹”展览开幕
+id=68 EMPTY content=   0 summary= 86 | 丝路之夜暨SROM“沙漠绿洲丝绸之路”主题策展推
+id=69 EMPTY content=   0 summary= 85 | “和合共生 连接未来”，“2026丝绸之路周”开
+id=1 EMPTY content=   0 summary= 50 | 湖南博物院首次动态呈现西汉素纱单衣数字孪生
+id=2 EMPTY content=   0 summary= 49 | 敦煌服饰研究展再现唐代供养人衣冠
+id=3 EMPTY content=   0 summary= 46 | 定陵出土织金妆花缎研究新进展
+id=4 EMPTY content=   0 summary= 44 | 宋代黄昇墓服饰研究：一棺看清南宋衣冠
+id=5 SHORT content= 153 summary= 50 | 明代马面裙再受关注：宜昌明墓出土实物展现裙式考究
+id=6 SHORT content= 166 summary= 48 | 秦陵铠甲武士俑服饰研究：甲片铆接再现秦军戎装
+id=8 SHORT content= 175 summary= 48 | 云锦九龙图亮相：1600年皇家御用织造的当代传承
+id=70 EMPTY content=   0 summary= 88 | 资讯丨童真和暖意！一群特殊小脚丫走进中国丝绸博物
+id=71 EMPTY content=   0 summary= 98 | 公示丨 第五届SROM“沙漠绿洲丝绸之路”云上策
+id=72 EMPTY content=   0 summary=100 | 资讯｜国丝举办“非遗融入当代时尚的理论与实践研究
+id=73 EMPTY content=   0 summary= 80 | 雅士课堂Vol.12｜芒种落穗 曲亦悠然 ——访
+2026-10-13 15:39:19,368 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

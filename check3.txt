@@ -1,0 +1,21 @@
+﻿== home.py 是否含过滤 ==
+63:    def _dress_ok(n: News) -> bool:
+77:    items = [n for n in all_items if _dress_ok(n)][:page_size]
+81:    focus = [n for n in focus if _dress_ok(n)][:3]
+
+== news_fetcher 新词表检查 ==
+(单字织已移除 OK)
+== 接口 items 前几条 ==
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.10/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+=== DONE ===

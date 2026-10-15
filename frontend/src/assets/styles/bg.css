@@ -1,0 +1,59 @@
+/* ============================================================
+   衣溯AI · 全局背景样式（背景替换方案）
+   - 桌面端：固定大图 bg-cover.jpg 铺满视口，滚动不动
+   - 小屏/移动端：无缝平铺纹理 bg-tile.jpg
+   - 内容区纸白遮罩保证可读性
+   ============================================================ */
+.app-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  background-color: #f5efe4;
+  background-image: url('/images/bg/bg-cover.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* 注意：不要加 background-attachment: fixed——
+     该属性在 Chrome 上会强制背景整帧重绘，长页面滚动严重卡顿；
+     .app-bg 本身就是 fixed 定位层，背景图天然固定不动。 */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.app-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 253, 248, 0.55);
+  pointer-events: none;
+}
+
+#app, .app-content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .app-bg {
+    background-image: url('/images/bg/bg-tile.jpg');
+    background-size: auto;
+    background-repeat: repeat;
+  }
+  .app-bg::after {
+    background: rgba(255, 253, 248, 0.7);
+  }
+}
+
+@media (min-width: 1025px) {
+  .app-bg {
+    background-image: url('/images/bg/bg-cover.jpg');
+  }
+}
+
+body {
+  overflow-x: hidden;
+}

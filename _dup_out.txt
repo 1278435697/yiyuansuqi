@@ -1,0 +1,23 @@
+﻿2026-10-13 15:53:01,277 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:53:01,277 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:53:01,278 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:53:01,278 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:53:01,279 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:53:01,280 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:53:01,281 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:53:01,285 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news
+2026-10-13 15:53:01,285 INFO sqlalchemy.engine.Engine [generated in 0.00028s] {}
+总条数: 38
+丝博条数: 30
+重复标题数: 0
+id范围: 1 - 88
+最新5条:
+  id 88 | 资讯 | 国丝科研成果“原创技术揭示三星堆丝绸遗存” | 中国丝绸博物馆
+  id 87 | “丝系山海：从中国到巴西”展览在圣保罗圆满落幕，见证 | 中国丝绸博物馆
+  id 86 | “国丝海外展厅”在巴西伊瓜苏市开新展 | 中国丝绸博物馆
+  id 85 | 雅士课堂Vol.10｜雨生百谷瓷生韵 泥火见丹心—— | 中国丝绸博物馆
+  id 84 | 2026“国丝汉服月·宋词心境”再现宋代雅韵 | 中国丝绸博物馆
+2026-10-13 15:53:01,289 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

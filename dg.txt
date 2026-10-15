@@ -1,0 +1,20 @@
+﻿app/ai_engine/news_fetcher.py 23640 2026-10-14 19:49:21.683220472 +0800
+  md5 343fc0b28aaf81c9a4f0b94ecb18e9d3
+app/api/home.py 7529 2026-10-14 19:49:25.503358106 +0800
+  md5 10f424d5d7eb24e0e64830837c97a4da
+app/ai_engine/news_fetcher.py.bak_news_fetcher.py 23519 2026-10-13 21:03:03.516560707 +0800
+  md5 1a3f6b3c3966ba09704ee389433b98b3
+app/api/home.py.bak_home.py 7529 2026-10-13 21:03:03.700567554 +0800
+  md5 10f424d5d7eb24e0e64830837c97a4da
+---
+-rw-r--r-- 1 root root 1793 Oct  1 21:03 /www/wwwroot/yisu/backend/align_schema.py
+-rw-r--r-- 1 root root 1296 Oct  6 12:55 /www/wwwroot/yisu/backend/_backfill_questions_to_posts.py
+-rw-r--r-- 1 root root  881 Oct  6 13:01 /www/wwwroot/yisu/backend/_backfill_reclassify_posts.py
+-rwxr-xr-x 1 www  www   420 Sep 30 22:11 /www/wwwroot/yisu/backend/keepalive.py
+-rw-r--r-- 1 root root 2441 Oct  1 21:14 /www/wwwroot/yisu/backend/seed_fix.py
+-rwxr-xr-x 1 www  www  3767 Sep 30 12:51 /www/wwwroot/yisu/backend/_smoke_demo.py
+-rwxr-xr-x 1 www  www  2118 Sep 30 11:17 /www/wwwroot/yisu/backend/_smoke.py
+
+LOCAL app/ai_engine/news_fetcher.py 23640
+LOCAL app/api/home.py 7529
+=== DONE ===

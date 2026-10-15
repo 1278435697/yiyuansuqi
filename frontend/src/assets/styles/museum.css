@@ -1,0 +1,41 @@
+/* 衣溯AI · 数字博物馆模块专用样式
+   仅作用于展厅（.museum）与试穿占位页（.tryon），不污染主站浅色主题。
+   CSS 自定义属性会继承给后代，HUD / ExhibitCard / AskPanel 等子组件无需改动。 */
+
+.museum,
+.tryon {
+  --ink-red: #a8322a;
+  --ink-red-deep: #7a241e;
+  --silk-gold: #c9a227;
+  --silk-gold-soft: #e2c766;
+  --silk-gold-rgb: 201, 162, 39;
+  --paper: #f5efe4;
+  --brown: #b28456;
+  --brown-deep: #6b563c;
+  --ink: #2a2521;
+  --font-title: "KaiTi", "STKaiti", "Songti SC", "Noto Serif SC", serif;
+  color-scheme: dark;
+}
+
+.museum h1,
+.museum h2,
+.museum h3 {
+  font-family: var(--font-title);
+}
+
+/* 展厅路由使用裸布局：隐藏站点头部/页脚，3D 舞台占满视口 */
+.app-shell.bare {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.app-main.bare {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}

@@ -1,0 +1,40 @@
+﻿2026-10-13 15:53:51,244 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:53:51,244 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:53:51,246 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:53:51,246 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:53:51,247 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:53:51,247 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:53:51,249 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:53:51,253 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s
+2026-10-13 15:53:51,253 INFO sqlalchemy.engine.Engine [generated in 0.00031s] {'source_1': '中国丝绸博物馆'}
+丝博最新8条(publish_time):
+  id 88 | 2026-06-10 | 资讯 | 国丝科研成果“原创技术揭示三星堆丝绸遗存”获国际关
+  id 87 | 2026-06-10 | “丝系山海：从中国到巴西”展览在圣保罗圆满落幕，见证中巴文明
+  id 86 | 2026-06-10 | “国丝海外展厅”在巴西伊瓜苏市开新展
+  id 85 | 2026-06-10 | 雅士课堂Vol.10｜雨生百谷瓷生韵 泥火见丹心——访中国工
+  id 84 | 2026-06-10 | 2026“国丝汉服月·宋词心境”再现宋代雅韵
+  id 83 | 2026-06-10 | “丝路绮粲——中国丝绸艺术展”在美国路易斯安那州立大学纺织与
+  id 82 | 2026-06-10 | “丝路骑行——从摩洛哥到中国”影像展开幕
+  id 81 | 2026-06-10 | 展览丨“锦绣中华——五十六个民族服饰文化传承与创新展”亮相杭
+全库按时间倒序前5:
+2026-10-13 15:53:51,258 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news
+2026-10-13 15:53:51,258 INFO sqlalchemy.engine.Engine [generated in 0.00028s] {}
+   2026-10-01 | 国博唐代陶俑印证圆领袍：胡服改制的官服常制
+   2026-09-08 | “丝连古今，路通天下——中国丝绸文化艺术展”开幕
+   2026-09-08 | 丝绸与丝路文化当代数融创新工作坊在中国丝绸博物馆举办
+   2026-09-08 | 探秘西域丝路行，国丝暑期研学一日营圆满结营！
+   2026-09-08 | "七夕感恩之夜"活动举行
+2026-10-13 15:53:51,262 INFO sqlalchemy.engine.Engine ROLLBACK
+
+CRON_LOG: -rw-r--r-- 1 root root 14268 Oct 13 12:00 /tmp/yisu_news_fetch.log
+---
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 12:00:02,521 INFO sqlalchemy.engine.Engine [cached since 0.004748s ago] {'pk_1': 16}
+[db] 新增 0 条，最新 3 条设为今日焦点：关于武英殿停止开放的公告；2026年国际标准化组织文化遗产保护；关于“仁风景从——故宫博物院藏捐献文
+2026-10-13 12:00:02,522 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

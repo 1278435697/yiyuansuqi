@@ -1,0 +1,2 @@
+﻿CRON: 0 */6 * * * cd /www/wwwroot/yisu/backend && /www/wwwroot/yisu/backend/591cde3d08cdc971dd6324b305e8aede_venv/bin/python3 app/ai_engine/news_fetcher.py >> /tmp/yisu_news_fetch.log 2>&1
+=== DONE ===

@@ -1,0 +1,24 @@
+﻿=== 丝博首页动态 ===
+   丝路进校园 | /sljxy/list_291.aspx
+   国际丝路中心 | /gjslzx/list_305.aspx
+   博协服装设计专委会 | /bxfzzwh/list_306.aspx
+   国际丝绸学院 | /gjscxy/list_307.aspx
+   丝路进校园 | /sljxy/list_291.aspx
+   国际丝路中心 | /gjslzx/list_305.aspx
+   博协服装设计专委会 | /bxfzzwh/list_306.aspx
+   国际丝绸学院 | /gjscxy/list_307.aspx
+  日期: ['2017.04.06', '2017/11/20', '2017/11/20', '2017/11/20', '2026/03/20']
+=== 故宫动态列表 ===
+  日期样本: ['2026年10月09日', '2026年9月21日', '2026年10月09日', '2026年9月18日', '2026年10月09日', '2026年9月9日']
+   故宫博物院教育中心 | /Events.html#hd1-3
+   国际博协培训中心 | /Events.html#hd1-6
+   故宫志愿者 | /Events.html#hd1-7
+   数字多宝阁 | /shuziduobaoge.html
+   数字文物库 | https://digicol.dpm.org.cn/
+   故宫学研究院 | /achaime/institute.html
+   其他学术机构 | /Research.html#other_institution1
+   故宫博物院院刊 | /journals.html
+   故宫APP | /Creative.html#app
+   English | https://intl.dpm.org.cn/index.html?l=en
+
+=== DONE ===

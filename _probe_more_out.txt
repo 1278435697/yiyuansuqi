@@ -1,0 +1,15 @@
+﻿OK  上海博物馆新闻: len=602 dates=[]
+OK  上海博物馆首页: len=55091 dates=['2026.07.09', '2027.11.14', '2026-09-23']
+      frontend/pg/research/archeology | 文物保护与考古科学
+FAIL 南京云锦: <urlopen error timed out>
+OK  苏州丝博首页: len=2489 dates=[]
+OK  苏州丝博新闻2: len=2489 dates=[]
+OK  清华艺博首页: len=215703 dates=['2017-4-3', '2017-4-3', '2020-4-30']
+      https://www.artmuseum.tsinghua.edu.cn/aboutus/zlchwyh/ | 展览策划委员会
+      https://www.artmuseum.tsinghua.edu.cn/aboutus/zlpswyh/ | 展览评审委员会
+      https://mp.weixin.qq.com/s/BgrZaQbrdtRTko43PckPpA | 清华大学艺术博物馆 展厅志愿讲解安排（10月10日-16
+FAIL 清华艺博展讯: HTTP Error 404: Not Found
+FAIL 中国丝绸博物馆展览: HTTP Error 404: Not Found
+FAIL 中国丝绸博物馆合作: HTTP Error 404: Not Found
+
+=== DONE ===

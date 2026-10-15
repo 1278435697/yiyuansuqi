@@ -1,0 +1,54 @@
+﻿2026-10-13 15:24:15,567 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:24:15,567 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:24:15,569 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:24:15,569 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:24:15,570 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:24:15,570 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:24:15,572 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:24:15,574 INFO sqlalchemy.engine.Engine UPDATE news SET is_focus=%(is_focus)s WHERE news.is_focus IS true
+2026-10-13 15:24:15,574 INFO sqlalchemy.engine.Engine [generated in 0.00028s] {'is_focus': 0}
+2026-10-13 15:24:15,575 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:24:15,582 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:24:15,586 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s ORDER BY news.publish_time DESC, news.id DESC 
+ LIMIT %(param_1)s
+2026-10-13 15:24:15,586 INFO sqlalchemy.engine.Engine [generated in 0.00035s] {'source_1': '中国丝绸博物馆', 'param_1': 3}
+2026-10-13 15:24:15,590 INFO sqlalchemy.engine.Engine UPDATE news SET is_focus=%(is_focus)s WHERE news.id = %(news_id)s
+2026-10-13 15:24:15,590 INFO sqlalchemy.engine.Engine [generated in 0.00033s] {'is_focus': 1, 'news_id': 7}
+2026-10-13 15:24:15,592 INFO sqlalchemy.engine.Engine COMMIT
+焦点:
+2026-10-13 15:24:15,598 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:24:15,600 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:24:15,600 INFO sqlalchemy.engine.Engine [generated in 0.00030s] {'pk_1': 7}
+  - 2026-10-01 国博唐代陶俑印证圆领袍：胡服改制的官服常制 img=Y
+---- 库内资讯构成 ----
+2026-10-13 15:24:15,610 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s) AS anon_1
+2026-10-13 15:24:15,610 INFO sqlalchemy.engine.Engine [generated in 0.00037s] {'source_1': '中国丝绸博物馆'}
+  中国丝绸博物馆 1
+2026-10-13 15:24:15,612 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s) AS anon_1
+2026-10-13 15:24:15,612 INFO sqlalchemy.engine.Engine [cached since 0.002796s ago] {'source_1': '敦煌研究院'}
+  敦煌研究院 1
+2026-10-13 15:24:15,614 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s) AS anon_1
+2026-10-13 15:24:15,615 INFO sqlalchemy.engine.Engine [cached since 0.004991s ago] {'source_1': '湖南博物院'}
+  湖南博物院 0
+2026-10-13 15:24:15,617 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s) AS anon_1
+2026-10-13 15:24:15,617 INFO sqlalchemy.engine.Engine [cached since 0.007093s ago] {'source_1': '国家博物馆'}
+  国家博物馆 0
+2026-10-13 15:24:15,618 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

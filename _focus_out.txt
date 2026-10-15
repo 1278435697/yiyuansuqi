@@ -1,0 +1,18 @@
+﻿2026-10-13 15:45:16,647 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:45:16,647 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:45:16,649 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:45:16,649 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:45:16,650 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:45:16,650 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:45:16,652 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:45:16,656 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.is_focus = true ORDER BY news.publish_time DESC
+2026-10-13 15:45:16,656 INFO sqlalchemy.engine.Engine [generated in 0.00026s] {}
+焦点条数: 3
+  id 7 | 国博唐代陶俑印证圆领袍：胡服改制的官服常制 | 2026-10-01
+  id 68 | 丝路之夜暨SROM“沙漠绿洲丝绸之路”主题策展推介活动在国丝 | 2026-09-08
+  id 69 | “和合共生 连接未来”，“2026丝绸之路周”开幕 | 2026-09-08
+2026-10-13 15:45:16,658 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

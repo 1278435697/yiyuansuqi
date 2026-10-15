@@ -1,0 +1,310 @@
+﻿2026-10-13 15:39:59,872 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:39:59,873 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:39:59,874 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:39:59,874 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:39:59,875 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:39:59,876 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:39:59,880 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:39:59,885 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news ORDER BY news.publish_time DESC
+2026-10-13 15:39:59,885 INFO sqlalchemy.engine.Engine [generated in 0.00040s] {}
+待生成正文: 23 / 23
+2026-10-13 15:40:04,248 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:04,248 INFO sqlalchemy.engine.Engine [generated in 0.00032s] {'content': '唐代服饰制度兼具中原传统礼制与外来文化融合特征，官服体系的演变既体现等级秩序，也反映民族文化交流的轨迹，圆领袍作为唐代服饰的核心品类，其形制演变一直是服饰史研究的重要议题。国家博物馆藏唐代陶俑所呈现的圆领袍实物形态，为厘清这一服饰的制度属性提供了关键实证。\n\n据介绍，这批唐代陶俑以写实风格还原 ... (134 characters truncated) ... 前关于圆领袍“胡服改制”的推论提供了具象化依据。\n\n相关负责人表示，这批陶俑的展示，填补了唐代圆领袍从胡服到官服常制演变过程中实物实证的空白，不仅为服饰史研究中圆领袍的形制复原、制度梳理提供了精准参照，也让公众更直观地理解唐代服饰文化“兼容并蓄”的特质，有助于深化对古代民族文化交流融合的认知。', 'news_id': 7}
+2026-10-13 15:40:04,250 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:04,257 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:04,259 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:04,259 INFO sqlalchemy.engine.Engine [generated in 0.00027s] {'pk_1': 7}
+  + 7 国博唐代陶俑印证圆领袍：胡服改制的官 | 428 字
+2026-10-13 15:40:05,262 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:05,263 INFO sqlalchemy.engine.Engine [cached since 1.004s ago] {'pk_1': 59}
+2026-10-13 15:40:08,455 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:08,455 INFO sqlalchemy.engine.Engine [cached since 4.207s ago] {'content': '丝绸作为中国古代文明的标志性产物，既是物质文化的核心载体，也是跨文明交流的重要纽带，其发展脉络始终与服饰文化、织造技艺的传承演变深度绑定，承载着不同时代的审美取向、技术水平与社会内涵。在此背景下，一场聚焦丝绸文化的专题展览于近期正式启幕。\n\n据介绍，本次展览由中国丝绸博物馆主办，以“丝连古今， ... (83 characters truncated) ... ，清晰展现丝绸文化的传承路径与艺术表达。\n\n相关负责人表示，该展览为服饰历史研究提供了具象化的实物参照，有助于学界更直观地梳理不同时期丝绸织造技艺的演变逻辑与服饰文化的发展规律；同时也为公众搭建了认知丝绸文化的窗口，打破了古今丝绸艺术的认知壁垒，让大众更清晰地理解丝绸文化的历史价值与当代意义。', 'news_id': 59}
+2026-10-13 15:40:08,460 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:08,467 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:08,468 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:08,468 INFO sqlalchemy.engine.Engine [cached since 4.209s ago] {'pk_1': 59}
+  + 59 “丝连古今，路通天下——中国丝绸文化 | 377 字
+2026-10-13 15:40:09,471 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:09,471 INFO sqlalchemy.engine.Engine [cached since 5.212s ago] {'pk_1': 60}
+2026-10-13 15:40:13,188 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:13,188 INFO sqlalchemy.engine.Engine [cached since 8.94s ago] {'content': '在全球文化传承与创新融合的语境下，服饰文化作为文明交流的具象载体，其传承方式正面临数字化转型的新命题。丝绸与丝路文化的关联，始终是中外文明互鉴的核心线索之一，传统服饰、织造技艺与丝绸文物的活化，亟需适配当代传播语境的创新路径。\n\n本次工作坊聚焦服饰、织造、丝绸相关文物，探索丝路文化的数字化融合 ... (126 characters truncated) ... 的数字模拟成果，为参与者呈现了丝路服饰文化的多元维度。\n\n此次工作坊为服饰历史研究提供了新的技术视角，有助于推动传统服饰、织造技艺的数字化留存与研究，为相关领域的文化传承与发展提供新方向。对公众而言，这类数字化创新路径也将丰富丝路文化的认知维度，助力传统服饰文化以更贴近当代的方式被理解与传播。', 'news_id': 60}
+2026-10-13 15:40:13,190 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:13,197 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:13,197 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:13,197 INFO sqlalchemy.engine.Engine [cached since 8.938s ago] {'pk_1': 60}
+  + 60 丝绸与丝路文化当代数融创新工作坊在中 | 420 字
+2026-10-13 15:40:14,200 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:14,200 INFO sqlalchemy.engine.Engine [cached since 9.941s ago] {'pk_1': 61}
+2026-10-13 15:40:18,334 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:18,335 INFO sqlalchemy.engine.Engine [cached since 14.09s ago] {'content': '西域丝路沿线的服饰文化，是古代东西方文明交流互鉴的鲜活载体，既保留着本土族群的服饰特质，又吸纳了中原、中亚乃至地中海区域的织造技艺与审美风格，是研究古代丝路商贸、文化传播的重要实物线索。在此背景下，中国丝绸博物馆于2026年暑期推出“探秘西域丝路行”一日研学营，聚焦丝路服饰文化的多元内涵，为参与者 ... (165 characters truncated) ... 服饰的形制、纹样演变脉络，帮助参与者建立对西域丝路服饰文化的系统认知。\n\n此次研学营的举办，为服饰历史研究的公众传播提供了有效路径，既让专业的丝路服饰、织造研究内容转化为可感知的体验内容，也有助于公众跳出单一的地域视角，理解古代服饰文化交流的复杂性与多元性，进一步强化对丝路文明互鉴价值的认知。', 'news_id': 61}
+2026-10-13 15:40:18,337 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:18,344 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:18,345 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:18,345 INFO sqlalchemy.engine.Engine [cached since 14.09s ago] {'pk_1': 61}
+  + 61 探秘西域丝路行，国丝暑期研学一日营圆 | 459 字
+2026-10-13 15:40:19,348 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:19,348 INFO sqlalchemy.engine.Engine [cached since 15.09s ago] {'pk_1': 62}
+2026-10-13 15:40:23,706 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:23,707 INFO sqlalchemy.engine.Engine [cached since 19.46s ago] {'content': '服饰文化与传统节俗的融合，是当代文博活动挖掘文化内涵的重要方向。七夕作为承载传统情感与民俗意涵的节日，其文化内核常与手工技艺、情感联结相关联，丝绸服饰作为兼具实用、审美与文化属性的载体，为节俗活动提供了具象的文化依托。在此背景下，相关文博机构围绕丝绸服饰主题打造节俗活动，成为活化传统文化的一种实践 ... (162 characters truncated) ... 研究与公众认知具有一定价值。从研究层面看，活动依托馆内文物资源，为服饰文化的传播提供了场景化路径，有助于相关研究成果的转化；从公众认知层面看，活动将丝绸服饰文化与传统节俗结合，打破了传统展览的单一形式，让公众在特定节俗氛围中感知丝绸服饰的文化内涵，为公众了解服饰文化提供了兼具文化性与体验感的渠道。', 'news_id': 62}
+2026-10-13 15:40:23,708 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:23,715 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:23,715 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:23,716 INFO sqlalchemy.engine.Engine [cached since 19.46s ago] {'pk_1': 62}
+  + 62 "七夕感恩之夜"活动举行 | 456 字
+2026-10-13 15:40:24,719 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:24,719 INFO sqlalchemy.engine.Engine [cached since 20.46s ago] {'pk_1': 63}
+2026-10-13 15:40:28,404 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:28,404 INFO sqlalchemy.engine.Engine [cached since 24.16s ago] {'content': '古代丝绸之路不仅是商贸通道，更是东西方文化交流的纽带，丝绸与服饰作为其中的核心载体，既承载着沿线地域的工艺智慧，也见证了不同文明的审美交融，其文化脉络的梳理与呈现，始终是文博领域的重要研究与传播方向。\n\n据介绍，中国丝绸博物馆举办的“丝路遗韵之夜”活动，围绕丝路主题的服饰、织造、丝绸类文物展开 ... (147 characters truncated) ... 的途径。\n\n该活动的举办，为服饰历史研究提供了具象化的交流载体，有助于研究者更系统地梳理丝路沿线丝绸工艺的传播路径与服饰风格的演变逻辑；同时，也为公众搭建了了解丝路文化的直观平台，打破了传统文物展览的时空限制，让公众能更深入地认知丝绸与服饰在文明交流中的独特价值，推动丝路文化的当代传播与传承。', 'news_id': 63}
+2026-10-13 15:40:28,406 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:28,412 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:28,413 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:28,413 INFO sqlalchemy.engine.Engine [cached since 24.15s ago] {'pk_1': 63}
+  + 63 国丝举办“丝路遗韵之夜”活动 | 441 字
+2026-10-13 15:40:29,416 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:29,416 INFO sqlalchemy.engine.Engine [cached since 25.16s ago] {'pk_1': 64}
+2026-10-13 15:40:33,103 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:33,104 INFO sqlalchemy.engine.Engine [cached since 28.86s ago] {'content': '丝绸作为古代丝绸之路的核心载体，曾串联起亚欧大陆的商贸往来与文化互鉴，中哈两国地处丝路沿线核心区域，各自留存的服饰、织造类文物，既是丝路物质文化交流的实物见证，也承载着两地独特的审美与工艺传统，长期以来是学界关注的丝路文化研究重点。在此背景下，两国专业文博机构的合作，为系统梳理丝路服饰文化脉络提供 ... (166 characters truncated) ... 路文化交流的具体形态。\n\n相关负责人表示，此次合作突破了单一地域的研究局限，为中哈服饰文化的跨区域研究搭建了专业平台，有助于填补两地丝路服饰交流脉络梳理中的部分空白，也能让公众更清晰地认知到，丝路文化交流并非单向传播，而是两地文化相互影响、共同发展的过程，对深化丝路文化的公众认知具有积极意义。', 'news_id': 64}
+2026-10-13 15:40:33,105 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:33,111 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:33,112 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:33,112 INFO sqlalchemy.engine.Engine [cached since 28.85s ago] {'pk_1': 64}
+  + 64 中国丝绸博物馆与哈萨克斯坦国家中央博 | 460 字
+2026-10-13 15:40:34,115 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:34,115 INFO sqlalchemy.engine.Engine [cached since 29.86s ago] {'pk_1': 65}
+2026-10-13 15:40:38,108 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:38,108 INFO sqlalchemy.engine.Engine [cached since 33.86s ago] {'content': '在全球服饰文化交流的语境下，北非地区的传统服饰因融合多元文明特质，始终是学界与公众关注的领域。摩洛哥地处地中海与大西洋交汇地带，其服饰文化既承载本土族群的审美传统，又吸纳周边文明的工艺养分，形成独特的文化标识。在此背景下，一场聚焦当地传统服饰的专题展览于近期在中国丝绸博物馆启幕。\n\n据介绍，本 ... (107 characters truncated) ... 服饰从原料加工到成品制作的完整脉络，清晰展现其织绣技艺的特色。\n\n相关负责人表示，该展览为国内服饰文化研究提供了新的实物参照，有助于学界深入探讨北非服饰与周边地区工艺的交流脉络；对公众而言，也搭建起了解摩洛哥传统服饰文化的直观窗口，丰富了对全球服饰多样性的认知，推动不同地域服饰文化的交流互鉴。', 'news_id': 65}
+2026-10-13 15:40:38,109 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:38,116 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:38,116 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:38,116 INFO sqlalchemy.engine.Engine [cached since 33.86s ago] {'pk_1': 65}
+  + 65 “天方织绣：摩洛哥传统服饰展”在中国 | 401 字
+2026-10-13 15:40:39,120 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:39,120 INFO sqlalchemy.engine.Engine [cached since 34.86s ago] {'pk_1': 66}
+2026-10-13 15:40:42,822 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:42,823 INFO sqlalchemy.engine.Engine [cached since 38.57s ago] {'content': '浙江是丝绸文化的核心发源地之一，传统服饰文化脉络深厚，刺绣、抽纱类非遗作为服饰装饰与工艺体系的重要组成，长期与当地丝绸织造技艺深度绑定，是地域服饰文化特质的具象载体。在传统服饰文化当代传承与活化的语境下，相关非遗的艺术价值与生活化转化路径，成为文化传播与研究领域的关注方向。\n\n据介绍，本次由中 ... (147 characters truncated) ... \n相关负责人表示，本次展览为浙江传统服饰文化研究提供了具象的实物参照，有助于学界进一步厘清刺绣、抽纱与丝绸织造技艺的关联逻辑；同时，展览通过传统与当代作品的并置，让公众直观感知传统服饰非遗的艺术特质与当代价值，为传统服饰文化的公众传播搭建了有效载体，也为同类非遗的当代转化提供了可借鉴的展示思路。', 'news_id': 66}
+2026-10-13 15:40:42,824 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:42,830 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:42,831 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:42,831 INFO sqlalchemy.engine.Engine [cached since 38.57s ago] {'pk_1': 66}
+  + 66 绣美之江：浙江省刺绣、抽纱非遗艺术与 | 441 字
+2026-10-13 15:40:43,834 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:43,834 INFO sqlalchemy.engine.Engine [cached since 39.58s ago] {'pk_1': 67}
+2026-10-13 15:40:47,182 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:47,183 INFO sqlalchemy.engine.Engine [cached since 42.93s ago] {'content': '丝绸之路上的高昌、龟兹区域，是古代东西方服饰文化交流的核心枢纽，中原织染技艺、中亚装饰风格、南亚文化元素在此碰撞融合，形成了兼具地域特质与多元属性的服饰文化体系，为研究古代丝路文明交流提供了关键的实物样本。\n\n据介绍，本次展览由中国丝绸博物馆主办，聚焦高昌、龟兹两地的丝路文化风貌，核心展出内容 ... (88 characters truncated) ... 负责人表示，展品的遴选兼顾了文化代表性与艺术独特性。\n\n该展览为服饰历史研究提供了具象的实物参照，有助于学界进一步厘清高昌、龟兹两地服饰文化的交流路径与发展逻辑；同时，也为公众搭建了认知古代丝路服饰文化的直观窗口，让大众得以通过丝绸文物感知丝路沿线文明的交融特质，深化对古代丝路文化交流的理解。', 'news_id': 67}
+2026-10-13 15:40:47,184 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:47,190 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:47,191 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:47,191 INFO sqlalchemy.engine.Engine [cached since 42.93s ago] {'pk_1': 67}
+  + 67 “月照银山：丝绸之路上的高昌与龟兹” | 382 字
+2026-10-13 15:40:48,194 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:48,194 INFO sqlalchemy.engine.Engine [cached since 43.94s ago] {'pk_1': 68}
+2026-10-13 15:40:51,232 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:51,232 INFO sqlalchemy.engine.Engine [cached since 46.98s ago] {'content': '沙漠绿洲丝绸之路是古代东西方文明交流的核心通道之一，沿线多元族群的服饰文化、织造技艺与丝绸传播，始终是中外文化互动研究的重要维度，其承载的物质文化信息，为理解古代跨区域交流提供了具象载体。\n\n据介绍，本次活动由中国丝绸博物馆举办，围绕沙漠绿洲丝绸之路展开，聚焦服饰、织造、丝绸相关文物推介主题策 ... (78 characters truncated) ... 线的传播脉络，以及服饰文化的多元融合特征。\n\n此次推介活动，为沙漠绿洲丝绸之路服饰文化研究搭建了交流平台，有助于推动相关领域对古代丝绸传播、服饰技艺传承的深入探讨。同时，活动面向公众传递了沙漠绿洲丝绸之路的文化内涵，丰富了公众对古代跨区域服饰文化交流的认知，为后续相关主题展览的落地奠定了基础。', 'news_id': 68}
+2026-10-13 15:40:51,234 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:51,240 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:51,241 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:51,241 INFO sqlalchemy.engine.Engine [cached since 46.98s ago] {'pk_1': 68}
+  + 68 丝路之夜暨SROM“沙漠绿洲丝绸之路 | 372 字
+2026-10-13 15:40:52,244 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:52,244 INFO sqlalchemy.engine.Engine [cached since 47.98s ago] {'pk_1': 69}
+2026-10-13 15:40:55,526 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:40:55,527 INFO sqlalchemy.engine.Engine [cached since 51.28s ago] {'content': '在古代丝绸之路的文化脉络中，服饰、织造与丝绸始终是跨区域交流的核心载体，既承载着沿线族群的审美特质与工艺智慧，也串联起不同文明间的物质往来与精神共鸣，成为见证文化联结的重要符号。在此背景下，聚焦服饰、织造、丝绸相关内容的主题活动，为解读丝绸之路的文化内涵提供了具象视角。\n\n据介绍，本次活动由中 ... (113 characters truncated) ... 成果。\n\n相关负责人表示，本次活动对服饰历史研究具有补充价值，可为学界梳理丝绸之路沿线服饰文化的传播路径、工艺演变脉络提供实物参照；同时也有助于公众更清晰地认知丝绸之路上服饰文化的多元面貌，打破对古代服饰交流的模糊认知，进一步理解“和合共生”的文化内涵，为当代文化传承与交流提供历史层面的参考。', 'news_id': 69}
+2026-10-13 15:40:55,528 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:40:55,534 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:40:55,535 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:55,535 INFO sqlalchemy.engine.Engine [cached since 51.28s ago] {'pk_1': 69}
+  + 69 “和合共生 连接未来”，“2026丝 | 407 字
+2026-10-13 15:40:56,538 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:40:56,539 INFO sqlalchemy.engine.Engine [cached since 52.28s ago] {'pk_1': 1}
+2026-10-13 15:41:00,495 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:00,496 INFO sqlalchemy.engine.Engine [cached since 56.25s ago] {'content': '西汉时期是中国古代服饰文化发展的重要阶段，丝织工艺已达较高水准，贵族阶层的服饰兼具实用功能与审美价值，马王堆汉墓出土的丝织文物更是这一时期服饰文化的实物见证。受限于文物保护要求，这类珍贵丝织文物无法长期公开展示，其穿着状态、织物质感等信息难以直观传递给公众，相关研究成果的转化也存在一定局限。\n\ ... (151 characters truncated) ... 原了特定服饰的穿着场景与织物特性，实现了丝织文物数字化的新突破。\n\n该内容的推出，为西汉服饰历史研究提供了新的展示载体，有助于研究人员更直观地探讨当时服饰的形制、工艺与审美逻辑；对公众而言，也打破了文物保护与展示之间的矛盾，让更多人能近距离感知西汉丝织工艺的精妙，深化对中国古代服饰文化的认知。', 'news_id': 1}
+2026-10-13 15:41:00,497 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:00,504 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:00,504 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:00,505 INFO sqlalchemy.engine.Engine [cached since 56.25s ago] {'pk_1': 1}
+  + 1 湖南博物院首次动态呈现西汉素纱单衣数 | 445 字
+2026-10-13 15:41:01,508 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:01,508 INFO sqlalchemy.engine.Engine [cached since 57.25s ago] {'pk_1': 2}
+2026-10-13 15:41:05,082 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:05,082 INFO sqlalchemy.engine.Engine [cached since 60.83s ago] {'content': '唐代是中国服饰文化发展的鼎盛阶段，受多民族文化交融、丝绸之路商贸往来等因素影响，服饰形制、纹样、织造工艺均呈现多元开放的特征，敦煌作为陆上丝绸之路的枢纽，其壁画遗存成为记录这一时期服饰风貌的重要载体，留存了大量不同身份、阶层人物的服饰形象，为后世研究唐代服饰提供了直观的视觉参照。\n\n本次展览集 ... (154 characters truncated) ... 带来更具沉浸感的观展体验。\n\n该展览对唐代服饰历史研究具有重要价值，既为学界提供了集中的实物与视觉研究素材，也有助于厘清唐代服饰的形制细节与文化内涵；同时，展览通过数字化手段降低了公众了解唐代服饰文化的门槛，让更多人直观感知唐代服饰的美学特征与文化底蕴，推动公众对中国古代服饰文化的认知与传承。', 'news_id': 2}
+2026-10-13 15:41:05,084 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:05,090 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:05,090 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:05,090 INFO sqlalchemy.engine.Engine [cached since 60.83s ago] {'pk_1': 2}
+  + 2 敦煌服饰研究展再现唐代供养人衣冠 | 448 字
+2026-10-13 15:41:06,094 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:06,094 INFO sqlalchemy.engine.Engine [cached since 61.83s ago] {'pk_1': 3}
+2026-10-13 15:41:09,837 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:09,837 INFO sqlalchemy.engine.Engine [cached since 65.59s ago] {'content': '明代服饰文化体系中，织金妆花缎龙袍是等级制度与工艺巅峰的双重载体，这类织物因用料考究、工艺繁复，仅为高等级礼制场合所用，其遗存的完整度与研究深度，直接关乎学界对明代服饰制度、织造技术的认知边界。此次相关研究的推进，正是基于定陵出土的这类珍贵遗存展开。\n\n据介绍，研究团队已完成定陵出土织金妆花缎 ... (122 characters truncated) ... 的材质构成、妆花工艺的织作逻辑等。\n\n此次研究及配套展示，对服饰历史研究而言，为明代高等级织物的工艺溯源、纹样演变提供了更精准的实物依据，有助于细化对明代服饰等级体系的认知；对公众而言，通过专业研究成果的可视化呈现，能更清晰地理解古代服饰背后的技术含量与文化内涵，推动对传统服饰文化的深度认知。', 'news_id': 3}
+2026-10-13 15:41:09,841 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:09,847 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:09,848 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:09,848 INFO sqlalchemy.engine.Engine [cached since 65.59s ago] {'pk_1': 3}
+  + 3 定陵出土织金妆花缎研究新进展 | 416 字
+2026-10-13 15:41:10,851 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:10,851 INFO sqlalchemy.engine.Engine [cached since 66.59s ago] {'pk_1': 4}
+2026-10-13 15:41:14,180 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:14,181 INFO sqlalchemy.engine.Engine [cached since 69.93s ago] {'content': '宋代是中国古代服饰文化发展的重要阶段，服饰形制、织造技艺与审美取向均呈现出鲜明的时代特征，且因地域差异形成多元风貌，福建福州作为南宋时期的重要城市，其出土的服饰文物是研究南方地区宋代衣冠制度与丝织技术的关键实物资料。\n\n据介绍，黄昇墓出土的服饰数量可观，涵盖褙子、霞帔等宋代典型服饰品类，这些实 ... (104 characters truncated) ... \n\n相关负责人表示，该研究及相关展览的推出，弥补了此前南宋服饰研究中南方地区实物资料解读的部分空白，有助于公众更直观地了解宋代服饰的真实面貌，打破对宋代服饰的刻板认知；同时，对福州南宋丝织技术的深入探究，也为梳理中国古代丝织技术的地域发展脉络提供了重要参考，推动了宋代服饰文化研究的精细化发展。', 'news_id': 4}
+2026-10-13 15:41:14,182 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:14,188 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:14,189 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:14,189 INFO sqlalchemy.engine.Engine [cached since 69.93s ago] {'pk_1': 4}
+  + 4 宋代黄昇墓服饰研究：一棺看清南宋衣冠 | 398 字
+2026-10-13 15:41:15,192 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:15,192 INFO sqlalchemy.engine.Engine [cached since 70.93s ago] {'pk_1': 5}
+2026-10-13 15:41:18,700 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:18,700 INFO sqlalchemy.engine.Engine [cached since 74.45s ago] {'content': '明代服饰制度与审美体系中，裙装是女性日常及礼仪着装的核心品类，其形制、工艺既承载着服饰文化的规范，也体现着当时织造技术的发展水平。马面裙作为明代女性裙装的典型样式，相关记载多散见于文献，完整出土实物的整理与研究，是还原其真实面貌的关键。\n\n据介绍，宜昌东山明墓出土的马面裙经系统整理后，呈现出清 ... (88 characters truncated) ... 清晰，工艺特征明确，是研究明代裙装形制与丝绸技术的重要实物资料。\n\n相关负责人表示，该马面裙的整理与展示，弥补了区域内明代服饰实物研究的部分空白，为学界探讨明代服饰的形制演变、工艺传承提供了具体参照；同时，也让公众得以直观感知明代服饰的考究与丝绸工艺的精湛，有助于深化对中国古代服饰文化的认知。', 'news_id': 5}
+2026-10-13 15:41:18,701 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:18,707 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:18,708 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:18,708 INFO sqlalchemy.engine.Engine [cached since 74.45s ago] {'pk_1': 5}
+  + 5 明代马面裙再受关注：宜昌明墓出土实物 | 382 字
+2026-10-13 15:41:19,711 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:19,711 INFO sqlalchemy.engine.Engine [cached since 75.45s ago] {'pk_1': 6}
+2026-10-13 15:41:23,273 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:23,273 INFO sqlalchemy.engine.Engine [cached since 79.03s ago] {'content': '先秦至秦汉是中国古代戎装体系从雏形走向成熟的关键阶段，甲胄形制、军阶标识等细节既关联军事制度，也反映当时的织造、金属加工等技术水平，相关研究多依赖考古出土的实物遗存与陶俑遗存的结合分析。秦始皇帝陵出土的铠甲武士俑，因能直观呈现秦代戎装的立体形态，一直是学界关注的核心材料。\n\n据介绍，本次研究以 ... (146 characters truncated) ... 秦代戎装体系的研究补充了关键细节。\n\n此次研究的进展，不仅丰富了学界对秦代戎装形制、工艺的认知，也为探讨秦代军事制度、等级体系提供了新的实物依据。从公众认知层面看，这类研究成果也为后续相关主题展览的策划提供了学术支撑，有助于公众更清晰地了解秦代军事文化的具体面貌，推动古代服饰文化的传播与普及。', 'news_id': 6}
+2026-10-13 15:41:23,275 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:23,282 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:23,282 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:23,282 INFO sqlalchemy.engine.Engine [cached since 79.02s ago] {'pk_1': 6}
+  + 6 秦陵铠甲武士俑服饰研究：甲片铆接再现 | 440 字
+2026-10-13 15:41:24,286 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:24,286 INFO sqlalchemy.engine.Engine [cached since 80.03s ago] {'pk_1': 8}
+2026-10-13 15:41:28,184 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:28,184 INFO sqlalchemy.engine.Engine [cached since 83.94s ago] {'content': '明清时期，皇家御用服饰及陈设织物的织造规格严苛，是当时纺织技艺的巅峰体现，南京云锦作为其中的核心品类，长期承担着宫廷御用织物的制作任务，其工艺水准与文化内涵，是中国古代服饰文化的重要组成部分。\n\n据介绍，本次亮相的南京云锦九龙图，完整复刻了1600年皇家御用织造的核心特征，其采用的妆花工艺，集 ... (160 characters truncated) ... \n这件云锦九龙图的亮相，为服饰历史研究提供了可参照的实物样本，有助于学界更直观地理解古代皇家御用织造的工艺逻辑与文化内涵；对公众而言，也打破了传统服饰技艺仅存于文献的认知局限，让更多人感知到古代服饰文化的厚重底蕴，同时也为非遗技艺的当代活化提供了可借鉴的路径，推动传统服饰文化在当代的传播与传承。', 'news_id': 8}
+2026-10-13 15:41:28,185 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:28,192 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:28,192 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:28,192 INFO sqlalchemy.engine.Engine [cached since 83.93s ago] {'pk_1': 8}
+  + 8 云锦九龙图亮相：1600年皇家御用织 | 454 字
+2026-10-13 15:41:29,194 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:29,195 INFO sqlalchemy.engine.Engine [cached since 84.94s ago] {'pk_1': 70}
+2026-10-13 15:41:32,805 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:32,805 INFO sqlalchemy.engine.Engine [cached since 88.56s ago] {'content': '服饰文化的传承与传播，既关乎专业领域的研究梳理，也需面向多元群体搭建感知桥梁，尤其针对特殊群体的文化触达，是公共文化服务的重要组成部分。中国丝绸博物馆作为国内丝绸文化领域的核心公共文化机构，始终致力于拓展文化传播的覆盖范围与深度，此次面向特殊群体儿童的活动，正是其公共文化服务的具体实践。\n\n据 ... (97 characters truncated) ... 传递出童真与暖意。\n\n此次活动的开展，为特殊群体儿童打开了感知传统服饰与丝绸文化的窗口，有助于该群体建立对传统服饰文化的初步认知，丰富其文化体验。同时，活动也为公共文化机构面向特殊群体开展文化服务提供了可参考的实践路径，推动传统服饰文化的传播覆盖更多元的群体，助力公众对丝绸文化的认知更加全面。', 'news_id': 70}
+2026-10-13 15:41:32,807 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:32,813 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:32,814 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:32,814 INFO sqlalchemy.engine.Engine [cached since 88.55s ago] {'pk_1': 70}
+  + 70 资讯丨童真和暖意！一群特殊小脚丫走进 | 391 字
+2026-10-13 15:41:33,817 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:33,817 INFO sqlalchemy.engine.Engine [cached since 89.56s ago] {'pk_1': 71}
+2026-10-13 15:41:38,244 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:38,244 INFO sqlalchemy.engine.Engine [cached since 94s ago] {'content': '沙漠绿洲丝绸之路作为古代东西方文明交流的重要通道，长期以来是服饰文化、织造技艺跨域传播的核心路径，沿线不同文明的服饰审美、丝绸工艺在此碰撞融合，形成了兼具地域特质与多元属性的文化脉络。在此背景下，相关丝路丝绸文化传播的推介活动，成为梳理、展示该领域文化成果的重要载体。\n\n据介绍，本次公示的推介 ... (138 characters truncated) ... 载体。\n\n相关负责人表示，本次推介的云上策展项目，为服饰历史研究提供了更具系统性的线上资源整合路径，有助于学界从跨域视角梳理丝路服饰文化的传播脉络；同时，也为公众认知丝路丝绸文化搭建了便捷的数字平台，让更多人能够深入了解古代丝绸工艺的发展、服饰文化的交流融合，助力丝路丝绸文化的广泛传播与传承。', 'news_id': 71}
+2026-10-13 15:41:38,248 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:38,255 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:38,255 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:38,256 INFO sqlalchemy.engine.Engine [cached since 94s ago] {'pk_1': 71}
+  + 71 公示丨 第五届SROM“沙漠绿洲丝绸 | 432 字
+2026-10-13 15:41:39,259 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:39,259 INFO sqlalchemy.engine.Engine [cached since 95s ago] {'pk_1': 72}
+2026-10-13 15:41:42,629 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:42,629 INFO sqlalchemy.engine.Engine [cached since 98.38s ago] {'content': '在当代文化语境下，非遗与时尚的融合已成为激活传统技艺、拓展文化传播路径的重要方向，服饰、织造、丝绸类非遗因兼具文化属性与实用价值，成为该领域探索的核心载体。中国丝绸博物馆于2026年6月10日举办“非遗融入当代时尚的理论与实践研究”学术会议，旨在为相关领域的研讨搭建专业交流平台。\n\n据介绍，本 ... (97 characters truncated) ... 织造工艺、丝绸美学的实物，为研讨提供了可触摸的实物支撑，也让理论探讨有了具象的参照。\n\n相关负责人表示，本次会议的举办，既为服饰历史研究提供了跨领域的交流视角，也有助于推动公众对非遗的认知从“传统遗存”转向“可参与的当代文化”，助力非遗与当代时尚的融合发展，为传统技艺的当代传承探索更多可能性。', 'news_id': 72}
+2026-10-13 15:41:42,631 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:42,637 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:42,637 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:42,638 INFO sqlalchemy.engine.Engine [cached since 98.38s ago] {'pk_1': 72}
+  + 72 资讯｜国丝举办“非遗融入当代时尚的理 | 391 字
+2026-10-13 15:41:43,640 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:43,640 INFO sqlalchemy.engine.Engine [cached since 99.38s ago] {'pk_1': 73}
+2026-10-13 15:41:47,817 INFO sqlalchemy.engine.Engine UPDATE news SET content=%(content)s WHERE news.id = %(news_id)s
+2026-10-13 15:41:47,817 INFO sqlalchemy.engine.Engine [cached since 103.6s ago] {'content': '芒种是二十四节气中兼具农耕与物候意涵的节点，此时既藏着作物成熟的厚重感，也暗含着传统雅文化里的闲适意趣；而中国传统服饰文化始终与节气、雅事深度绑定，从服饰纹样的物候隐喻到织造工艺的时令适配，都承载着古人对自然与人文的双重观照，这也为中国丝绸博物馆的雅士课堂内容提供了文化锚点。\n\n据介绍，本次雅 ... (163 characters truncated) ... 供了新视角。\n\n相关负责人表示，本次内容的推出，为服饰历史研究提供了跨领域的参照维度，有助于研究者从戏曲服饰的传承中，梳理丝绸织造工艺与服饰文化的演变逻辑；同时也打破了公众对传统服饰的单一认知，让公众意识到服饰不仅是物质载体，更是连接节气、雅事、艺术的文化纽带，为传统服饰文化的传播拓展了路径。', 'news_id': 73}
+2026-10-13 15:41:47,819 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:41:47,826 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:41:47,827 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:41:47,827 INFO sqlalchemy.engine.Engine [cached since 103.6s ago] {'pk_1': 73}
+  + 73 雅士课堂Vol.12｜芒种落穗 曲亦 | 457 字
+完成，生成正文: 23
+2026-10-13 15:41:48,829 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

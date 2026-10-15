@@ -1,0 +1,12 @@
+﻿2026-10-13 19:40:59,731 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 19:40:59,731 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 19:40:59,733 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 19:40:59,733 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 19:40:59,734 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 19:40:59,734 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 19:40:59,736 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 19:40:59,742 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_en
+== cron ==
+0 */2 * * * cd /www/wwwroot/yisu/backend && /www/wwwroot/yisu/backend/591cde3d08cdc971dd6324b305e8aede_venv/bin/python3 app/ai_engine/news_fetcher.py >> /tmp/yisu_news_fetch.log 2>&1
+
+=== DONE ===

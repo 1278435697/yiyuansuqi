@@ -1,0 +1,207 @@
+﻿2026-10-13 15:31:04,742 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:31:04,742 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:31:04,744 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:31:04,744 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:31:04,745 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:31:04,745 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:31:04,749 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:04,753 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.source = %(source_1)s
+2026-10-13 15:31:04,754 INFO sqlalchemy.engine.Engine [generated in 0.00032s] {'source_1': '中国丝绸博物馆'}
+待补摘要: 15 / 16
+2026-10-13 15:31:06,091 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:06,091 INFO sqlalchemy.engine.Engine [generated in 0.00034s] {'summary': '由中国丝绸博物馆主办的“丝连古今，路通天下——中国丝绸文化艺术展”于2026年9月8日开幕，展览聚焦丝绸、织造相关文物，呈现服饰文化脉络，串联古今丝绸艺术，展现丝绸文化的历史传承与当代价值。', 'news_id': 59}
+2026-10-13 15:31:06,093 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:06,100 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:06,102 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:06,102 INFO sqlalchemy.engine.Engine [generated in 0.00025s] {'pk_1': 59}
+  + “丝连古今，路通天下——中国丝绸文化艺术 | 由中国丝绸博物馆主办的“丝连古今，路通天下——中国丝绸文化艺术展”于20
+2026-10-13 15:31:07,105 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:07,105 INFO sqlalchemy.engine.Engine [cached since 1.004s ago] {'pk_1': 60}
+2026-10-13 15:31:08,228 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:08,229 INFO sqlalchemy.engine.Engine [cached since 2.138s ago] {'summary': '2026年9月8日，中国丝绸博物馆举办丝绸与丝路文化当代数融创新工作坊，活动围绕服饰、织造、丝绸相关文物，探索丝路文化的数字化融合创新路径，为相关领域的文化传承与发展提供新方向。', 'news_id': 60}
+2026-10-13 15:31:08,230 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:08,236 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:08,237 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:08,237 INFO sqlalchemy.engine.Engine [cached since 2.135s ago] {'pk_1': 60}
+  + 丝绸与丝路文化当代数融创新工作坊在中国丝 | 2026年9月8日，中国丝绸博物馆举办丝绸与丝路文化当代数融创新工作坊，
+2026-10-13 15:31:09,240 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:09,240 INFO sqlalchemy.engine.Engine [cached since 3.138s ago] {'pk_1': 61}
+2026-10-13 15:31:10,331 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:10,331 INFO sqlalchemy.engine.Engine [cached since 4.24s ago] {'summary': '中国丝绸博物馆于2026年暑期举办“探秘西域丝路行”一日研学营，活动围绕西域丝路相关服饰、织造、丝绸类文物及展览展开，带领参与者探秘相关内容，该研学营已圆满结营。', 'news_id': 61}
+2026-10-13 15:31:10,332 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:10,338 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:10,339 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:10,339 INFO sqlalchemy.engine.Engine [cached since 4.237s ago] {'pk_1': 61}
+  + 探秘西域丝路行，国丝暑期研学一日营圆满结 | 中国丝绸博物馆于2026年暑期举办“探秘西域丝路行”一日研学营，活动围绕
+2026-10-13 15:31:11,342 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:11,342 INFO sqlalchemy.engine.Engine [cached since 5.241s ago] {'pk_1': 62}
+2026-10-13 15:31:12,465 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:12,466 INFO sqlalchemy.engine.Engine [cached since 6.375s ago] {'summary': '中国丝绸博物馆于2026年9月8日举办“七夕感恩之夜”活动，活动围绕服饰、织造、丝绸相关主题，依托馆内相关文物资源开展，为公众呈现兼具文化性与体验感的丝绸服饰类文博活动。', 'news_id': 62}
+2026-10-13 15:31:12,467 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:12,474 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:12,475 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:12,475 INFO sqlalchemy.engine.Engine [cached since 6.373s ago] {'pk_1': 62}
+  + "七夕感恩之夜"活动举行 | 中国丝绸博物馆于2026年9月8日举办“七夕感恩之夜”活动，活动围绕服饰
+2026-10-13 15:31:13,478 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:13,478 INFO sqlalchemy.engine.Engine [cached since 7.377s ago] {'pk_1': 63}
+2026-10-13 15:31:14,743 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:14,744 INFO sqlalchemy.engine.Engine [cached since 8.653s ago] {'summary': '中国丝绸博物馆于2026年9月8日举办“丝路遗韵之夜”活动，活动围绕丝路主题的服饰、织造、丝绸类文物展开，通过相关展览及配套活动，展现丝路沿线的丝绸文化脉络与服饰艺术风貌。', 'news_id': 63}
+2026-10-13 15:31:14,745 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:14,751 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:14,751 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:14,752 INFO sqlalchemy.engine.Engine [cached since 8.65s ago] {'pk_1': 63}
+  + 国丝举办“丝路遗韵之夜”活动 | 中国丝绸博物馆于2026年9月8日举办“丝路遗韵之夜”活动，活动围绕丝路
+2026-10-13 15:31:15,755 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:15,755 INFO sqlalchemy.engine.Engine [cached since 9.653s ago] {'pk_1': 64}
+2026-10-13 15:31:16,793 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:16,794 INFO sqlalchemy.engine.Engine [cached since 10.7s ago] {'summary': '2026年9月8日，中国丝绸博物馆与哈萨克斯坦国家中央博物馆签署合作备忘录，双方将围绕服饰、织造、丝绸相关文物及展览等领域开展合作，推动丝路文化交流。', 'news_id': 64}
+2026-10-13 15:31:16,795 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:16,801 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:16,801 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:16,802 INFO sqlalchemy.engine.Engine [cached since 10.7s ago] {'pk_1': 64}
+  + 中国丝绸博物馆与哈萨克斯坦国家中央博物馆 | 2026年9月8日，中国丝绸博物馆与哈萨克斯坦国家中央博物馆签署合作备忘
+2026-10-13 15:31:17,804 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:17,804 INFO sqlalchemy.engine.Engine [cached since 11.7s ago] {'pk_1': 65}
+2026-10-13 15:31:18,992 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:18,993 INFO sqlalchemy.engine.Engine [cached since 12.9s ago] {'summary': '2026年9月8日，“天方织绣：摩洛哥传统服饰展”在中国丝绸博物馆开幕，展览聚焦摩洛哥传统服饰，依托相关织造、丝绸类文物，展现当地服饰文化与织绣技艺特色。', 'news_id': 65}
+2026-10-13 15:31:18,994 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:19,000 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:19,001 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:19,001 INFO sqlalchemy.engine.Engine [cached since 12.9s ago] {'pk_1': 65}
+  + “天方织绣：摩洛哥传统服饰展”在中国丝绸 | 2026年9月8日，“天方织绣：摩洛哥传统服饰展”在中国丝绸博物馆开幕，
+2026-10-13 15:31:20,004 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:20,004 INFO sqlalchemy.engine.Engine [cached since 13.9s ago] {'pk_1': 66}
+2026-10-13 15:31:21,167 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:21,167 INFO sqlalchemy.engine.Engine [cached since 15.08s ago] {'summary': '由中国丝绸博物馆主办的“绣美之江：浙江省刺绣、抽纱非遗艺术与生活作品展”，于2026年9月8日推出，聚焦浙江刺绣、抽纱类非遗，关联丝绸织造技艺，展陈相关文物及生活化作品，呈现传统服饰相关非遗的艺术与当代转化。', 'news_id': 66}
+2026-10-13 15:31:21,169 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:21,175 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:21,175 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:21,175 INFO sqlalchemy.engine.Engine [cached since 15.07s ago] {'pk_1': 66}
+  + 绣美之江：浙江省刺绣、抽纱非遗艺术与生活 | 由中国丝绸博物馆主办的“绣美之江：浙江省刺绣、抽纱非遗艺术与生活作品展”
+2026-10-13 15:31:22,179 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:22,179 INFO sqlalchemy.engine.Engine [cached since 16.08s ago] {'pk_1': 67}
+2026-10-13 15:31:23,236 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:23,237 INFO sqlalchemy.engine.Engine [cached since 17.15s ago] {'summary': '中国丝绸博物馆于2026年9月8日开幕“月照银山：丝绸之路上的高昌与龟兹”展览，聚焦丝路沿线高昌、龟兹区域，展出相关服饰、织造类丝绸文物，呈现两地丝路文化风貌。', 'news_id': 67}
+2026-10-13 15:31:23,238 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:23,245 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:23,245 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:23,246 INFO sqlalchemy.engine.Engine [cached since 17.14s ago] {'pk_1': 67}
+  + “月照银山：丝绸之路上的高昌与龟兹”展览 | 中国丝绸博物馆于2026年9月8日开幕“月照银山：丝绸之路上的高昌与龟兹
+2026-10-13 15:31:24,248 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:24,248 INFO sqlalchemy.engine.Engine [cached since 18.15s ago] {'pk_1': 68}
+2026-10-13 15:31:25,268 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:25,268 INFO sqlalchemy.engine.Engine [cached since 19.18s ago] {'summary': '2026年9月8日，中国丝绸博物馆举办丝路之夜暨SROM“沙漠绿洲丝绸之路”主题策展推介活动，活动围绕沙漠绿洲丝绸之路，聚焦服饰、织造、丝绸相关文物，推介相关主题策展内容。', 'news_id': 68}
+2026-10-13 15:31:25,270 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:25,276 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:25,276 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:25,276 INFO sqlalchemy.engine.Engine [cached since 19.17s ago] {'pk_1': 68}
+  + 丝路之夜暨SROM“沙漠绿洲丝绸之路”主 | 2026年9月8日，中国丝绸博物馆举办丝路之夜暨SROM“沙漠绿洲丝绸之
+2026-10-13 15:31:26,279 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:26,280 INFO sqlalchemy.engine.Engine [cached since 20.18s ago] {'pk_1': 69}
+2026-10-13 15:31:27,397 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:27,397 INFO sqlalchemy.engine.Engine [cached since 21.31s ago] {'summary': '2026年9月8日，中国丝绸博物馆主办的“和合共生 连接未来”2026丝绸之路周开幕，活动聚焦服饰、织造、丝绸相关内容，将展出相关文物，呈现丝绸之路沿线的文化联结与传承。', 'news_id': 69}
+2026-10-13 15:31:27,398 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:27,405 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:27,405 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:27,405 INFO sqlalchemy.engine.Engine [cached since 21.3s ago] {'pk_1': 69}
+  + “和合共生 连接未来”，“2026丝绸之 | 2026年9月8日，中国丝绸博物馆主办的“和合共生 连接未来”2026丝
+2026-10-13 15:31:28,408 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:28,408 INFO sqlalchemy.engine.Engine [cached since 22.31s ago] {'pk_1': 70}
+2026-10-13 15:31:29,664 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:29,664 INFO sqlalchemy.engine.Engine [cached since 23.57s ago] {'summary': '2026年6月10日，中国丝绸博物馆组织特殊群体儿童开展活动，孩子们走进馆内，参与蚕桑趣味体验，近距离接触丝绸相关文物，感受服饰、织造领域的丝绸文化魅力，活动传递出童真与暖意。', 'news_id': 70}
+2026-10-13 15:31:29,665 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:29,672 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:29,673 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:29,673 INFO sqlalchemy.engine.Engine [cached since 23.57s ago] {'pk_1': 70}
+  + 资讯丨童真和暖意！一群特殊小脚丫走进中国 | 2026年6月10日，中国丝绸博物馆组织特殊群体儿童开展活动，孩子们走进
+2026-10-13 15:31:30,676 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:30,676 INFO sqlalchemy.engine.Engine [cached since 24.57s ago] {'pk_1': 71}
+2026-10-13 15:31:31,762 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:31,763 INFO sqlalchemy.engine.Engine [cached since 25.67s ago] {'summary': '中国丝绸博物馆2026年6月10日公示第五届SROM“沙漠绿洲丝绸之路”云上策展推介结果，该推介围绕沙漠绿洲丝绸之路主题，聚焦服饰、织造、丝绸相关文物，遴选优质云上策展项目，助力丝路丝绸文化传播。', 'news_id': 71}
+2026-10-13 15:31:31,764 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:31,770 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:31,771 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:31,771 INFO sqlalchemy.engine.Engine [cached since 25.67s ago] {'pk_1': 71}
+  + 公示丨 第五届SROM“沙漠绿洲丝绸之路 | 中国丝绸博物馆2026年6月10日公示第五届SROM“沙漠绿洲丝绸之路”
+2026-10-13 15:31:32,774 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:32,774 INFO sqlalchemy.engine.Engine [cached since 26.67s ago] {'pk_1': 72}
+2026-10-13 15:31:34,227 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:34,227 INFO sqlalchemy.engine.Engine [cached since 28.14s ago] {'summary': '中国丝绸博物馆于2026年6月10日举办“非遗融入当代时尚的理论与实践研究”学术会议，会议围绕服饰、织造、丝绸类非遗的当代转化展开研讨，相关文物资源或为研究提供实物支撑，助力非遗与当代时尚的融合发展。', 'news_id': 72}
+2026-10-13 15:31:34,229 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:34,235 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:34,236 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:34,236 INFO sqlalchemy.engine.Engine [cached since 28.13s ago] {'pk_1': 72}
+  + 资讯｜国丝举办“非遗融入当代时尚的理论与 | 中国丝绸博物馆于2026年6月10日举办“非遗融入当代时尚的理论与实践研
+2026-10-13 15:31:35,238 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:35,239 INFO sqlalchemy.engine.Engine [cached since 29.14s ago] {'pk_1': 73}
+2026-10-13 15:31:36,337 INFO sqlalchemy.engine.Engine UPDATE news SET summary=%(summary)s WHERE news.id = %(news_id)s
+2026-10-13 15:31:36,338 INFO sqlalchemy.engine.Engine [cached since 30.25s ago] {'summary': '中国丝绸博物馆于2026年6月10日发布资讯，为雅士课堂Vol.12内容，聚焦芒种时节，访中国戏剧梅花奖“二度梅”获得者王芳，关联服饰、织造、丝绸相关文化脉络。', 'news_id': 73}
+2026-10-13 15:31:36,339 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:31:36,345 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:31:36,346 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:31:36,346 INFO sqlalchemy.engine.Engine [cached since 30.24s ago] {'pk_1': 73}
+  + 雅士课堂Vol.12｜芒种落穗 曲亦悠然 | 中国丝绸博物馆于2026年6月10日发布资讯，为雅士课堂Vol.12内容
+完成，补摘要: 15
+2026-10-13 15:31:37,349 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

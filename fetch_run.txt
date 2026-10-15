@@ -1,0 +1,10 @@
+﻿WHERE news.id = %(pk_1)s
+2026-10-13 19:44:09,833 INFO sqlalchemy.engine.Engine [cached since 0.002599s ago] {'pk_1': 69}
+2026-10-13 19:44:09,834 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 19:44:09,835 INFO sqlalchemy.engine.Engine [cached since 0.004504s ago] {'pk_1': 68}
+[db] 新增 36 条，最新 3 条设为今日焦点：2026年国际标准化组织文化遗产保护；“和合共生 连接未来”，“2026丝；丝路之夜暨SROM“沙漠绿洲丝绸之路
+2026-10-13 19:44:09,836 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

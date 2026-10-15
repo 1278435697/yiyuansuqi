@@ -1,0 +1,31 @@
+﻿2026-10-13 15:27:17,352 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:27:17,352 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:27:17,354 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:27:17,354 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:27:17,355 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:27:17,355 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:27:17,357 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:27:17,398 INFO sqlalchemy.engine.Engine SELECT news.source AS news_source, count(news.id) AS count_1 
+FROM news GROUP BY news.source
+2026-10-13 15:27:17,398 INFO sqlalchemy.engine.Engine [generated in 0.00031s] {}
+SOURCES: [('中国丝绸博物馆', 16), ('宜昌博物馆', 1), ('敦煌研究院', 1), ('文博在线', 1), ('文物天地', 1), ('考古学报', 2), ('非遗资讯', 1)]
+2026-10-13 15:27:17,402 INFO sqlalchemy.engine.Engine UPDATE news SET publish_time=%(publish_time)s WHERE news.source IN (%(source_1_1)s, %(source_1_2)s, %(source_1_3)s, %(source_1_4)s, %(source_1_5)s, %(source_1_6)s) AND news.publish_time > %(publish_time_1)s
+2026-10-13 15:27:17,403 INFO sqlalchemy.engine.Engine [generated in 0.00037s] {'publish_time': datetime.datetime(2026, 8, 1, 0, 0), 'publish_time_1': datetime.datetime(2026, 8, 1, 0, 0), 'source_1_1': '宜昌博物馆', 'source_1_2': '敦煌研究院', 'source_1_3': '文博在线', 'source_1_4': '文物天地', 'source_1_5': '考古学报', 'source_1_6': '非遗资讯'}
+2026-10-13 15:27:17,404 INFO sqlalchemy.engine.Engine COMMIT
+种子日期下调: 7
+2026-10-13 15:27:17,411 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:27:17,414 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news ORDER BY news.publish_time DESC, news.id DESC 
+ LIMIT %(param_1)s
+2026-10-13 15:27:17,414 INFO sqlalchemy.engine.Engine [generated in 0.00031s] {'param_1': 8}
+  - 2026-10-01 中国丝绸博物馆 国博唐代陶俑印证圆领袍：胡服改制的官服常制 img=Y
+  - 2026-09-08 中国丝绸博物馆 “和合共生 连接未来”，“2026丝绸之路周 img=Y
+  - 2026-09-08 中国丝绸博物馆 丝路之夜暨SROM“沙漠绿洲丝绸之路”主题策 img=Y
+  - 2026-09-08 中国丝绸博物馆 “月照银山：丝绸之路上的高昌与龟兹”展览开幕 img=Y
+  - 2026-09-08 中国丝绸博物馆 绣美之江：浙江省刺绣、抽纱非遗艺术与生活作品 img=Y
+  - 2026-09-08 中国丝绸博物馆 “天方织绣：摩洛哥传统服饰展”在中国丝绸博物 img=Y
+  - 2026-09-08 中国丝绸博物馆 中国丝绸博物馆与哈萨克斯坦国家中央博物馆签署 img=Y
+  - 2026-09-08 中国丝绸博物馆 国丝举办“丝路遗韵之夜”活动 img=Y
+2026-10-13 15:27:17,417 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

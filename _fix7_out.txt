@@ -1,0 +1,24 @@
+﻿2026-10-13 15:37:30,569 INFO sqlalchemy.engine.Engine SELECT DATABASE()
+2026-10-13 15:37:30,569 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:37:30,571 INFO sqlalchemy.engine.Engine SELECT @@sql_mode
+2026-10-13 15:37:30,571 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:37:30,572 INFO sqlalchemy.engine.Engine SELECT @@lower_case_table_names
+2026-10-13 15:37:30,572 INFO sqlalchemy.engine.Engine [raw sql] {}
+2026-10-13 15:37:30,573 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:37:30,578 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(id_1)s 
+ LIMIT %(param_1)s
+2026-10-13 15:37:30,578 INFO sqlalchemy.engine.Engine [generated in 0.00035s] {'id_1': 7, 'param_1': 1}
+2026-10-13 15:37:30,581 INFO sqlalchemy.engine.Engine UPDATE news SET source=%(source)s WHERE news.id = %(news_id)s
+2026-10-13 15:37:30,582 INFO sqlalchemy.engine.Engine [generated in 0.00029s] {'source': '国家博物馆', 'news_id': 7}
+2026-10-13 15:37:30,583 INFO sqlalchemy.engine.Engine COMMIT
+2026-10-13 15:37:30,590 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-13 15:37:30,592 INFO sqlalchemy.engine.Engine SELECT news.id AS news_id, news.title AS news_title, news.summary AS news_summary, news.content AS news_content, news.source AS news_source, news.source_url AS news_source_url, news.dynasty_tags AS news_dynasty_tags, news.entity_tags AS news_entity_tags, news.costume_ids AS news_costume_ids, news.ai_questions AS news_ai_questions, news.cover_image AS news_cover_image, news.is_focus AS news_is_focus, news.publish_time AS news_publish_time, news.created_at AS news_created_at 
+FROM news 
+WHERE news.id = %(pk_1)s
+2026-10-13 15:37:30,592 INFO sqlalchemy.engine.Engine [generated in 0.00026s] {'pk_1': 7}
+已修正: 7 国家博物馆 国博唐代陶俑印证圆领袍：胡服改制的官服常
+2026-10-13 15:37:30,594 INFO sqlalchemy.engine.Engine ROLLBACK
+
+=== DONE ===

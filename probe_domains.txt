@@ -1,0 +1,26 @@
+﻿TOTAL= 68
+31 mp.weixin.qq.com
+8 ?
+6 www.dpm.org.cn
+2 www.tnc.com.cn
+2 www.chagushici.com
+2 ds.163.com
+1 www.sohu.com
+1 wenku.baidu.com
+1 www.zgbk.com
+1 www.ihchina.cn
+1 www.vogue.com.cn
+1 www.hm.com.cn
+1 www.uniqlo.cn
+1 style.cctv.com
+1 www.meikansocks.com
+1 www.chinayarn.com
+1 www.ctei.cn
+1 39.96.62.174:9999
+1 szfy.wglj.suzhou.com.cn
+1 www.sheygo.com
+1 zidian.gushici.net
+1 www.hanyuguoxue.com
+1 www.tcpc.org.cn
+
+=== DONE ===
