@@ -122,8 +122,36 @@ def create_app() -> FastAPI:
     register_exception_handlers(app)
     app.include_router(api_router, prefix=settings.api_prefix)
 
-    # data/ 目录整体暴露为 /static：素材图、结果图、管线中间图均可直接访问
-    app.mount("/static", StaticFiles(directory=str(settings.data_dir)), name="static")
+    # 对外只挂三类只读资产，不再整体暴露 data/：data/uploads 是上传原图的临时落盘，
+    # 没有任何入口应当被 URL 直读。注意残留风险：结果目录里有 person_source.jpg（历史页要做原图对比），
+    # 所以拿到他人 task_id 仍能看到那张人像——本服务没有鉴权，多租户开放前必须加访问控制或签名 URL。
+    app.mount(
+        f"{settings.asset_url_prefix}/garments",
+        StaticFiles(directory=str(settings.garments_dir)),
+        name="tryon-garments",
+    )
+    app.mount(
+        f"{settings.asset_url_prefix}/samples",
+        StaticFiles(directory=str(settings.samples_dir)),
+        name="tryon-samples",
+    )
+    if settings.results_served_externally:
+        # 结果图已落到平台目录下（如 backend/uploads/tryon），由平台 nginx 的 /uploads 规则提供，
+        # 本服务再挂一份同名前缀只会造成两份缓存，故跳过
+        logger.info("结果图由宿主提供：%s → %s", settings.results_dir, settings.results_url_prefix)
+        if settings.results_url_prefix == "/tryon-results":
+            # 只改了落盘目录、没改 URL 前缀是最容易碎的坑：响应里的图能存下来但访问不到
+            logger.warning(
+                "results_root 已越出 data/（%s），但 results_url_prefix 仍是默认值 /tryon-results；"
+                "请同时指向宿主的公开路径（如 YISU_RESULTS_URL_PREFIX=/uploads/tryon），否则前端图片 404",
+                settings.results_dir,
+            )
+    else:
+        app.mount(
+            settings.results_url_prefix,
+            StaticFiles(directory=str(settings.results_dir)),
+            name="tryon-results",
+        )
 
     @app.get("/", include_in_schema=False)
     async def root() -> dict:

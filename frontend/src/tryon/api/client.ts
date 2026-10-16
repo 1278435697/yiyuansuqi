@@ -9,7 +9,10 @@ import type { ApiError } from '@/tryon/types'
 
 export const API_PREFIX = import.meta.env?.VITE_API_BASE ?? '/api/v1'
 
-/** 后端错误响应体形状（脱敏后只有 error_code / message / request_id）。 */
+/** 后端只读资产（素材图 / 示例图）的挂载前缀，与后端 settings.asset_url_prefix 保持一致。 */
+export const ASSET_PREFIX = import.meta.env?.VITE_ASSET_BASE ?? '/tryon-assets'
+
+/** 后端错误响应体形状（已脱敏，只有 error_code / message / request_id，detail 是 message 的同值别名）。 */
 interface BackendErrorBody {
   error_code?: unknown
   message?: unknown

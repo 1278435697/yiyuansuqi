@@ -4,7 +4,7 @@ import { Loading, Upload } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useTryOnStore } from '@/tryon/store/tryon'
 import { formatKb } from '@/tryon/utils/compressImage'
-import { describeError } from '@/tryon/api/client'
+import { ASSET_PREFIX, describeError } from '@/tryon/api/client'
 
 const store = useTryOnStore()
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -55,12 +55,12 @@ function onDrop(event: DragEvent): void {
 
 async function fetchSamplePerson(): Promise<File | null> {
   for (const name of SAMPLE_PERSONS) {
-    const response = await fetch(`/static/samples/${name}`, { cache: 'no-store' })
+    const response = await fetch(`${ASSET_PREFIX}/samples/${name}`, { cache: 'no-store' })
     if (!response.ok) continue
     const blob = await response.blob()
-    // blob 为空说明路由命中了目录页兜底，继续尝试下一个候选
-    if (blob.size === 0) continue
-    return new File([blob], name, { type: blob.type || 'image/png' })
+    // blob 为空或不是图片，说明拿到的是目录页/错误体兜底，继续尝试下一个候选
+    if (blob.size === 0 || !blob.type.startsWith('image/')) continue
+    return new File([blob], name, { type: blob.type })
   }
   return null
 }

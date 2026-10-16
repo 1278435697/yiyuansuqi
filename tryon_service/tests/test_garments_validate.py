@@ -135,7 +135,7 @@ def test_payload_and_output_mapping():
     assert len(payload["keypoints"]) == 9
 
     out = entry_to_output(entry)
-    assert out["image_url"] == static_url("garments/test-robe.png") == "/static/garments/test-robe.png"
+    assert out["image_url"] == static_url("garments/test-robe.png") == "/tryon-assets/garments/test-robe.png"
     assert out["category"] == "robe"
     assert {kp.name for kp in out["keypoints"]} == set(REQUIRED_KEYPOINTS)
 

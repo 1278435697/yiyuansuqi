@@ -67,7 +67,17 @@ class TryOnFailedError(AppError):
 
 
 def _error_payload(error_code: str, message: str) -> dict[str, Any]:
-    return {"error_code": error_code, "message": message, "request_id": request_id_var.get()}
+    """统一错误体。
+
+    `message` 是本模块自己的字段，`detail` 是同值别名：并入 yisu-ai-platform 后，
+    平台前端的 axios 拦截器只读 `data.detail`，两套前端共用一个 sidecar 时两边都不能断。
+    """
+    return {
+        "error_code": error_code,
+        "message": message,
+        "detail": message,
+        "request_id": request_id_var.get(),
+    }
 
 
 def register_exception_handlers(app: FastAPI) -> None:

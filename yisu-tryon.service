@@ -1,0 +1,26 @@
+[Unit]
+Description=Yisu AI Virtual Try-on Sidecar (FastAPI, CPU inference)
+After=network.target mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/www/wwwroot/yisu/tryon_service
+# 独立 venv：本模块锁的是 numpy 1.26 / opencv 4.10 / mediapipe 0.10（Python 3.10），
+# 平台主服务是 Python 3.14 且 mediapipe 在该版本上没有可用轮子，两者不能共用一套环境。
+# 单 worker 是有意的：MediaPipe 模型与推理线程池都在进程内，多 worker 会把内存和 CPU 同时翻倍。
+ExecStart=/www/wwwroot/yisu/tryon_service/.venv/bin/python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+# TPS 形变是纯 CPU 计算，一次请求能吃满 1–2 核；限核防止把平台主服务和 MySQL 挤垮
+CPUQuota=200%
+LimitNOFILE=65535
+
+# 结果图落到平台 uploads 下，直接复用 nginx 既有的 /uploads 规则（生产不必新增 location）
+Environment=YISU_RESULTS_ROOT=/www/wwwroot/yisu/backend/uploads/tryon
+Environment=YISU_RESULTS_URL_PREFIX=/uploads/tryon
+# 生产数据库：与平台同一个 MySQL 库，先执行 database/tryon_schema.sql 建两张表
+# Environment=YISU_DATABASE_URL=mysql+aiomysql://user:pass@127.0.0.1:3306/yisu_ai?charset=utf8mb4
+
+[Install]
+WantedBy=multi-user.target

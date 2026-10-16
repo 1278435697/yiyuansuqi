@@ -50,6 +50,18 @@ class Settings(BaseSettings):
     max_upload_mb: float = Field(default=12.0, gt=0, le=64)
     output_long_side: int = Field(default=1024, ge=256, le=2048)
 
+    # ---------- 静态资源 URL 前缀（并入 yisu-ai-platform 后与平台网关对齐）----------
+    # 只挂「素材 + 示例图 + 结果图」三类对外资产，不再整体暴露 data/：
+    # data/uploads/ 里是用户真人照片的原图，任何情况下都不该被 URL 直读。
+    asset_url_prefix: str = Field(default="/tryon-assets", description="素材图/示例图挂载前缀（本服务提供）")
+    results_url_prefix: str = Field(
+        default="/tryon-results",
+        description="结果图 URL 前缀。默认由本服务挂载 results_dir 提供；"
+        "若把 results_root 指到平台的 backend/uploads/tryon，就应同时改成 /uploads/tryon，"
+        "复用平台 nginx 既有的 /uploads 规则，生产不必新增 location",
+    )
+    results_root: Path | None = Field(default=None, description="结果图落盘根目录，留空 = <data_dir>/results")
+
     # ---------- 数据库 ----------
     # 两张试穿表已并入平台主库：本机默认落在平台的 SQLite 正式库上（免装 MySQL 也能跑），
     # 生产用 YISU_DATABASE_URL=mysql+pymysql://… 覆盖。留空时由 platform_db_path 推导。
@@ -89,6 +101,21 @@ class Settings(BaseSettings):
     def _abs_path(cls, value: Path) -> Path:
         return value if value.is_absolute() else (BACKEND_ROOT / value).resolve()
 
+    @field_validator("results_root", mode="before")
+    @classmethod
+    def _blank_results_root(cls, value: object) -> object:
+        # .env 里写 `YISU_RESULTS_ROOT=`（空值）等同于不配，别让 pydantic 把空串当路径
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
+    @field_validator("results_root", mode="after")
+    @classmethod
+    def _abs_results_root(cls, value: Path | None) -> Path | None:
+        if value is None:
+            return None
+        return value if value.is_absolute() else (BACKEND_ROOT / value).resolve()
+
     @model_validator(mode="after")
     def _resolve_database_url(self) -> "Settings":
         """未显式给连接串时，指向平台正式库的 SQLite 文件（绝对路径，不受启动目录影响）。"""
@@ -114,8 +141,25 @@ class Settings(BaseSettings):
         return self.data_dir / "uploads"
 
     @property
+    def samples_dir(self) -> Path:
+        return self.data_dir / "samples"
+
+    @property
     def results_dir(self) -> Path:
-        return self.data_dir / "results"
+        return self.results_root if self.results_root is not None else self.data_dir / "results"
+
+    @property
+    def results_served_externally(self) -> bool:
+        """结果目录被挪到 data/ 之外（如平台 backend/uploads/tryon）时为 True。
+
+        此时本服务的静态挂载覆盖不到它，URL 前缀必须由宿主（平台 nginx / vite 代理）提供，
+        main.py 据此决定要不要挂 results_url_prefix。
+        """
+        try:
+            self.results_dir.resolve().relative_to(self.data_dir.resolve())
+        except ValueError:
+            return True
+        return False
 
     @property
     def cache_dir(self) -> Path:
@@ -131,6 +175,7 @@ class Settings(BaseSettings):
             self.weights_dir,
             self.logs_dir,
             self.garments_dir,
+            self.samples_dir,
             self.uploads_dir,
             self.results_dir,
             self.cache_dir,

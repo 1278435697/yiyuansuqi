@@ -9,6 +9,7 @@ from app.logs import get_logger
 from app.schemas import TraceCard, TryOnRecordOut, TryOnResult
 from app.services.garments import trace_card_for
 from app.services.pipeline import PipelineOutput
+from app.utils.static import normalize_legacy_url
 
 logger = get_logger("app.services.history")
 
@@ -70,8 +71,8 @@ async def list_records(session: AsyncSession, *, limit: int, offset: int) -> tup
                 task_id=record.task_id,
                 garment_id=record.garment_id,
                 garment_name=record.garment.name if record.garment else None,
-                person_url=record.person_url or "",
-                result_url=record.result_url or "",
+                person_url=normalize_legacy_url(record.person_url) or "",
+                result_url=normalize_legacy_url(record.result_url) or "",
                 backend_used=record.backend_used,
                 quality=record.quality,
                 warnings=list(record.warnings or []),
@@ -90,10 +91,10 @@ async def get_record_result(session: AsyncSession, task_id: str) -> TryOnResult:
     return TryOnResult(
         task_id=record.task_id,
         status=record.status,  # type: ignore[arg-type]
-        result_url=record.result_url,
-        person_mask_url=record.mask_url,
-        pose_overlay_url=record.pose_url,
-        garment_warp_url=record.warp_url,
+        result_url=normalize_legacy_url(record.result_url),
+        person_mask_url=normalize_legacy_url(record.mask_url),
+        pose_overlay_url=normalize_legacy_url(record.pose_url),
+        garment_warp_url=normalize_legacy_url(record.warp_url),
         backend_used=record.backend_used,
         warnings=list(record.warnings or []),
         timings=dict(record.timings or {}),

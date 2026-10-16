@@ -61,11 +61,15 @@ def _asset_root() -> Path:
 
 
 def static_url(rel_path: str) -> str:
-    """data/ 下的相对路径 → 对外可访问 URL。"""
+    """data/ 下的相对路径（如 garments/xxx.png）→ 对外可访问 URL。
+
+    前缀取 settings.asset_url_prefix：旧版直接挂在 /static 下并整目录暴露 data/，
+    并入平台后改成只挂素材/示例图两类，顺带清掉历史数据里残留的 static/ 前缀。
+    """
     clean = rel_path.replace("\\", "/").lstrip("/")
     if clean.startswith("static/"):
-        return "/" + clean
-    return f"/static/{clean}"
+        clean = clean[len("static/"):]
+    return f"{get_settings().asset_url_prefix.rstrip('/')}/{clean}"
 
 
 def validate_entry(entry: dict[str, Any]) -> tuple[bool, str, float]:

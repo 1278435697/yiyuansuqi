@@ -43,7 +43,7 @@ def test_tryon_response_has_all_contract_fields(client, person_jpg_bytes, sample
     assert isinstance(body["warnings"], list)
     assert isinstance(body["timings"], dict)
     assert {"segmentation", "pose", "inference", "postprocess", "total"} <= set(body["timings"])
-    assert body["result_url"].startswith("/static/results/")
+    assert body["result_url"].startswith("/tryon-results/")
     assert body["error_code"] is None and body["message"] is None
 
 
@@ -148,7 +148,7 @@ def test_multipart_endpoint_equivalent(client, person_jpg_bytes, sample_garment_
     assert resp.status_code == 200, resp.text
     body = resp.json()
     assert body["status"] == "succeeded"
-    assert body["result_url"].startswith("/static/results/")
+    assert body["result_url"].startswith("/tryon-results/")
 
 
 def test_garments_list_and_detail(client, sample_garment_ids):
@@ -157,7 +157,7 @@ def test_garments_list_and_detail(client, sample_garment_ids):
     items = listing.json()
     assert len(items) == len(sample_garment_ids)
     for item in items:
-        assert item["image_url"].startswith("/static/garments/")
+        assert item["image_url"].startswith("/tryon-assets/garments/")
         assert len(item["keypoints"]) == 9
 
     gid = sample_garment_ids[0]
@@ -197,3 +197,81 @@ def test_disk_cache_hit_and_force_refresh(client, person_jpg_bytes, sample_garme
     # 重算结果不能把 cache_bypassed 告警写进记录，否则下次命中缓存会误报
     replay = client.get(f"/api/v1/tryon/{forced['task_id']}").json()
     assert "cache_bypassed" not in replay["warnings"]
+
+
+def test_static_surface_is_narrowed(client, sample_garment_ids, settings):
+    """对外只挂素材/示例/结果三类，旧的整目录 /static 必须撤掉。
+
+    data/uploads/ 下是用户真人照片原图，以前跟着 /static 一起被公开，是并入平台前必须收掉的面。
+    """
+    canary = settings.uploads_dir / "canary_private.jpg"
+    canary.parent.mkdir(parents=True, exist_ok=True)
+    canary.write_bytes(b"private-photo")
+
+    assert client.get(f"/static/{canary.name}").status_code == 404
+    assert client.get(f"/static/uploads/{canary.name}").status_code == 404
+
+    first = sample_garment_ids[0]
+    image_url = client.get(f"/api/v1/garments/{first}").json()["image_url"]
+    assert client.get(image_url).status_code == 200
+
+
+def test_error_body_carries_detail_alias(client):
+    """错误体同时给 message 和 detail：平台前端拦截器只读 detail，本模块只读 message。"""
+    resp = client.get("/api/v1/garments/no-such-garment")
+    assert resp.status_code == 404
+    body = resp.json()
+    assert body["detail"] == body["message"]
+    assert body["error_code"] and body["request_id"]
+
+
+def test_legacy_static_urls_in_db_are_rewritten(client, person_jpg_bytes, sample_garment_ids, settings):
+    """库里的旧 /static 地址必须在读取时改写，不能原样递给前端。
+
+    静态面拆分前落的记录把 URL 存死了，挂载撤掉后这些链接全 404；
+    命中磁盘缓存时旧地址还会被当成新结果返回，所以改写点在 history 读取层。
+    """
+    import sqlite3
+
+    payload = {
+        "person_image": _b64(person_jpg_bytes),
+        "garment_id": sample_garment_ids[0],
+        "quality": "fast",
+    }
+    task_id = client.post("/api/v1/tryon", json=payload).json()["task_id"]
+
+    # 直接把库里这一行改回迁移前的写法（当时的挂载是整个 data/）
+    with sqlite3.connect(settings.data_dir / "test.db", timeout=15) as conn:
+        conn.execute(
+            "UPDATE tryon_records SET person_url=?, result_url=?, mask_url=? WHERE task_id=?",
+            (
+                f"/static/uploads/{task_id}_origin.jpg",
+                f"/static/results/{task_id}/result.jpg",
+                f"/static/results/{task_id}/person_mask.png",
+                task_id,
+            ),
+        )
+        conn.commit()
+
+    item = next(r for r in client.get("/api/v1/history").json()["items"] if r["task_id"] == task_id)
+    assert item["result_url"] == f"/tryon-results/{task_id}/result.jpg"
+    assert item["person_url"] == ""  # 原图不再对外直读，前端走「原图缺失」占位
+
+    detail = client.get(f"/api/v1/tryon/{task_id}").json()
+    assert detail["result_url"] == f"/tryon-results/{task_id}/result.jpg"
+    assert detail["person_mask_url"] == f"/tryon-results/{task_id}/person_mask.png"
+
+
+def test_normalize_legacy_url_mapping(settings, monkeypatch):
+    """归一化函数的四种入参：旧结果/旧素材/旧原图/新地址（幂等）。"""
+    from app.utils.static import normalize_legacy_url
+
+    assert normalize_legacy_url("/static/results/t1/result.jpg") == "/tryon-results/t1/result.jpg"
+    assert normalize_legacy_url("/static/garments/robe.png") == "/tryon-assets/garments/robe.png"
+    assert normalize_legacy_url("/static/uploads/me.jpg") == ""
+    assert normalize_legacy_url("/tryon-results/t1/result.jpg") == "/tryon-results/t1/result.jpg"
+    assert normalize_legacy_url(None) is None
+
+    # 前缀跟着配置走：生产把结果图交给平台 /uploads/tryon 时，改写结果也要跟着变
+    monkeypatch.setattr(settings, "results_url_prefix", "/uploads/tryon")
+    assert normalize_legacy_url("/static/results/t1/result.jpg") == "/uploads/tryon/t1/result.jpg"

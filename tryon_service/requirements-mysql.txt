@@ -1,0 +1,6 @@
+# 生产数据库驱动：本服务用异步 SQLAlchemy，连平台同一个 MySQL 库时需要本文件。
+# 本机默认走 SQLite（aiosqlite，已在 requirements-core.txt），不必安装。
+#   pip install -r requirements-mysql.txt
+#   YISU_DATABASE_URL=mysql+aiomysql://user:pass@127.0.0.1:3306/yisu_ai?charset=utf8mb4
+aiomysql==0.2.0
+cryptography==44.0.0
