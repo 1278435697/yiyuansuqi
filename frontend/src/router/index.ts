@@ -15,8 +15,20 @@ const routes = [
   { path: "/heritage", name: "heritage", component: () => import("@/views/HeritageGenerate.vue"), meta: { title: "文化传承" } },
   { path: "/fabric", name: "fabric", component: () => import("@/views/FabricArchive.vue"), meta: { title: "服装面料" } },
   { path: "/fabric/:id", name: "fabric-detail", component: () => import("@/views/FabricArchive.vue"), meta: { title: "面料详情" } },
+  { path: "/pattern", name: "pattern-library", component: () => import("@/views/PatternLibrary.vue"), meta: { title: "纹样资料库" } },
+  { path: "/pattern/:id", name: "pattern-detail", component: () => import("@/views/PatternLibrary.vue"), meta: { title: "纹样详情" } },
   { path: "/museum", name: "museum", component: () => import("@/views/MuseumView.vue"), meta: { title: "数字博物馆", bareLayout: true } },
-  { path: "/museum/tryon", name: "tryon", component: () => import("@/views/TryonPlaceholder.vue"), meta: { title: "虚拟试穿", bareLayout: true } },
+  // 虚拟试穿模块（sidecar tryon_service:8000）：布局自带子导航与后端健康标签
+  {
+    path: "/museum/tryon",
+    component: () => import("@/tryon/TryonLayout.vue"),
+    meta: { title: "虚拟试穿" },
+    children: [
+      { path: "", name: "tryon", component: () => import("@/tryon/views/TryOnView.vue"), meta: { title: "虚拟试穿" } },
+      { path: "gallery", name: "tryon-gallery", component: () => import("@/tryon/views/GalleryView.vue"), meta: { title: "服饰素材库" } },
+      { path: "history", name: "tryon-history", component: () => import("@/tryon/views/HistoryView.vue"), meta: { title: "试穿记录" } },
+    ],
+  },
 ];
 
 const router = createRouter({

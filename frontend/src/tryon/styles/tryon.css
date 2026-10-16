@@ -1,0 +1,89 @@
+/* 虚拟试穿模块私有变量与工具类：只用 --yisu-* / .yisu-* 前缀，
+   不覆盖平台的 --el-* 主题，避免并入后两边抢全局主色。 */
+:root {
+  /* 汉服调性：朱红 / 墨黑 / 宣纸米 */
+  --yisu-vermilion: #b03a2e;
+  --yisu-vermilion-dark: #8c2d24;
+  --yisu-vermilion-soft: #f3dedb;
+  --yisu-ink: #1a1a1a;
+  --yisu-ink-soft: #4a4a4a;
+  --yisu-rice: #f6f1e7;
+  --yisu-rice-deep: #ece3d2;
+  --yisu-gold: #c8a45c;
+  --yisu-jade: #4b7f6e;
+
+  --yisu-radius: 10px;
+  --yisu-radius-lg: 16px;
+  --yisu-shadow: 0 2px 12px rgba(26, 26, 26, 0.08);
+  --yisu-shadow-hover: 0 6px 24px rgba(26, 26, 26, 0.14);
+  --yisu-gap: 18px;
+  --yisu-font: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', system-ui, sans-serif;
+  --yisu-serif: 'Songti SC', 'STSong', 'SimSun', serif;
+
+}
+
+.yisu-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--yisu-gap);
+}
+
+.yisu-card {
+  background: #fff;
+  border: 1px solid var(--yisu-rice-deep);
+  border-radius: var(--yisu-radius-lg);
+  box-shadow: var(--yisu-shadow);
+  padding: 18px 20px;
+}
+
+.yisu-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--yisu-serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--yisu-ink);
+  margin: 0 0 12px;
+}
+
+.yisu-section-title::before {
+  content: '';
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--yisu-vermilion);
+}
+
+.yisu-hint {
+  color: var(--yisu-ink-soft);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.yisu-empty {
+  border: 1px dashed var(--yisu-rice-deep);
+  border-radius: var(--yisu-radius);
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--yisu-ink-soft);
+  background: var(--yisu-rice);
+}
+
+.yisu-grid {
+  display: grid;
+  gap: var(--yisu-gap);
+}
+
+.yisu-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: var(--yisu-gap);
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .yisu-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -44,7 +44,7 @@
       "history": "圆领袍自北朝传入，唐代成为上自天子、下至庶民的通用常服，多以幞头配之。唐开元年间壁画与陶俑中，文官着圆领窄袖袍、腰束革带，体现「胡汉交融」的时代气象。同期女着男装、蹀躞带胡服女俑，更是唐代开放风气的直观见证。",
       "highlights": ["圆领右衽、窄袖", "配幞头与革带", "男女皆可着，胡汉交融"],
       "position": { "x": -2.2, "y": 0, "z": -1 },
-      "tryonId": "yuanlingpao-tang",
+      "tryonId": "yuanling-pao",
       "images": [
         { "src": "/assets/exhibits/tang/g2.png", "caption": "唐·彩绘陶文官俑（圆领袍）" },
         { "src": "/assets/exhibits/tang/g1.jpg", "caption": "唐·蹀躞带胡服女立俑" }
@@ -70,7 +70,7 @@
       "history": "背子为宋代女性典型外衣，直领对襟、两腋开衩、长及膝下，内着抹胸。江西德安南宋周氏墓出土的素罗单衣，以四经绞罗织成，质轻透凉，领口缀罗质纽扣，代表宋代丝织「轻薄精雅」的审美取向。",
       "highlights": ["直领对襟、两腋开衩", "四经绞罗，轻薄透气", "配抹胸外穿"],
       "position": { "x": 2.2, "y": 0, "z": -1 },
-      "tryonId": "beizi-song",
+      "tryonId": "beizi",
       "images": [
         { "src": "/assets/exhibits/song/g1.png", "caption": "南宋·素罗单衣（背子）" },
         { "src": "/assets/exhibits/song/g2.png", "caption": "南宋·罗质纽扣（工艺细节）" }
@@ -96,7 +96,7 @@
       "history": "明代确立「袄裙」形制：上着短袄或长袍，下配马面裙。山东博物馆孔府旧藏明代服饰，以织金妆花缎为典型，纹样多作龙纹、云蟒，尽显衍圣公府的仪礼规格。马面裙两侧打褶、中间平幅「马面」，兼顾行走与端庄。",
       "highlights": ["盘金绣龙纹，仪礼规格", "马面裙两褶一平幅", "织金妆花缎工艺"],
       "position": { "x": 6.6, "y": 0, "z": -1 },
-      "tryonId": "aoqun-ming",
+      "tryonId": "mamian-qun",
       "images": [
         { "src": "/assets/exhibits/ming/g1.jpg", "caption": "明·刺绣龙纹袍（孔府旧藏）" },
         { "src": "/assets/exhibits/ming/g2.jpg", "caption": "明·织金妆花缎马面裙（孔府旧藏）" },
