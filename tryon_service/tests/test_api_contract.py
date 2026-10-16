@@ -275,3 +275,33 @@ def test_normalize_legacy_url_mapping(settings, monkeypatch):
     # 前缀跟着配置走：生产把结果图交给平台 /uploads/tryon 时，改写结果也要跟着变
     monkeypatch.setattr(settings, "results_url_prefix", "/uploads/tryon")
     assert normalize_legacy_url("/static/results/t1/result.jpg") == "/uploads/tryon/t1/result.jpg"
+
+
+def test_empty_cors_origins_env_is_accepted(monkeypatch, tmp_path):
+    """同源部署时 .env 里写 `YISU_CORS_ORIGINS=`（清空），不能让 Settings 直接报错。
+
+    pydantic-settings 对 list 字段默认会先做 json.loads，空串不是合法 JSON，
+    会在 source 层抛 SettingsError，服务根本起不来。加 NoDecode 后走我们的
+    before-validator，空串 → 空列表（即不放开 CORS）。
+    """
+    monkeypatch.setenv("YISU_CORS_ORIGINS", "")
+    from app.config import Settings
+
+    s = Settings()
+    assert s.cors_origins == []
+
+    monkeypatch.setenv("YISU_CORS_ORIGINS", "http://localhost:5173, http://127.0.0.1:3000")
+    s = Settings()
+    assert s.cors_origins == ["http://localhost:5173", "http://127.0.0.1:3000"]
+
+    # 未设环境变量时走默认（开发用 vite 端口）
+    monkeypatch.delenv("YISU_CORS_ORIGINS", raising=False)
+    s = Settings()
+    assert s.cors_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
+
+    # 云端实际报的是 DotEnvSettingsSource（不是环境变量），这里用文件路径复现一遍
+    dotfile = tmp_path / "prod.env"
+    dotfile.write_text("YISU_CORS_ORIGINS=\nYISU_RESULTS_URL_PREFIX=/uploads/tryon\n", encoding="utf-8")
+    s = Settings(_env_file=dotfile)
+    assert s.cors_origins == []
+    assert s.results_url_prefix == "/uploads/tryon"

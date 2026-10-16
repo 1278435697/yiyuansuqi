@@ -67,3 +67,20 @@ def test_cross_table_ids_are_integer():
     assert isinstance(TryOnRecord.__table__.c.user_id.type, Integer)
     assert TryOnRecord.__table__.c.user_id.nullable is True
     assert Garment.__table__.c.costume_id.nullable is True
+
+
+# SQLAlchemy 版本地板：见 requirements-core.txt 里那段注释。本服务开了 pool_pre_ping，
+# 2.0.36 及以下的 aiomysql 适配层 `ping(self, reconnect)` 没有默认值，生产连 MySQL 必炸；
+# 而本机跑的是 sqlite，整个测试套碰不到那条代码路径，所以只能用版本断言拦下未来的降级。
+SQLALCHEMY_FLOOR = (2, 0, 54)
+
+
+def test_sqlalchemy_is_new_enough_for_aiomysql_preping():
+    import sqlalchemy
+
+    parts = tuple(int(x) for x in sqlalchemy.__version__.split(".")[:3])
+    assert parts >= SQLALCHEMY_FLOOR, (
+        f"SQLAlchemy {sqlalchemy.__version__} 低于 { '.'.join(map(str, SQLALCHEMY_FLOOR)) }："
+        "它的 AsyncAdapt_aiomysql_connection.ping 缺 reconnect 默认值，"
+        "连生产 MySQL 时 pre-ping 会直接 TypeError（sqlite 下复现不了）"
+    )

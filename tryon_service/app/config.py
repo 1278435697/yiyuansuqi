@@ -8,9 +8,10 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Annotated
 
 from pydantic import Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # backend/（或 tryon_service/）目录，作为所有相对路径的锚点
 BACKEND_ROOT = Path(__file__).resolve().parent.parent
@@ -75,7 +76,11 @@ class Settings(BaseSettings):
     )
 
     # ---------- CORS ----------
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # 逗号分隔，如 `YISU_CORS_ORIGINS=http://a,http://b`；同源部署（nginx 统一入口）写成空值即可。
+    # NoDecode 是必需的：pydantic-settings 对 list 字段会先按 JSON 解，`.env` 里写
+    # `YISU_CORS_ORIGINS=`（清空的常见写法）会在 source 层直接抛 SettingsError，
+    # 连配置对象都构造不出来，服务起都起不来（云端首次部署实测撞到）。
+    cors_origins: Annotated[list[str], NoDecode] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     # ---------- 缓存 ----------
     enable_disk_cache: bool = True
@@ -100,6 +105,16 @@ class Settings(BaseSettings):
     @classmethod
     def _abs_path(cls, value: Path) -> Path:
         return value if value.is_absolute() else (BACKEND_ROOT / value).resolve()
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def _split_cors_origins(cls, value: object) -> object:
+        """空串/空白 → 空列表（等于不放通任何跨域源）；`a, b` → 列表；已是列表原样放行。"""
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        return value
 
     @field_validator("results_root", mode="before")
     @classmethod

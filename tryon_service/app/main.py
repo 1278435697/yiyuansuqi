@@ -58,7 +58,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         "分割 Provider: %s",
         {name: info["available"] for name, info in segmentation.status().items()},
     )
-    logger.info("接口文档: http://127.0.0.1:8000/docs")
+    # 端口不能写死在这里：开发默认 8000，生产 unit 用 --port 8010（8000 归 museum-api）。
+    # uvicorn 随后会自己打一行「Uvicorn running on http://<host>:<port>」，那才是权威地址。
+    logger.info("接口文档: /docs（监听地址见随后的 Uvicorn running on ...）")
     logger.info("=" * 60)
     yield
     await dispose_engine()

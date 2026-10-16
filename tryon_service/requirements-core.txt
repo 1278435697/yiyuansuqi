@@ -3,7 +3,12 @@ uvicorn[standard]==0.34.0
 python-multipart==0.0.20
 pydantic==2.10.4
 pydantic-settings==2.7.1
-SQLAlchemy[asyncio]==2.0.36
+# 不要降到 2.0.36 及以下：那一版 aiomysql 适配层是 `ping(self, reconnect)`（无默认值），
+# 而 dialect 在 `_send_false_to_ping=False` 时调的是 `ping()`，连上 MySQL 后取连接就报
+# `ping() missing 1 required positional argument: 'reconnect'`，pre-ping 把整次取连接弄死。
+# 云端首次部署实测：2.0.36 + PyMySQL 1.2.3 与 2.0.36 + 1.1.2 都挂，2.0.54 正常（适配层已带默认值）。
+# 走 sqlite（aiosqlite）的本机开发环境踩不到这个坑，所以回归测试拦不住，只能靠这条锁定。
+SQLAlchemy[asyncio]==2.0.54
 aiosqlite==0.20.0
 Pillow==11.1.0
 numpy==1.26.4
