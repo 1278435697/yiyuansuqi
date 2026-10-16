@@ -1,0 +1,6 @@
+# 可选 AI 依赖（CPU 即可运行，无需 GPU）
+# 安装顺序建议：先 requirements-core.txt，再本文件。
+# 注意：mediapipe 会自带 opencv-contrib-python，与 core 里的 headless 版本共用 cv2 模块，
+# 若出现 cv2 导入异常，执行： pip uninstall -y opencv-python-headless && pip install --force-reinstall opencv-contrib-python
+mediapipe==0.10.21
+onnxruntime==1.20.1

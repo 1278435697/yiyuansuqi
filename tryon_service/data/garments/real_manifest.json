@@ -1,0 +1,53 @@
+{
+  "person": "data/garments_src/person_real.png",
+  "garments": [
+    {
+      "id": "quju-shenyi",
+      "image": "data/garments_src/quju-shenyi.png",
+      "name": "曲裾深衣",
+      "dynasty": "汉代",
+      "category": "robe",
+      "tags": ["深衣", "曲裾", "绕襟", "广袖"]
+    },
+    {
+      "id": "qixiong-ruqun",
+      "image": "data/garments_src/qixiong-ruqun.png",
+      "name": "齐胸襦裙",
+      "dynasty": "唐代",
+      "category": "dress",
+      "tags": ["齐胸", "襦裙", "间色", "披帛"]
+    },
+    {
+      "id": "yuanling-pao",
+      "image": "data/garments_src/yuanling-pao.png",
+      "name": "圆领袍",
+      "dynasty": "唐代",
+      "category": "robe",
+      "tags": ["圆领", "窄袖", "革带", "缺胯"]
+    },
+    {
+      "id": "beizi",
+      "image": "data/garments_src/beizi.png",
+      "name": "对襟褙子",
+      "dynasty": "宋代",
+      "category": "top",
+      "tags": ["对襟", "直领", "长衫", "素雅"]
+    },
+    {
+      "id": "mamian-qun",
+      "image": "data/garments_src/mamian-qun.png",
+      "name": "马面裙",
+      "dynasty": "明代",
+      "category": "skirt",
+      "tags": ["马面", "褶裥", "裙栏", "膝襕"]
+    },
+    {
+      "id": "tang-banbi",
+      "image": "data/garments_src/tang-banbi.png",
+      "name": "唐半臂",
+      "dynasty": "唐代",
+      "category": "top",
+      "tags": ["半臂", "短袖", "锦缘", "常服"]
+    }
+  ]
+}

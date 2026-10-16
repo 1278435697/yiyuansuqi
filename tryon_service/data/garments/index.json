@@ -1,0 +1,413 @@
+{
+  "version": 1,
+  "garments": [
+    {
+      "id": "quju-shenyi",
+      "name": "曲裾深衣",
+      "dynasty": "汉代",
+      "category": "robe",
+      "tags": [
+        "深衣",
+        "曲裾",
+        "绕襟",
+        "广袖"
+      ],
+      "image": "garments/quju-shenyi.png",
+      "mask": "garments/quju-shenyi_mask.png",
+      "thumb": "garments/quju-shenyi_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.5,
+          "y": 0.0913
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.3095,
+          "y": 0.1647
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.6905,
+          "y": 0.1647
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.0527,
+          "y": 0.4033
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.9473,
+          "y": 0.4033
+        },
+        {
+          "name": "waist_L",
+          "x": 0.162,
+          "y": 0.5134
+        },
+        {
+          "name": "waist_R",
+          "x": 0.8483,
+          "y": 0.5134
+        },
+        {
+          "name": "hem_L",
+          "x": 0.1918,
+          "y": 0.9172
+        },
+        {
+          "name": "hem_R",
+          "x": 0.8082,
+          "y": 0.9172
+        }
+      ],
+      "source_text": "《礼记·深衣》：「具子女大人之服，续衽钩边，好温亡由，曲裾如忌，制十有二幅，以应十有二月。」曲裾以衽衣自前绕后，衣襟接长呈三角状，绕至身后，是汉代深衣中最庄重的一种形制。",
+      "references": [
+        "《礼记·深衣》",
+        "马王堆汉墓出土西汉印花敷彩纱直裾/曲裾袍（湖南博物院藏）",
+        "孙机《汉代物质文化资料图说》，上海古籍出版社"
+      ]
+    },
+    {
+      "id": "qixiong-ruqun",
+      "name": "齐胸襦裙",
+      "dynasty": "唐代",
+      "category": "dress",
+      "tags": [
+        "齐胸",
+        "襦裙",
+        "间色",
+        "披帛"
+      ],
+      "image": "garments/qixiong-ruqun.png",
+      "mask": "garments/qixiong-ruqun_mask.png",
+      "thumb": "garments/qixiong-ruqun_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.4858,
+          "y": 0.0915
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.261,
+          "y": 0.165
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.7106,
+          "y": 0.165
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.28,
+          "y": 0.4039
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.725,
+          "y": 0.4039
+        },
+        {
+          "name": "waist_L",
+          "x": 0.2935,
+          "y": 0.5142
+        },
+        {
+          "name": "waist_R",
+          "x": 0.7149,
+          "y": 0.5142
+        },
+        {
+          "name": "hem_L",
+          "x": 0.0617,
+          "y": 0.9185
+        },
+        {
+          "name": "hem_R",
+          "x": 0.94,
+          "y": 0.9185
+        }
+      ],
+      "source_text": "齐胸襦裙以裙腰系于腋下胸上，襦短裙长，下摆曳地，间色裙以多幅异色绸料相间拼成。唐《步辇图》与吐鲁番阿斯塔那墓出土绢衣舞俑均见其制，为盛唐女子常服之代表。",
+      "references": [
+        "阎立本《步辇图》（故宫博物院藏）",
+        "阿斯塔那墓群出土唐代仕女俑与绢画（新疆博物馆藏）",
+        "沈从文《中国古代服饰研究》，上海书店出版社"
+      ]
+    },
+    {
+      "id": "yuanling-pao",
+      "name": "圆领袍",
+      "dynasty": "唐代",
+      "category": "robe",
+      "tags": [
+        "圆领",
+        "窄袖",
+        "革带",
+        "缺胯"
+      ],
+      "image": "garments/yuanling-pao.png",
+      "mask": "garments/yuanling-pao_mask.png",
+      "thumb": "garments/yuanling-pao_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.4332,
+          "y": 0.0928
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.1952,
+          "y": 0.1673
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.6712,
+          "y": 0.1673
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.0651,
+          "y": 0.4095
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.803,
+          "y": 0.4095
+        },
+        {
+          "name": "waist_L",
+          "x": 0.1563,
+          "y": 0.5213
+        },
+        {
+          "name": "waist_R",
+          "x": 0.7285,
+          "y": 0.5213
+        },
+        {
+          "name": "hem_L",
+          "x": 0.2304,
+          "y": 0.9312
+        },
+        {
+          "name": "hem_R",
+          "x": 0.8047,
+          "y": 0.9312
+        }
+      ],
+      "source_text": "圆领袍又称团领袍，领口合抱成圆，左右衽襟上襟圆领，腰系革带，下摆两侧开衩（缺胯），便于骑乘。隋唐定为常朝之服，品色以紫、绯、绿、青区分官阶。",
+      "references": [
+        "《旧唐书·舆服志》",
+        "唐三彩骑驼乐舞俑与《历代帝王图》圆领像（故宫博物院藏）",
+        "周锡保《中国古代服饰史》，中国戏剧出版社"
+      ]
+    },
+    {
+      "id": "beizi",
+      "name": "对襟褙子",
+      "dynasty": "宋代",
+      "category": "top",
+      "tags": [
+        "对襟",
+        "直领",
+        "长衫",
+        "素雅"
+      ],
+      "image": "garments/beizi.png",
+      "mask": "garments/beizi_mask.png",
+      "thumb": "garments/beizi_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.4992,
+          "y": 0.0928
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.2441,
+          "y": 0.1675
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.7542,
+          "y": 0.1675
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.0592,
+          "y": 0.4103
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.9459,
+          "y": 0.4103
+        },
+        {
+          "name": "waist_L",
+          "x": 0.3258,
+          "y": 0.5224
+        },
+        {
+          "name": "waist_R",
+          "x": 0.6726,
+          "y": 0.5224
+        },
+        {
+          "name": "hem_L",
+          "x": 0.4179,
+          "y": 0.9333
+        },
+        {
+          "name": "hem_R",
+          "x": 0.6024,
+          "y": 0.9333
+        }
+      ],
+      "source_text": "褙子为宋代上下通行之衣，直领对襟，腋下开衩，长短不一，长袖者称「大袖」，短袖者称「半臂」。《宋史·舆服志》载后妃「大袖生色领皆刺绣」，女子褙子以「领抹」绣缘为饰，崇尚淡雅。",
+      "references": [
+        "《宋史·舆服志》",
+        "福州黄升墓出土宋代褙子与领抹（福建博物院藏）",
+        "《歌乐图》《杂货图》等宋人册页"
+      ]
+    },
+    {
+      "id": "mamian-qun",
+      "name": "马面裙",
+      "dynasty": "明代",
+      "category": "skirt",
+      "tags": [
+        "马面",
+        "褶裥",
+        "裙栏",
+        "膝襕"
+      ],
+      "image": "garments/mamian-qun.png",
+      "mask": "garments/mamian-qun_mask.png",
+      "thumb": "garments/mamian-qun_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.5353,
+          "y": 0.0563
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.3721,
+          "y": 0.1011
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.6985,
+          "y": 0.1011
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.3579,
+          "y": 0.1011
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.7127,
+          "y": 0.1011
+        },
+        {
+          "name": "waist_L",
+          "x": 0.3721,
+          "y": 0.1011
+        },
+        {
+          "name": "waist_R",
+          "x": 0.6985,
+          "y": 0.1011
+        },
+        {
+          "name": "hem_L",
+          "x": 0.0534,
+          "y": 0.9286
+        },
+        {
+          "name": "hem_R",
+          "x": 0.6641,
+          "y": 0.9286
+        }
+      ],
+      "source_text": "马面裙前后里外共有四个裙门，两两重合，两侧打褶，中间裙门平整称为「马面」。裙摆与膝盖处织金妆花为「裙栏」「膝襕」。明王裕墓、孔府旧藏皆存实物。",
+      "references": [
+        "《明会典》冠服篇",
+        "明鲁王墓出土织金裙、孔府旧藏缂丝裙（山东博物馆、孔子博物馆）",
+        "《金瓶梅词话》所记妆花缎裙例"
+      ]
+    },
+    {
+      "id": "tang-banbi",
+      "name": "唐半臂",
+      "dynasty": "唐代",
+      "category": "top",
+      "tags": [
+        "半臂",
+        "短袖",
+        "锦缘",
+        "常服"
+      ],
+      "image": "garments/tang-banbi.png",
+      "mask": "garments/tang-banbi_mask.png",
+      "thumb": "garments/tang-banbi_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.4926,
+          "y": 0.0889
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.2702,
+          "y": 0.1603
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.7149,
+          "y": 0.1603
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.0575,
+          "y": 0.3923
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.9266,
+          "y": 0.3923
+        },
+        {
+          "name": "waist_L",
+          "x": 0.1847,
+          "y": 0.4994
+        },
+        {
+          "name": "waist_R",
+          "x": 0.8014,
+          "y": 0.4994
+        },
+        {
+          "name": "hem_L",
+          "x": 0.245,
+          "y": 0.8921
+        },
+        {
+          "name": "hem_R",
+          "x": 0.9484,
+          "y": 0.8921
+        }
+      ],
+      "source_text": "半臂即短袖之衣，袖长及肘，衣长至腰胯，多施锦缘。唐制女服「裙襦之外加半臂」，为宫人与命妇常服之制，《唐六典》少府监织染署署「半臂」之纹样。",
+      "references": [
+        "《唐六典》卷二十二少府监",
+        "敦煌壁画供养人像（莫高窟第 130 窟等）",
+        "吐鲁番出土唐代「半臂」实物记录"
+      ]
+    }
+  ]
+}

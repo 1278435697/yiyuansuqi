@@ -29,3 +29,14 @@ backend/data/results/
 # ===== backups & archives =====
 backups/
 _archive_*/
+
+# ===== virtual try-on sidecar =====
+tryon_service/.venv/
+tryon_service/data/results/
+tryon_service/data/uploads/
+tryon_service/data/logs/
+tryon_service/data/cache/
+tryon_service/data/e2e/
+tryon_service/data/garments_src/
+tryon_service/weights/
+

@@ -1,0 +1,8 @@
+# 高精度方案（HR-VITON）依赖：需要 NVIDIA GPU + CUDA
+# 请按 https://pytorch.org/get-started/locally/ 选择匹配本机 CUDA 版本的命令安装，例如：
+#   pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu124
+torch==2.5.1
+torchvision==0.20.1
+# HR-VITON 变形态模块依赖
+pytorch-pwc @ git+https://github.com/feiyuhuahuo/pytorch-pwc@main
+gdown==5.2.0
