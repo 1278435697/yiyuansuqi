@@ -33,6 +33,10 @@ def get_engine():
         kwargs: dict = {"echo": False, "pool_pre_ping": True}
         if url.startswith("sqlite"):
             Path(url.split("///")[-1]).parent.mkdir(parents=True, exist_ok=True)
+            # 试穿表与平台主库是同一个 SQLite 文件，两个进程会并发读写：
+            # sqlite3 的 timeout 就是 busy timeout（逐连接生效、不改动库文件），
+            # 撞锁时重试而不是立刻抛 database is locked。
+            kwargs["connect_args"] = {"timeout": 15.0}
         _engine = create_async_engine(url, **kwargs)
         _session_factory = async_sessionmaker(_engine, expire_on_commit=False)
         logger.info("数据库引擎初始化完成: %s", url.split("://")[0])
@@ -54,7 +58,12 @@ async def get_session() -> AsyncIterator[AsyncSession]:
 async def create_all() -> None:
     from app.db.models import Base  # 延迟导入避免循环依赖
 
-    async with get_engine().begin() as conn:
+    engine = get_engine()
+    if engine.url.get_backend_name() == "sqlite" and get_settings().sqlite_wal:
+        # WAL 是写在库文件里的持久设置，开一次就够；默认不开，理由见 settings.sqlite_wal
+        async with engine.begin() as conn:
+            await conn.exec_driver_sql("PRAGMA journal_mode=WAL")
+    async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     logger.info("数据表已就绪")
 

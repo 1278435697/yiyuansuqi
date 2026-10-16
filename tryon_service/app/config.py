@@ -9,10 +9,10 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# backend/ 目录，作为所有相对路径的锚点
+# backend/（或 tryon_service/）目录，作为所有相对路径的锚点
 BACKEND_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -51,7 +51,16 @@ class Settings(BaseSettings):
     output_long_side: int = Field(default=1024, ge=256, le=2048)
 
     # ---------- 数据库 ----------
-    database_url: str = "sqlite+aiosqlite:///./data/yisu.db"
+    # 两张试穿表已并入平台主库：本机默认落在平台的 SQLite 正式库上（免装 MySQL 也能跑），
+    # 生产用 YISU_DATABASE_URL=mysql+pymysql://… 覆盖。留空时由 platform_db_path 推导。
+    platform_db_path: Path = BACKEND_ROOT.parent / "backend" / "data" / "yisu_prod.db"
+    database_url: str = Field(default="", description="留空则用 sqlite+aiosqlite:///<platform_db_path>")
+    sqlite_wal: bool = Field(
+        default=False,
+        description="是否把 SQLite 切到 WAL。WAL 会写进库文件（持久），且会多出 -wal/-shm 旁文件；"
+        "平台已有按单文件拷贝/导出库的习惯，因此默认不改，靠 busy_timeout 抗瞬时锁冲突；"
+        "确实需要读写不互斥时再用 YISU_SQLITE_WAL=true 打开",
+    )
 
     # ---------- CORS ----------
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
@@ -75,10 +84,17 @@ class Settings(BaseSettings):
             return value if value.is_absolute() else (BACKEND_ROOT / value).resolve()
         return BACKEND_ROOT / "weights" / "hrviton"
 
-    @field_validator("data_dir", "weights_dir", "logs_dir", mode="after")
+    @field_validator("data_dir", "weights_dir", "logs_dir", "platform_db_path", mode="after")
     @classmethod
     def _abs_path(cls, value: Path) -> Path:
         return value if value.is_absolute() else (BACKEND_ROOT / value).resolve()
+
+    @model_validator(mode="after")
+    def _resolve_database_url(self) -> "Settings":
+        """未显式给连接串时，指向平台正式库的 SQLite 文件（绝对路径，不受启动目录影响）。"""
+        if not self.database_url:
+            self.database_url = f"sqlite+aiosqlite:///{self.platform_db_path.as_posix()}"
+        return self
 
     @field_validator("vton_backend", mode="after")
     @classmethod

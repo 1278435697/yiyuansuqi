@@ -21,11 +21,13 @@
 18 reposts 转发表
 19 questions/answers 问答与回答表
 20 fabrics 服装面料表（历代面料溯源扩展版块）
+21 tryon_garments 虚拟试穿素材表（由 tryon_service 写入，列定义见 database/tryon_schema.sql）
+22 tryon_records 虚拟试穿记录表（同上）
 """
 from datetime import datetime
 
 from sqlalchemy import (
-    Column, Integer, String, Text, Float, DateTime, Boolean,
+    Column, Integer, String, Text, Float, DateTime, Boolean, JSON,
     ForeignKey, UniqueConstraint, Index,
 )
 from sqlalchemy.orm import relationship
@@ -330,3 +332,48 @@ class Fabrics(Base):
     created_by = Column(Integer, nullable=True, index=True)
     create_time = Column(DateTime, default=datetime.utcnow)
 
+
+# ===== 虚拟试穿模块（sidecar tryon_service 写入，平台侧按需读取）=====
+# 列名/列序的唯一事实源是 database/tryon_schema.sql；本服务这份是同步风格的只读映射，
+# 试穿流程由 tryon_service 自己维护，平台这里不要直接写这两张表。
+
+
+class TryonGarment(Base):
+    """试穿素材：slug 主键 + 抠图/mask + 9 个归一化关键点 + 史料溯源。"""
+    __tablename__ = "tryon_garments"
+
+    id = Column(String(64), primary_key=True)
+    name = Column(String(128), nullable=False)
+    dynasty = Column(String(32), nullable=False)
+    category = Column(String(16), nullable=False)
+    tags = Column(JSON)
+    image_path = Column(String(256), nullable=False)
+    mask_path = Column(String(256))
+    thumb_path = Column(String(256))
+    keypoints = Column(JSON)                      # [{name, x, y}] * 9
+    bbox_area_ratio = Column(Float, nullable=False, default=0.0)
+    source_text = Column(Text)
+    references = Column(JSON)
+    costume_id = Column(Integer, nullable=True)   # 逻辑外键 → costumes.id
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+
+class TryonRecord(Base):
+    """一次试穿的产出：结果图/中间图 URL + 实际后端 + 阶段耗时 + 降级告警。"""
+    __tablename__ = "tryon_records"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    task_id = Column(String(64), nullable=False, index=True)
+    garment_id = Column(String(64), ForeignKey("tryon_garments.id", ondelete="SET NULL"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    person_url = Column(String(256), nullable=False, default="")
+    result_url = Column(String(256), nullable=False, default="")
+    mask_url = Column(String(256))
+    pose_url = Column(String(256))
+    warp_url = Column(String(256))
+    backend_used = Column(String(32), nullable=False, default="tps")
+    quality = Column(String(8), nullable=False, default="fast")
+    status = Column(String(16), nullable=False, default="succeeded")
+    warnings = Column(JSON)
+    timings = Column(JSON)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)
