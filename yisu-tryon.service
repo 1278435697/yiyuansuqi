@@ -4,23 +4,35 @@ After=network.target mysql.service
 
 [Service]
 Type=simple
+# 跟 museum-api / yisu-backend 一致跑在 www 下：结果图要写进 backend/uploads/tryon，
+# 那个目录属 www，用 root 跑会留下 nginx 读不了的 0600 文件
+User=www
+Group=www
 WorkingDirectory=/www/wwwroot/yisu/tryon_service
 # 独立 venv：本模块锁的是 numpy 1.26 / opencv 4.10 / mediapipe 0.10（Python 3.10），
 # 平台主服务是 Python 3.14 且 mediapipe 在该版本上没有可用轮子，两者不能共用一套环境。
 # 单 worker 是有意的：MediaPipe 模型与推理线程池都在进程内，多 worker 会把内存和 CPU 同时翻倍。
-ExecStart=/www/wwwroot/yisu/tryon_service/.venv/bin/python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+# 端口用 8010 而不是开发默认的 8000：生产机上 8000 已被 museum-api（3D 博物馆接口）占着，
+# nginx 的 /museum/api/ 就指向它，两者抢 8000 会有一个起不来。
+ExecStart=/www/wwwroot/yisu/tryon_service/.venv/bin/python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=5
 Environment=PYTHONUNBUFFERED=1
-# TPS 形变是纯 CPU 计算，一次请求能吃满 1–2 核；限核防止把平台主服务和 MySQL 挤垮
-CPUQuota=200%
+# TPS 形变是纯 CPU 计算，一次请求能吃满 1–2 核；生产机只有 2 核，再留一半给
+# 平台主服务与 MySQL，否则一次试穿能把首页接口拖到超时
+CPUQuota=150%
+# 机器总内存 1.7G（sidecar 常驻约 350–450M：MediaPipe 姿态 + 自拍分割模型）。
+# MemoryHigh 只在超限时回收页、不杀进程；别用 MemoryMax，OOM-kill 会让历史请求直接 502
+MemoryHigh=900M
 LimitNOFILE=65535
 
 # 结果图落到平台 uploads 下，直接复用 nginx 既有的 /uploads 规则（生产不必新增 location）
 Environment=YISU_RESULTS_ROOT=/www/wwwroot/yisu/backend/uploads/tryon
 Environment=YISU_RESULTS_URL_PREFIX=/uploads/tryon
-# 生产数据库：与平台同一个 MySQL 库，先执行 database/tryon_schema.sql 建两张表
-# Environment=YISU_DATABASE_URL=mysql+aiomysql://user:pass@127.0.0.1:3306/yisu_ai?charset=utf8mb4
+# 生产数据库：与平台同一个 MySQL 库，先执行 database/tryon_schema.sql 建两张表。
+# 连接串写在 tryon_service/.env 里（chmod 600），不放本文件——unit 是全局可读的：
+#   YISU_DATABASE_URL=mysql+aiomysql://root:<pw>@127.0.0.1:3306/yisu_ai?charset=utf8mb4
+# 异步驱动必须是 aiomysql（requirements-mysql.txt），平台侧同步 ORM 用 pymysql，互不影响。
 
 [Install]
 WantedBy=multi-user.target

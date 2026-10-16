@@ -1,8 +1,8 @@
 # tryon_service · 虚拟试穿 sidecar
 
 衣溯AI 的虚拟试穿模块，从独立仓库并入本平台。形态是**同仓不同进程**：本目录用自己的 Python 3.10 venv 起
-uvicorn（默认 `127.0.0.1:8000`），与平台主服务 `backend/`（Python 3.14、`:8765`）互不干扰，因此模块内
-148 处 `from app.` import 一个字都没改。
+uvicorn（开发 `127.0.0.1:8000`，**生产 `127.0.0.1:8010`**，因为云上 8000 归 museum-api），与平台主服务
+`backend/`（Python 3.14、`:8765`）互不干扰，因此模块内 148 处 `from app.` import 一个字都没改。
 
 完整文档在 `docs/`：
 
@@ -49,15 +49,35 @@ cd ..\frontend ; npm run dev
 
 ## 生产装配件
 
-- `../yisu-tryon.service`：systemd unit。单 worker 是有意的（MediaPipe 模型与线程池在进程内），
-  `CPUQuota=200%` 防止 TPS 把平台主服务和 MySQL 挤垮。
-- `../yisu_nginx.conf`：`/api/v1/` 反代到 8000 并按 IP 限流（TPS 单请求吃满 1–2 核，限流是必须项），
-  `/tryon-assets/` 长缓存。
+- `../yisu-tryon.service`：systemd unit。`User=www`（结果图要写进属 www 的 `backend/uploads/tryon`）、单 worker 是有意的
+  （MediaPipe 模型与线程池在进程内）、`CPUQuota=150%` + `MemoryHigh=900M`（2 核 / 1.7G 的机器上给平台主服务与
+  MySQL 留一半；不用 MemoryMax，OOM-kill 会把历史请求直接变 502）。数据库连接串不写在 unit 里（unit 全局可读），写 `tryon_service/.env`。
+- `../yisu_nginx.conf`・`../yisu_nginx_limit.conf`：**这两份是线上实况的镜像**（`scripts/cloud_sync_nginx.py` 回拉生成），
+  不要当模板反向推回服务器。`/api/v1/` 反代到 8010 并按 IP 限流（TPS 单请求吃满 1–2 核，限流是必须项），
+  `/tryon-assets/` 长缓存；`limit_req_zone` 因为只能写 `http{}` 而单开一个文件。
+
+## 云端（生产）部署与重跑
+
+2026-10-16 已部署到阿里云 ECS（`/www/wwwroot/yisu/tryon_service`，域名未绑，入口 `http://47.93.14.11/museum/tryon`）。
+
+```powershell
+python scripts\cloud_deploy_tryon.py <stage>   # upload/venv/env/dirs/seed/service/nginx/verify，各自幂等
+python scripts\cloud_sync_nginx.py --diff      # 看仓库镜像与线上 nginx 的差异
+```
+
+两个与开发环境不同的硬约束（踩过，不要改回去）：
+
+- `SQLAlchemy[asyncio]` 不能低于 **2.0.54**：旧版 aiomysql 适配层 `ping(self, reconnect)` 无默认值，开了 `pool_pre_ping`
+  连生产 MySQL 必报 TypeError；走 sqlite 的本机环境踩不到，所以 `tests/test_db_contract.py` 里有版本地板断言拦降级。
+- `opencv-contrib-python` 必须锁住（当前 `4.11.0.86`）：mediapipe 对它没版本约束，不锁会让 pip 从 5.0 往下逐个回溯，
+  云端实测近 20 分钟装不完。
+
+完整生产实录（勘察事实 / 部署过程炸出的三个真实缺陷 / 公网验证记录 / 生产不具备的能力）见 `docs/README.md` 第十三节。
 
 ## 自检
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest -q                 # 54 passed
+.\.venv\Scripts\python.exe -m pytest -q                 # 56 passed
 .\.venv\Scripts\python.exe -m scripts.doctor --selftest # 端到端出图 + 依赖体检
 ```
 

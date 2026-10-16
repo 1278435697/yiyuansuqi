@@ -1,7 +1,3 @@
-> 本文件是虚拟试穿模块的原始文档（写于独立仓时期）。并入平台后的路径对照：
-> `backend/` → `tryon_service/`，`frontend/` → `frontend/src/tryon/`（平台 SPA）。
-> 运行与部署的权威说明见上级目录 `README.md`，以及平台根 `README.md` 的「模块 10 · 虚拟试穿」章节。
-
 # 虚拟试穿模块 → yisu-ai-platform 合并方案
 
 > 状态：**已执行完成（P1–P5）**——逐阶段验收账与遗留项见第 7 节
@@ -245,3 +241,56 @@ e60edfc  P4  静态面拆分 + 部署装配
 2. **本地 `.env` 不动**（按你的定：本地库先不改）：平台 8765 本机仍起不来，首页依赖它的两个接口会报 Network Error。
 3. **P6 候选**（计划里已标为非必需）：`DELETE /api/v1/history/{task_id}`、`user_costume_log` 加 `tryon` 动作、鉴权/签名 URL、把模块 scoped 样式改读平台 CSS 变量。
 4. **磁盘上的旧结果文件不会自己搬**：若生产真把 `results_root` 换到 `backend/uploads/tryon`，需一次性拷贝 `tryon_service/data/results/` 下已有目录（读取层只改写 URL）。
+
+---
+
+## 8. 云端（生产）部署执行账（2026-10-16，计划外的新任务）
+
+（本节不占用 7.5 里那个「P6 候选」编号——那个指的是 DELETE 接口一类的功能补齐，仍未做。）
+
+需求只有一句：「在云端添加上试穿模块」。目标机是平台已在跑的那台阿里云 ECS（`47.93.14.11`，Ubuntu 22.04 + 宝塔），
+所以约束是：不新建服务器、不停平台主服务、不覆盖宝塔维护的配置。用户只对了三件事拍板：结果图走现有
+`/uploads/tryon`、沿用 `backend/.env` 里的 MySQL root、授权「备份 + `nginx -t` + reload」改 nginx。
+
+### 8.1 与 P4 计划的偏差（四条，都是勘察逼出来的）
+
+| P4 当初写的 | 生产实际做的 | 为什么改 |
+| --- | --- | --- |
+| `--port 8000`（unit 与 nginx 都写 8000） | **`:8010`**，开发默认仍 8000 | 云端 8000 已被 `museum-api.service` 占用（nginx `/museum/api/` → 它），抢端口会有一个起不来 |
+| `limit_req … rate=6r/m`・`burst=3`・`proxy_read_timeout 180s` | `rate=20r/m`・`burst=5 nodelay`・`300s` | 6r/m 连「连续点几件素材」都会 503；一次试穿在前端就要占几个请求，HD 画质在 2 核上会排队 |
+| `location /tryon-assets/ { alias …/data/; }` | 反代到 sidecar 自己的 `/tryon-assets/` | `data/` 里除了 garments/samples 还有运行时目录，alias 整目录等于多暴露一圈；sidecar 只挂两个子目录更窄 |
+| unit 里没写用户・`CPUQuota=200%` | `User=www`・`CPUQuota=150%`・`MemoryHigh=900M` | 结果目录属 www；机器只有 2 核 / 1.7G，200% 会把平台主服务与 MySQL 顶死 |
+
+另外两处实施细节：`limit_req_zone` 单开 `tryon_limit.conf`（宝塔把 `vhost/nginx/*.conf` include 进 `http{}`，
+zone 不能写 `server{}`，这样就不用碰面板维护的 `nginx.conf`）；站点 conf 只「备份 + 锚点插入」，
+因为线上那份有 `/museum/api/`・`location = /museum`・`/index.html` 不缓存等模板里根本没写的东西。
+
+### 8.2 交付物
+
+- `scripts/cloud_probe{,2,3,4}.py`：四轮只读勘察（端口占用、宝塔 include、云端表结构、前端 dist 产物、资源上限）。
+  这四个是一次性探测脚本，只留在开发工作区、不进平台仓：它们记的是当时的快照，长期价值不如 `cloud_deploy_tryon.py` 的 `verify` 阶段。
+- `scripts/cloud_deploy_tryon.py`：八阶段幂等部署器（`upload/venv/env/dirs/seed/service/nginx/verify`）。凭据不写进脚本，
+  SSH 用正则从 `_deploy_backend.py` 读，**MySQL 口令只在服务器侧从 `backend/.env` 就地读取**并写进 `tryon_service/.env`（0600），本机不留副本。
+- `scripts/cloud_sync_nginx.py`：把线上 `yisu.conf` + `tryon_limit.conf` 回拉成仓根 `yisu_nginx.conf` / `yisu_nginx_limit.conf` 镜像，
+  消除模板与线上漂移（头四行明确标注「不要反向推回服务器」）。
+- `deploy/yisu-tryon.service`（→ 平台根）：8010 / `User=www` / `CPUQuota=150%` / `MemoryHigh=900M` / DB 凭据改指 `.env`。
+- 代码与依赖侧（均由云端炸出来再回写）：`app/config.py` 的 `NoDecode` CORS 切分、`requirements-core.txt` 的
+  SQLAlchemy 2.0.54 地板、`requirements-ai.txt` 的 opencv-contrib 锁定，配套两个回归测试与 `.env.example` 说明。
+
+### 8.3 逐阶段验收（全绿）
+
+| 阶段 | 验收 |
+| --- | --- |
+| upload | 93 文件 6.13 MB → `EXTRACTED`；`app/main.py` 与 `data/garments/index.json` 在位，素材 20 项；补传 `database/tryon_schema.sql` |
+| venv | py3.10.12 建独立环境；锁定版本后 4.5 min 装完；`DEPS_OK 1.26.4 4.11.0`（numpy / opencv） |
+| env | `.env` 生成 + `chmod 600`，只打印掩码后的 DB URL |
+| dirs | `backend/uploads/tryon` 属 `www:www` `775` |
+| seed | 修完 CORS 与 SQLAlchemy 两个坑后：`写入/更新 6 条`，`SELECT COUNT(*)` = 6 |
+| service | `active` + `enabled`；`ss` 只有 `127.0.0.1:8010`（与 8000 共存）；服务内 `curl /api/v1/health` 200；Memory 233M / high 900M |
+| nginx | `tryon_limit.conf` 写入；站点 conf 备份为 `yisu.conf.bak.20261016172936` 后插入两个 location；`nginx -t` successful → `reload` |
+| verify | 公网 health/garments/素材图均 200；POST 试穿 3.6s 出图、重跑 0.2s 命中缓存；结果图 `/uploads/tryon/<task>/result.jpg` 200；`/api/home/stats` 200（平台未受影响） |
+| 浏览器 | `/museum/tryon` 示例人像 + 对襟褙子 + fast → 页面「试穿完成（后端 tps，总耗时 2.12s）」，28 条请求无 4xx/5xx、无页面控制台报错 |
+| 测试 | 工作区与平台 `tryon_service` 两侧各 `56 passed` |
+
+未做（本次任务范围外，已在 `README.md` 13.5 列明）：HTTPS、鉴权/签名 URL、结果图 TTL 清理、torch/HR-VITON。
+另：`_deploy_*.py` 这类含明文凭据的脚本仍不在 `.gitignore` 里（平台现有情况，本次未擅自改动）。

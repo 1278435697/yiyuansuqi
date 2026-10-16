@@ -1,7 +1,3 @@
-> 本文件是虚拟试穿模块的原始文档（写于独立仓时期）。并入平台后的路径对照：
-> `backend/` → `tryon_service/`，`frontend/` → `frontend/src/tryon/`（平台 SPA）。
-> 运行与部署的权威说明见上级目录 `README.md`，以及平台根 `README.md` 的「模块 10 · 虚拟试穿」章节。
-
 # 衣溯AI · 虚拟试穿模块 —— 项目书正文（可直接粘贴章节）
 
 > 本文按「设计说明 → 方案对比 → 实测数据 → 局限性 → 部署」组织，内容全部对应仓库中真实存在的代码与实测结果，
@@ -133,7 +129,7 @@ flowchart TD
 | 完全零依赖时 | 分割降到 `heuristic(GrabCut/中心先验)`、姿态降到 `mask 几何反推`，仍能出图，只是贴合度下降 |
 | 告警可见性 | 每次结果逐条返回 `warnings`（如 `segmentation_fallback_to_mediapipe_selfie` / `vton_fallback:...`），全部展示在前端面板，不隐藏任何降级 |
 | 素材库 | 6 件**真实质感**汉服（曲裾深衣/齐胸襦裙/圆领袍/对襟褙子/马面裙/唐半臂），由 `scripts/register_garments.py` 自动抠图 + 自动标注 9 关键点；示例人像 `data/samples/person_real.png` |
-| 后端测试 | `pytest -q` → **54 passed**（6 个文件） |
+| 后端测试 | `pytest -q` → **56 passed**（6 个文件） |
 | 并入平台后实测 | 真实推理 POST `/api/v1/tryon` **2046 ms**，磁盘缓存命中 **289 ms**；结果图 `/tryon-results/<task>/result.jpg` 经平台 vite 代理 200 |
 | 前端质量 | `vue-tsc --noEmit` 0 error；`vite build` 成功；浏览器实测 7 个场景 **0 console error / 0 warning** |
 | 接口契约 | `TryOnResult` 10 个必填字段全部返回；4 张图（结果 + mask + pose + warp）均可 HTTP 下载 |
@@ -245,13 +241,33 @@ server { listen 80; server_name tryon.example.com; return 301 https://$host$requ
 ```
 
 > 并入 yisu-ai-platform 后的真实生产件已在平台仓里：`yisu_nginx.conf`（试穿 location）+ `yisu-tryon.service`（systemd）。
-> sidecar 与平台主服务同仓不同进程（本模块 Python 3.10/:8000，平台 Python 3.14/:8765），共用一个 MySQL 库。
+> sidecar 与平台主服务同仓不同进程（本模块 Python 3.10，开发默认 `:8000`、**生产 `:8010`**；平台 Python 3.14 / `:8765`），共用一个 MySQL 库。
 
-**上线检查清单**
+### 8.1 已落地：阿里云 ECS 生产实况（2026-10-16）
 
-- [ ] 安全组只放开 22（限源 IP）/ 80 / 443，MySQL 不对公网开放。
-- [ ] `.env` 中 `YISU_DATABASE_URL` 换成 MySQL 连接串并安装 `aiomysql`（`requirements-mysql.txt`）；先执行 `database/tryon_schema.sql` 建两张表（平台侧同步 ORM 用 `pymysql`，两者不冲突）。
-- [ ] 改过 `YISU_RESULTS_ROOT` 就必须同步改 `YISU_RESULTS_URL_PREFIX`，只改一个会得出“图能存下来但访问不到”的碎形态（启动日志会告警）。
+上面的 compose 形态是「另一种可选部署」；**实际采用的是往已在跑的平台上插一个 sidecar 进程**，
+不新建服务器、不停平台主服务：
+
+| 项 | 生产取值 | 为什么不是默认值 |
+| --- | --- | --- |
+| 监听 | `127.0.0.1:8010`（仅 nginx 可达，不对公网开放） | 8000 已被同一台机上的 museum-api（3D 博物馆接口）占用 |
+| 运行用户 | `User=www` | 结果图要写进属 www 的 `backend/uploads/tryon`，用 root 会留下 nginx 读不了的文件 |
+| 资源上限 | `CPUQuota=150%` + `MemoryHigh=900M` + 单 worker | 2 核 / 1.7G 内存，TPS 一请求吃满 1–2 核；用 MemoryHigh 而不是 MemoryMax，避免 OOM-kill 把请求变成 502 |
+| 数据库 | 平台同一个 MySQL 库 `yisu_ai`，连接串写在 `tryon_service/.env`（chmod 600） | unit 是全局可读的，凭据不能放 unit 里 |
+| 结果图 | `YISU_RESULTS_ROOT=/www/wwwroot/yisu/backend/uploads/tryon` + `YISU_RESULTS_URL_PREFIX=/uploads/tryon` | 复用宝塔站点既有的 `/uploads/` alias，生产不新增静态 location |
+| nginx | `tryon_limit.conf`（`limit_req_zone`）+ 站点 conf 里插 `/api/v1/`与`/tryon-assets/` | 宝塔把 `vhost/nginx/*.conf` include 进 `http{}`；zone 不能写 `server{}`，单开一个文件就不用改面板维护的 `nginx.conf` |
+| 画质 | TPS 几何兜底（未装 torch） | 内存不够；降级原因在 `/api/v1/health`、启动日志、前端健康标签三处均可见 |
+| 部署方式 | `scripts/cloud_deploy_tryon.py`（八阶段幂等）+ `scripts/cloud_sync_nginx.py`（从线上回拉配置镜像） | 站点 conf 上有模板里根本没写的 location（如 `/museum/api/`），只能「备份 + 锚点插入」，整体覆盖会打死 3D 博物馆 |
+
+公网实测结果：`/api/v1/health`・`/api/v1/garments`・`/tryon-assets/…`・结果图 `/uploads/tryon/<task>/result.jpg` 全部 200；
+一次真实试穿 3.6s 出图（重复提交 0.2s 命中磁盘缓存）；`/api/home/stats` 仍 200（平台接口未受影响）；
+浏览器 `/museum/tryon` 完成一次端到端试穿，28 条资源请求无 4xx/5xx。完整实录见 `docs/README.md` 第十三节。
+
+### 8.2 上线检查清单
+
+- [ ] 安全组只放开 22（限源 IP）/ 80 / 443，MySQL 不对公网开放。（云端 sidecar 只 listen 127.0.0.1:8010，本轮未改安全组）
+- [x] `.env` 中 `YISU_DATABASE_URL` 换成 MySQL 连接串并安装 `aiomysql`（`requirements-mysql.txt`）；先执行 `database/tryon_schema.sql` 建两张表（平台侧同步 ORM 用 `pymysql`，两者不冲突）。—— 2026-10-16 生产已接（两张表先前已在，本仓只 `--seed` 入 6 件素材）
+- [x] 改过 `YISU_RESULTS_ROOT` 就必须同步改 `YISU_RESULTS_URL_PREFIX`，只改一个会得出“图能存下来但访问不到”的碎形态（启动日志会告警）。—— 生产已按 `/uploads/tryon` 成对配置并经公网 200 验证实测
 - [ ] 旧库里的 `/static/...` 历史 URL 由读取层改写，但文件不会自己搬；若生产换了 `results_root`，旧结果图需一次性拷贝到新目录。
 - [ ] 图片目录挂载独立数据盘，配置定期清理（结果图按 `task_id` 分目录，易做 TTL）。
 - [ ] 补充 HTTPS 证书（Let's Encrypt / 阿里云免费证书）。

@@ -35,7 +35,7 @@ yisu-ai-platform/
 │   │   ├── store/             # Pinia
 │   │   └── router/
 │   └── package.json
-├── tryon_service/         # 模块10 虚拟试穿：独立 sidecar（Python 3.10 venv + :8000）
+├── tryon_service/         # 模块10 虚拟试穿：独立 sidecar（Python 3.10 venv，开发 :8000 / 生产 :8010）
 │   ├── app/  database/  scripts/  tests/  docs/
 │   └── README.md          # 三条接缝（库/前端/静态前缀）与自检说明
 ├── yisu-tryon.service     # systemd unit（CPUQuota 限核，单 worker 有意）
@@ -57,7 +57,7 @@ yisu-ai-platform/
 | 8 | 用户中心与权限体系          | `/api/user`      | `views/UserCenter.vue`          |
 | 9 | 文化传承生成模块           | `/api/heritage`  | `views/HeritageGenerate.vue`    |
 | ＋ | 时空推演模拟器（创新点四）      | `/api/simulator` | `components/SimulatorPanel.vue` |
-| 10 | 虚拟试穿（独立进程 :8000）    | `/api/v1`        | `src/tryon/views/TryOnView.vue`  |
+| 10 | 虚拟试穿（独立进程，生产 :8010） | `/api/v1`        | `src/tryon/views/TryOnView.vue`  |
 
 ## 快速启动
 
@@ -106,7 +106,7 @@ cd backend
 ## 模块 10 · 虚拟试穿（sidecar）
 
 试穿模块从独立仓库并入本平台，形态是**同仓不同进程**：`tryon_service/` 用自己的 Python 3.10 venv 起
-uvicorn（`127.0.0.1:8000`）。不能合进主服务的原因是 `mediapipe` 在 Python 3.14 上没有可用 wheel，
+uvicorn（开发 `127.0.0.1:8000`，**生产 `127.0.0.1:8010`** —— 云上 8000 归 museum-api）。不能合进主服务的原因是 `mediapipe` 在 Python 3.14 上没有可用 wheel，
 而它决定了分割与姿态的精度；拆成两个进程后模块内 148 处 `from app.` import 一个字都不用改。
 
 ```powershell
@@ -126,10 +126,16 @@ cd frontend ; npm run dev
 | 前端 | `frontend/src/tryon/`，路由 `/museum/tryon{,/gallery,/history}`；样式只用 `--yisu-*`，不覆盖平台的 `--el-*` |
 | 静态资源 | `/tryon-assets/{garments,samples}` 与 `/tryon-results`；生产把 `YISU_RESULTS_ROOT`+`YISU_RESULTS_URL_PREFIX` 指向 `backend/uploads/tryon`（`/uploads/tryon`），复用 nginx 既有规则 |
 
-生产装配件：`yisu-tryon.service`（`CPUQuota=200%`，单 worker 有意：MediaPipe 模型与线程池在进程内）
-与 `yisu_nginx.conf` 里的 `/api/v1/`（按 IP 限流 20r/m，TPS 单请求吃满 1–2 核）+ `/tryon-assets/`。
+生产装配件：`yisu-tryon.service`（`User=www`、`CPUQuota=150%` + `MemoryHigh=900M`，单 worker 有意：MediaPipe
+模型与线程池在进程内）与 nginx 侧的 `yisu_nginx.conf`（`/api/v1/` 按 IP 限流 20r/m，TPS 单请求吃满 1–2 核）
++ `/tryon-assets/`、`yisu_nginx_limit.conf`（`limit_req_zone` 只能写 `http{}`，所以单开一个文件）。
+**后两份是线上实况的镜像**（由 `cloud_sync_nginx.py` 回拉），别当模板反向推回服务器。
 
-自检：`cd tryon_service ; .\.venv\Scripts\python.exe -m pytest -q`（54 passed）。
+已上生产（2026-10-16，阿里云 ECS `47.93.14.11`）：入口 `http://47.93.14.11/museum/tryon`，八阶段幂等部署器
+`cloud_deploy_tryon.py`（upload/venv/env/dirs/seed/service/nginx/verify）。生产实况、踩坑与验证记录见
+`tryon_service/docs/README.md` 第十三节。
+
+自检：`cd tryon_service ; .\.venv\Scripts\python.exe -m pytest -q`（56 passed）。
 跑重考前先 `$env:PYTHONPATH=""`——`backend/app` 没有 `__init__.py`（命名空间包），环境变量串门会让一侧
 import 到另一侧的 `app`，而平台 venv 缺 `greenlet`。
 

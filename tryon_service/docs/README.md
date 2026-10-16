@@ -1,7 +1,3 @@
-> 本文件是虚拟试穿模块的原始文档（写于独立仓时期）。并入平台后的路径对照：
-> `backend/` → `tryon_service/`，`frontend/` → `frontend/src/tryon/`（平台 SPA）。
-> 运行与部署的权威说明见上级目录 `README.md`，以及平台根 `README.md` 的「模块 10 · 虚拟试穿」章节。
-
 # 衣溯AI · 虚拟试穿模块（Web 全栈）
 
 > 上传一张真人照片 → 从馆藏汉服素材库选一件 → 得到贴合肩线/腰线/衣摆的试穿效果图，
@@ -270,7 +266,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/tryon \
 ## 七、测试
 
 ```powershell
-cd backend ; .\.venv\Scripts\python.exe -m pytest -q      # 54 passed
+cd backend ; .\.venv\Scripts\python.exe -m pytest -q      # 56 passed
 ```
 
 | 文件 | 覆盖点 |
@@ -370,15 +366,15 @@ python -m scripts.register_garments --person ../raw/model.png
 
 | 部分 | 位置 | 运行形态 |
 | --- | --- | --- |
-| 试穿后端 | `tryon_service/` | Python 3.10 独立 venv + uvicorn `127.0.0.1:8000`，与平台 `backend/`（Python 3.14、`:8765`、MySQL）**同仓不同进程**，所以 148 处 `from app.` import 一个字没改 |
+| 试穿后端 | `tryon_service/` | Python 3.10 独立 venv + uvicorn `127.0.0.1:8000`（**生产用 `:8010`**，8000 归 museum-api，见第十三节），与平台 `backend/`（Python 3.14、`:8765`、MySQL）**同仓不同进程**，所以 148 处 `from app.` import 一个字没改 |
 | 试穿前端 | `frontend/src/tryon/` | 并入平台 SPA，路由 `/museum/tryon{,/gallery,/history}`，`TryonLayout.vue` 提供模块子导航与后端健康标签 |
 | 数据库 | `backend/data/yisu_prod.db` | `tryon_garments` / `tryon_records` 两张表直接建在平台主库里；`database/tryon_schema.sql` 是列定义的唯一事实源 |
 | 静态资源 | sidecar 挂载 | `/tryon-assets/{garments,samples}` ・ `/tryon-results`（生产可改指平台 `/uploads/tryon`） |
 
 ### 12.2 部署文件
 
-- `yisu-tryon.service`：单 worker 有意（MediaPipe 模型与线程池在进程内），`CPUQuota=200%` 防止 TPS 挤垮平台主服务与 MySQL，结果图指到 `backend/uploads/tryon`。
-- `yisu_nginx.conf`：`/api/v1/` 反代到 8000 并按 IP 限流（`limit_req_zone` 写在 `server{}` 之外，因为站点 conf 被 include 进 `http{}`）；`/tryon-assets/` 长缓存 7d；结果图复用既有 `/uploads/` 规则，生产不必新增 location。
+- `yisu-tryon.service`：`User=www`（结果图要写进属 www 的 `backend/uploads/tryon`）、单 worker 有意（MediaPipe 模型与线程池在进程内）、`CPUQuota=150%` + `MemoryHigh=900M`（2 核 / 1.7G 的机器上给平台主服务与 MySQL 留一半），结果图指到 `backend/uploads/tryon`。
+- `yisu_nginx.conf`・`yisu_nginx_limit.conf`：**这两份是线上实况的镜像**（由 `scripts/cloud_sync_nginx.py` 回拉，不要反向推回服务器）。`/api/v1/` 反代到 sidecar 并按 IP 限流（`limit_req_zone` 只能写 `http{}`，所以单独一个文件，宝塔把 `vhost/nginx/*.conf` include 进 `http{}`）；`/tryon-assets/` 长缓存 7d；结果图复用既有 `/uploads/` 规则，生产不必新增 location。
 - `tryon_service/.env.example`・`requirements-mysql.txt`：生产切 MySQL 用的是**异步驱动 `aiomysql`**（平台侧同步 ORM 用 `pymysql`，两者互不影响）。
 
 ### 12.3 开发时的四个坑（踩过，写在这儿防重复踩）
@@ -400,6 +396,79 @@ python -m scripts.register_garments --person ../raw/model.png
 5c72aea  P2  两张表并入平台库 + schema 契约测试
 add4a5b  P3  前端并入 src/tryon（28 文件）
 e60edfc  P4  静态面拆分 + 部署装配
+cfa3cff  P5  两侧测试/构建/端到端复验 + 文档归位
 ```
 
 回滚：`git revert` 对应提交，或本地直接 `git reset --hard pre-tryon-merge`；数据面 `DROP TABLE tryon_records; DROP TABLE tryon_garments;`（只有这两张表新增，未改平台既有表），再删 `tryon_service/` 与 `frontend/src/tryon/`。
+
+---
+
+## 十三、云端（生产）部署实录 —— 阿里云 ECS
+
+2026-10-16 落地。约束是：把 sidecar 装进**已经在跑平台主服务的那台机器**，不新建服务器、不停平台进程、不碰宝塔面板维护的部分。
+
+### 13.1 勘察出的事实，以及由它们定下的参数
+
+| 实测事实 | 由此确定的做法 |
+| --- | --- |
+| Ubuntu 22.04 · 2 vCPU · 1.7G 内存（available 862M）+ 1G swap · 磁盘约 13G 可用 | 不装 torch（HR-VITON 上不去），走 TPS 几何兜底；`CPUQuota=150%` + `MemoryHigh=900M` |
+| 系统 `python3.10.12`；平台主服务是 Python 3.14 | sidecar 自建 `.venv`（mediapipe 在 3.14 无可用轮子，且 numpy/opencv 版本互相冲突） |
+| **8000 已被 `museum-api.service` 占用**（nginx `/museum/api/` → 它） | sidecar 生产端口 **8010**；开发默认仍是 8000 |
+| MySQL 5.7.43 的 `yisu_ai` 库里 `tryon_garments` / `tryon_records` **已存在**（0 行，列与我们 DDL 一致） | 不重建、不动表，只 `init_db --seed` 把 6 件素材写进去 |
+| 站点 conf 由宝塔维护，含 `/museum/api/`、`location = /museum`、`/index.html` 不缓存等模板里没有的东西 | 部署只**备份 + 锚点插入**，绝不整体覆盖；改完用 `cloud_sync_nginx.py` 把实况回拉成仓库镜像 |
+| `nginx.conf` 把 `vhost/nginx/*.conf` include 进 `http{}` | `limit_req_zone` 单独放 `tryon_limit.conf`，不必改面板维护的 `nginx.conf` |
+| `frontend/dist` 里已有 `TryOnView` / `TryonLayout` / `tryon` chunk（路由 `/museum/tryon`），服务器无 node | 前端不重新构建，产物已在位 |
+| 结果图目录 `backend/uploads/tryon` 属 www，nginx 已有 `/uploads/` alias | `YISU_RESULTS_ROOT` + `YISU_RESULTS_URL_PREFIX=/uploads/tryon` **成对改**，生产不新增静态 location；unit 里 `User=www` |
+
+### 13.2 重跑方式
+
+```powershell
+python scripts\cloud_deploy_tryon.py <stage>   # 单跑一个阶段
+python scripts\cloud_deploy_tryon.py all       # 按顺序全跑
+```
+
+八个阶段各自幂等：`upload`（打包平台 `tryon_service/`，排除 venv/日志/`.env`/运行时数据）→ `venv`（py3.10 建环境，装 core + ai + mysql）→ `env`（**数据库口令只在服务器侧从 `backend/.env` 就地读取**，生成 `tryon_service/.env` 并 chmod 600，本机不留副本）→ `dirs` → `seed` → `service` → `nginx` → `verify`。
+
+SSH 凭据也不写在脚本里，而是用正则从平台既有部署脚本 `_deploy_backend.py` 里读。
+
+- nginx 阶段先 `cp yisu.conf yisu.conf.bak.<时间戳>`，再 `nginx -t`；**测试不通过会自动还原最新备份并中止**，不会留下坏配置。
+- 回滚单阶段：`systemctl stop yisu-tryon.service` + 还原 `.bak` + `nginx -t && systemctl reload nginx`，平台主服务与博物馆接口不受影响。
+- `python scripts\cloud_sync_nginx.py --diff` 看仓库镜像与线上的差异，去掉 `--diff` 就回拉落盘。
+
+### 13.3 部署过程炸出来的三个真实缺陷
+
+这三个都不是云端特有的偶发故障，而是只有生产环境才会暴露的代码/依赖缺陷，已全部回写到开发侧并加了防复发措施：
+
+| 现象 | 根因 | 修法 | 防复发 |
+| --- | --- | --- | --- |
+| 服务根本起不来：`SettingsError: error parsing value for field "cors_origins" from source "DotEnvSettingsSource"` | `.env` 里写 `YISU_CORS_ORIGINS=`（同源部署清空的常见写法）。`list[str]` 是复杂类型，pydantic-settings 在 **source 层**先按 JSON 解码，空串不是合法 JSON，配置对象都构造不出来 | `config.py` 用 `Annotated[list[str], NoDecode]` + `mode="before"` 自己逗号切分 | `test_empty_cors_origins_env_is_accepted`（含用 `Settings(_env_file=...)` 精确复现 dotenv source）；`.env.example` 写清空值语义 |
+| 连上生产 MySQL 后取连接就炸：`AsyncAdapt_aiomysql_connection.ping() missing 1 required positional argument: 'reconnect'` | SQLAlchemy 2.0.36 的 aiomysql 适配层签名是 `ping(self, reconnect)` 无默认值，而 `MySQLDialect_pymysql.do_ping` 在 `_send_false_to_ping=False` 时调的是无参 `ping()`；开了 `pool_pre_ping` 必炸。2.0.54 上游已改成 `ping(self, reconnect: bool = False)` | `requirements-core.txt` 把 `SQLAlchemy[asyncio]` 从 2.0.36 锁到 **2.0.54**（本地/平台/云端三处 venv 同步升级） | `test_db_contract.py` 加 `SQLALCHEMY_FLOOR=(2,0,54)` 版本地板测试。**本机走 sqlite 完全复现不了**，只能靠断言拦住降级 |
+| `pip install` 近 20 分钟装不完 | mediapipe 对 `opencv-contrib-python` **没有版本约束**，pip 从 5.0.0.93 往下逐个回溯，每个 80MB | 显式锁 `opencv-contrib-python==4.11.0.86`（与本地实测一致），重跑 4.5 分钟完成 | 锁定写进 `requirements-ai.txt` 并附「为什么不能放开」注释 |
+
+### 13.4 上线验证记录（均为公网实测，非本地推断）
+
+```text
+systemd     active (running) · enabled（开机自启）· Memory 233M / high 900M · Main PID 跑 --host 127.0.0.1 --port 8010
+ss -lntp    LISTEN 127.0.0.1:8010（8000 仍归 museum-api，两者共存）
+
+GET  /api/v1/health                          200  1598B   vton_backend_resolved=tps · mediapipe_selfie available
+GET  /api/v1/garments                        200  7266B   6 件素材
+GET  /tryon-assets/garments/quju-shenyi.png  200  883815B image/png
+GET  /api/home/stats                          200  51B     平台接口未被 /api/v1/ 抢走
+POST /api/v1/tryon                            200  首跑 3.6s（真推理）· 重跑 0.2s（命中磁盘缓存）
+GET  /uploads/tryon/<task>/result.jpg         200  44622B  image/jpeg
+
+浏览器 /museum/tryon：页面正常渲染，6 张缩略图全 200，「使用示例人像 + 对襟褙子 + fast」
+              → 页面提示「试穿完成（后端 tps，总耗时 2.12s）」，结果图与三张管线中间图全 200
+              28 条资源请求无 4xx/5xx，控制台无页面报错
+```
+
+云端 MySQL `tryon_garments` 已有 6 行；`tryon_records` 随浏览器那一次试穿写入。
+
+### 13.5 生产仍然不具备的东西（别把「能访问」读成「可开放」）
+
+- **仍是 HTTP 裸端口 80 + IP 直连**，没有 HTTPS、没有域名；服务本身**依旧无鉴权**，12.4 列的风险在生产上同样成立。
+- 限流 `20r/m` + `burst=5`（按客户端 IP）；2 核机器上 HD 画质会排队，`proxy_read_timeout` 已放宽到 300s。
+- 画质为 **TPS 几何兜底**（未装 torch）；降级原因在 `/api/v1/health`、启动日志、前端健康标签三处都可见。
+- 结果图无 TTL 清理，磁盘只有 13G 可用；`/root/.cache/pip` 已占 4.3G，可以清。
+- `backend/uploads/tryon/<task>/person_source.jpg` 随结果落盘，历史页要做原图对比 —— 对外开放前必须改成签名 URL。
