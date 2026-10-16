@@ -30,6 +30,25 @@
       </div>
     </section>
 
+    <!-- 纹样精粹 · 卡片墙 -->
+    <section v-if="patterns.length" class="feature-sec">
+      <div class="feat-head">
+        <span class="gold-line"></span>
+        <h2 class="ys-title feat-title">纹样精粹</h2>
+        <span class="gold-line"></span>
+      </div>
+      <div class="feat-grid">
+        <a v-for="p in patterns" :key="p.id" class="feat-card" @click="$router.push('/pattern')">
+          <div class="feat-thumb">
+            <img v-if="p.image_url" :src="p.image_url" :alt="p.name" loading="lazy" @error="hideImg($event)" />
+            <span v-else class="feat-seal">{{ p.name.slice(0, 1) }}</span>
+          </div>
+          <b>{{ p.name }}</b>
+          <span class="feat-meta">{{ p.category }}</span>
+        </a>
+      </div>
+    </section>
+
     <!-- 今日焦点 -->
     <section v-if="focusNews.length" class="focus-banner">
       <div class="focus-label">今日焦点</div>
@@ -166,7 +185,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { ElMessage } from "element-plus";
 import * as echarts from "echarts";
 import { useRouter } from "vue-router";
-import { fetchNews, fetchHotTags, fetchTrendKeywords, fetchCostumeLinks, fetchWebSearch } from "@/api/modules";
+import { fetchNews, fetchHotTags, fetchTrendKeywords, fetchCostumeLinks, fetchWebSearch, fetchPatternItems } from "@/api/modules";
 import RevealTitle from "@/components/RevealTitle.vue";
 import request from "@/api/request";
 
@@ -176,6 +195,7 @@ const news = ref<any[]>([]);
 const focusNews = ref<any[]>([]);
 const hotTags = ref<any[]>([]);
 const links = ref<any[]>([]);
+const patterns = ref<any[]>([]);
 const dynastyOptions = ref([{ name: "秦汉" }, { name: "隋唐" }, { name: "宋" }, { name: "明" }, { name: "清" }]);
 const dynasty = ref("");
 const keyword = ref("");
@@ -226,8 +246,11 @@ async function loadNews() {
 async function loadSide() {
   hotTags.value = (await fetchHotTags() as any).tags || [];
   links.value = (await fetchCostumeLinks() as any).items || [];
-  const kd = await fetchTrendKeywords() as any;
-  await nextTick();
+  try {
+    const pr: any = await fetchPatternItems({});
+    patterns.value = (pr.items || []).filter((p: any) => p.image_url).slice(0, 6);
+  } catch { /* 纹样精粹加载失败不阻塞 */ }
+  const kd = await fetchTrendKeywords() as any;  await nextTick();
   if (trendEl.value) {
     trendChart?.dispose();
     trendChart = echarts.init(trendEl.value);

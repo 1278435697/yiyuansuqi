@@ -91,6 +91,11 @@ export const toggleCollect = (postId: number, folderName?: string) =>
 export const repost = (postId: number, comment?: string) =>
   request.post(`/community/posts/${postId}/repost`, { comment });
 
+/* ---------- 纹样资料库 ---------- */
+export const fetchPatternCategories = () => request.get("/pattern-library/categories");
+export const fetchPatternItems = (params: Record<string, any>) => request.get("/pattern-library/items", { params });
+export const fetchPatternDetail = (id: number) => request.get(`/pattern-library/${id}`);
+
 /* ---------- 模块9 · 文化传承生成 ---------- */
 export const fetchHeritageProfile = () => request.get("/heritage/profile");
 export const generatePlan = () => request.post("/heritage/generate-plan");

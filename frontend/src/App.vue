@@ -15,6 +15,7 @@
         <router-link to="/archive">档案</router-link>
         <router-link to="/museum">博物馆</router-link>
         <router-link to="/fabric">面料</router-link>
+        <router-link to="/pattern">纹样</router-link>
         <router-link to="/timeline">时间轴</router-link>
         <router-link to="/geomap">出土地图</router-link>
         <router-link to="/aiqa">溯源问答</router-link>

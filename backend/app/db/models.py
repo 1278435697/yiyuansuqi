@@ -96,6 +96,26 @@ class Patterns(Base):
     source_ref = Column(Text, default="")
 
 
+class PatternLibrary(Base):
+    """纹样资料库：十大分类 321 条纹样（文化寓意/朝代脉络/属性/文物图）"""
+    __tablename__ = "pattern_library"
+    id = Column(Integer, primary_key=True)
+    code = Column(Integer, default=0)                    # 官方名录编号
+    name = Column(String(120), nullable=False, index=True)
+    category = Column(String(50), index=True)            # 大类
+    seq = Column(Integer, default=0)                     # 类别内序号
+    dynasty = Column(String(120), default="")            # 盛行朝代
+    meaning = Column(Text, default="")                   # 文化寓意
+    images = Column(JSON, default=list)                  # 实物文物图 [{url,caption}]
+    dynasties = Column(JSON, default=list)               # 朝代脉络 [{period,desc}]
+    meanings = Column(JSON, default=list)                # 寓意分条 []
+    props = Column(JSON, default=dict)                   # 属性 {}
+    pairs = Column(JSON, default=list)                   # 常见搭配 []
+    compose = Column(Text, default="")                   # 体系组成
+    similar = Column(Text, default="")                   # 相似纹样说明
+    applied = Column(String(255), default="")            # 服饰应用部位
+
+
 class Relics(Base):
     __tablename__ = "relics"
     id = Column(Integer, primary_key=True)

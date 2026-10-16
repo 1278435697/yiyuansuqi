@@ -3,7 +3,7 @@
 import paramiko, io, os, sys
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-LOCAL = r"C:\Users\lenovo\Desktop\yisu-ai-platform\frontend\dist"
+LOCAL = r"D:\yisu-ai-platform\frontend\dist"
 REMOTE = "/www/wwwroot/yisu/frontend/dist"
 
 cli = paramiko.SSHClient()
