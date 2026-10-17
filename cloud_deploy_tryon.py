@@ -84,10 +84,15 @@ def log(msg: str) -> None:
 
 
 def creds() -> tuple[str, str, str]:
+    if not DEPLOY_SRC.is_file():
+        raise SystemExit(
+            f"[FAIL] 凭据源文件不存在: {DEPLOY_SRC}\n"
+            "该文件含 SSH 口令，已被 .gitignore 排除。请手动创建或从安全渠道获取。"
+        )
     text = DEPLOY_SRC.read_text(encoding="utf-8", errors="ignore")
     m = re.search(r'connect\(\s*"([^"]+)"\s*,\s*username="([^"]+)"\s*,\s*password="([^"]+)"', text)
     if not m:
-        raise SystemExit("[FAIL] 解析不到 connect(...) 凭据")
+        raise SystemExit(f"[FAIL] 无法从 {DEPLOY_SRC} 解析 connect(...) 凭据")
     return m.group(1), m.group(2), m.group(3)
 
 

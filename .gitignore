@@ -13,6 +13,8 @@ frontend/dist/
 # ===== secrets (never commit) =====
 .env
 *.pem
+_deploy_*.py
+cloud_*.py
 
 # ===== local db files & runtime data =====
 *.db
