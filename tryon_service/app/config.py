@@ -85,6 +85,13 @@ class Settings(BaseSettings):
     # ---------- 缓存 ----------
     enable_disk_cache: bool = True
 
+    # ---------- 结果图 TTL ----------
+    results_ttl_days: int = Field(
+        default=30,
+        ge=1,
+        description="结果目录保留天数，超过此期限的 task 目录与对应数据库行将被清理脚本删除",
+    )
+
     @field_validator("vitongpu_onnx", "u2net_onnx", mode="after")
     @classmethod
     def _default_weight_path(cls, value: Path | None, info) -> Path:
@@ -164,6 +171,11 @@ class Settings(BaseSettings):
         return self.results_root if self.results_root is not None else self.data_dir / "results"
 
     @property
+    def person_sources_dir(self) -> Path:
+        """用户原图落盘目录，不在静态挂载下，只能通过 API 端点访问。"""
+        return self.data_dir / "private" / "person_sources"
+
+    @property
     def results_served_externally(self) -> bool:
         """结果目录被挪到 data/ 之外（如平台 backend/uploads/tryon）时为 True。
 
@@ -194,6 +206,7 @@ class Settings(BaseSettings):
             self.uploads_dir,
             self.results_dir,
             self.cache_dir,
+            self.person_sources_dir,
         ):
             path.mkdir(parents=True, exist_ok=True)
 

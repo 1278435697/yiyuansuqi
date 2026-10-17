@@ -73,3 +73,13 @@ async def list_records(
 async def get_record_by_task(session: AsyncSession, task_id: str) -> TryOnRecord | None:
     stmt = select(TryOnRecord).where(TryOnRecord.task_id == task_id)
     return (await session.execute(stmt)).scalar_one_or_none()
+
+
+async def delete_record(session: AsyncSession, task_id: str) -> bool:
+    """删除指定 task_id 的记录，返回是否实际删除了行。"""
+    from sqlalchemy import delete
+
+    stmt = delete(TryOnRecord).where(TryOnRecord.task_id == task_id)
+    result = await session.execute(stmt)
+    await session.commit()
+    return result.rowcount > 0

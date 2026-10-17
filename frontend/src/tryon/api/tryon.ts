@@ -1,4 +1,4 @@
-import { get, request } from '@/tryon/api/client'
+import { del, get, request } from '@/tryon/api/client'
 import {
   asArray,
   asOptionalString,
@@ -127,6 +127,10 @@ export async function fetchHistory(
     limit: Number(raw.limit) || limit,
     offset: Number(raw.offset) || offset,
   }
+}
+
+export function deleteHistoryRecord(taskId: string, signal?: AbortSignal): Promise<void> {
+  return del<void>(`/history/${encodeURIComponent(taskId)}`, { signal })
 }
 
 /** 分割 Provider 链元数据，用于「管线中间图」面板展示当前生效算法。 */

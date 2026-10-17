@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import re
+import shutil
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.db import models, repos
 from app.logs import get_logger
 from app.schemas import TraceCard, TryOnRecordOut, TryOnResult
@@ -12,6 +16,8 @@ from app.services.pipeline import PipelineOutput
 from app.utils.static import normalize_legacy_url
 
 logger = get_logger("app.services.history")
+
+_TASK_ID_RE = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
 
 
 def to_result(out: PipelineOutput, garment_id: str, status: str = "succeeded") -> TryOnResult:
@@ -102,4 +108,42 @@ async def get_record_result(session: AsyncSession, task_id: str) -> TryOnResult:
     )
 
 
-__all__ = ["get_record_result", "list_records", "save_record", "to_result"]
+__all__ = ["delete_record", "get_record_result", "list_records", "save_record", "to_result", "validate_task_id"]
+
+
+def validate_task_id(task_id: str) -> None:
+    """白名单校验 task_id，防止路径穿越。只允许字母、数字、下划线、连字符，最长 64。"""
+    if not _TASK_ID_RE.match(task_id):
+        from app.errors import TaskNotFoundError
+
+        raise TaskNotFoundError()
+
+
+async def delete_record(session: AsyncSession, task_id: str) -> None:
+    """删除数据库记录 + 清理结果目录。幂等：不存在时不抛。"""
+    validate_task_id(task_id)
+    settings = get_settings()
+
+    await repos.delete_record(session, task_id)
+
+    results_dir = settings.results_dir / task_id
+    if results_dir.is_dir():
+        resolved = results_dir.resolve()
+        try:
+            resolved.relative_to(settings.results_dir.resolve())
+        except ValueError:
+            logger.error("拒绝删除越界目录: %s", resolved)
+            return
+        shutil.rmtree(resolved, ignore_errors=True)
+        logger.info("已清理结果目录: %s", resolved)
+
+    private_dir = settings.person_sources_dir / task_id
+    if private_dir.is_dir():
+        resolved_private = private_dir.resolve()
+        try:
+            resolved_private.relative_to(settings.person_sources_dir.resolve())
+        except ValueError:
+            logger.error("拒绝删除越界目录: %s", resolved_private)
+            return
+        shutil.rmtree(resolved_private, ignore_errors=True)
+        logger.info("已清理私密原图目录: %s", resolved_private)

@@ -127,7 +127,10 @@ def run_tryon(
 
     # ---------- 5. 落盘 ----------
     result_path = save_jpg(refined, out_dir / "result.jpg", quality=92)
-    person_path = save_jpg(person_rgb, out_dir / "person_source.jpg", quality=90)
+    # 用户原图落到私密目录（不在静态挂载下），只能通过 API 端点访问
+    private_person_dir = settings.person_sources_dir / task_id
+    private_person_dir.mkdir(parents=True, exist_ok=True)
+    person_path = save_jpg(person_rgb, private_person_dir / "person_source.jpg", quality=90)
     mask_path = save_png(mask_to_overlay(seg.person), out_dir / "person_mask.png")
     pose_path = save_png(draw_pose_overlay(person_rgb, pose), out_dir / "pose_overlay.png")
     warp_path: Path | None = None
@@ -153,11 +156,13 @@ def run_tryon(
         {k: round(v, 3) for k, v in timings.items()},
         len(warnings),
     )
+    # person_url 指向内部 API 端点，不走静态文件服务
+    person_url = f"{settings.api_prefix}/history/{task_id}/person-source"
     return PipelineOutput(
         task_id=task_id,
         backend_used=output.backend,
         result_url=static_for(result_path),
-        person_url=static_for(person_path),
+        person_url=person_url,
         person_mask_url=static_for(mask_path),
         pose_overlay_url=static_for(pose_path),
         garment_warp_url=static_for(warp_path) if warp_path else None,

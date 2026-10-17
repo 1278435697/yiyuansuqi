@@ -85,7 +85,7 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=False,
-        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
         allow_headers=["*"],
         max_age=600,
     )
@@ -125,8 +125,9 @@ def create_app() -> FastAPI:
     app.include_router(api_router, prefix=settings.api_prefix)
 
     # 对外只挂三类只读资产，不再整体暴露 data/：data/uploads 是上传原图的临时落盘，
-    # 没有任何入口应当被 URL 直读。注意残留风险：结果目录里有 person_source.jpg（历史页要做原图对比），
-    # 所以拿到他人 task_id 仍能看到那张人像——本服务没有鉴权，多租户开放前必须加访问控制或签名 URL。
+    # 没有任何入口应当被 URL 直读。用户原图（person_source.jpg）已挪到 data/private/
+    # 目录下，只能通过 GET /api/v1/history/{task_id}/person-source 端点访问，
+    # 且要求数据库中存在对应记录。本服务仍无鉴权，多租户开放前需加签名 URL 或 RBAC。
     app.mount(
         f"{settings.asset_url_prefix}/garments",
         StaticFiles(directory=str(settings.garments_dir)),

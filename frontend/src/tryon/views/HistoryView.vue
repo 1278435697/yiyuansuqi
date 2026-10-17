@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import { fetchHistory } from '@/tryon/api/tryon'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { deleteHistoryRecord, fetchHistory } from '@/tryon/api/tryon'
 import { describeError } from '@/tryon/api/client'
 import { buildSnapshotName, downloadRemoteImage, snapshotImage } from '@/tryon/utils/snapshot'
 import type { TryOnRecord } from '@/tryon/types'
@@ -12,6 +12,7 @@ const limit = ref(12)
 const offset = ref(0)
 const loading = ref(false)
 const error = ref<string | null>(null)
+const deleting = ref<Set<string>>(new Set())
 
 const page = computed(() => Math.floor(offset.value / limit.value) + 1)
 const previewList = computed<string[]>(() =>
@@ -57,6 +58,28 @@ async function snapshot(record: TryOnRecord): Promise<void> {
     })
   } catch (err) {
     ElMessage.error(describeError(err))
+  }
+}
+
+async function remove(record: TryOnRecord): Promise<void> {
+  try {
+    await ElMessageBox.confirm(
+      `确认删除该试穿记录？原图与结果图将一并清除，不可恢复。`,
+      '删除确认',
+      { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' },
+    )
+  } catch {
+    return
+  }
+  deleting.value.add(record.task_id)
+  try {
+    await deleteHistoryRecord(record.task_id)
+    ElMessage.success('已删除')
+    await load()
+  } catch (err) {
+    ElMessage.error(describeError(err))
+  } finally {
+    deleting.value.delete(record.task_id)
   }
 }
 
@@ -117,6 +140,7 @@ onMounted(load)
             <div class="record-actions">
               <el-button size="small" @click="download(record)">下载</el-button>
               <el-button size="small" @click="snapshot(record)">截图</el-button>
+              <el-button size="small" type="danger" :loading="deleting.has(record.task_id)" @click="remove(record)">删除</el-button>
             </div>
           </div>
         </article>

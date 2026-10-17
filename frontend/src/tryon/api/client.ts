@@ -134,6 +134,10 @@ export function post<T>(url: string, data?: unknown, options?: RequestOptions): 
   return request<T>({ method: 'POST', url, data }, { retries: 0, ...options })
 }
 
+export function del<T>(url: string, options?: RequestOptions): Promise<T> {
+  return request<T>({ method: 'DELETE', url }, { retries: 0, ...options })
+}
+
 /** 渲染友好的错误文案。 */
 export function describeError(error: unknown): string {
   const apiError = toApiError(error)
