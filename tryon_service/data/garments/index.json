@@ -408,6 +408,69 @@
         "敦煌壁画供养人像（莫高窟第 130 窟等）",
         "吐鲁番出土唐代「半臂」实物记录"
       ]
+    },
+    {
+      "id": "aoqun-ming",
+      "name": "明制袄裙",
+      "dynasty": "明代",
+      "category": "dress",
+      "tags": [
+        "袄裙",
+        "明制",
+        "立领"
+      ],
+      "image": "garments/aoqun-ming.png",
+      "mask": "garments/aoqun-ming_mask.png",
+      "thumb": "garments/aoqun-ming_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.5423,
+          "y": 0.0885
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.2786,
+          "y": 0.16
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.8059,
+          "y": 0.16
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.1338,
+          "y": 0.3922
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.946,
+          "y": 0.3922
+        },
+        {
+          "name": "waist_L",
+          "x": 0.1822,
+          "y": 0.4994
+        },
+        {
+          "name": "waist_R",
+          "x": 0.8131,
+          "y": 0.4994
+        },
+        {
+          "name": "hem_L",
+          "x": 0.0516,
+          "y": 0.8925
+        },
+        {
+          "name": "hem_R",
+          "x": 0.946,
+          "y": 0.8925
+        }
+      ],
+      "source_text": "",
+      "references": []
     }
   ]
 }
