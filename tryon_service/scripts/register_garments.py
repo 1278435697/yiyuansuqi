@@ -88,8 +88,13 @@ def _resolve_mask(rgb, alpha, *, force_salience: bool):
     from app.utils.cv import keep_largest_component
     from app.utils.imageio import normalize_mask
 
-    if alpha is not None and not force_salience and int((alpha > 127).sum()) > 256:
-        return normalize_mask(alpha), "alpha"
+    if alpha is not None and not force_salience:
+        # AI 生成图与翻拍图常自带一条「几乎全不透明」的 alpha，信它等于把整帧当服饰：
+        # 掩码铺满、裁剪失效、关键点落到画框四角，而 validate_entry 仍会放行。
+        # 只有确实存在透明底（不透明占比 < 97%）才把 alpha 当抠图结果。
+        opaque_ratio = float((alpha > 127).mean())
+        if 256 < int((alpha > 127).sum()) and opaque_ratio < 0.97:
+            return normalize_mask(alpha), "alpha"
     if is_solid_background(rgb) or force_salience:
         mask = cutout_solid_background(rgb)
         if int((mask > 127).sum()) > 256:
@@ -132,6 +137,9 @@ def register_one(item: dict[str, Any], *, garments_dir: Path, index: dict[str, A
     mask, how = _resolve_mask(rgb, alpha, force_salience=force_salience)
     if int((mask > 127).sum()) < 256:
         raise ValueError(f"{gid}: 未能分离服饰前景（可加 --force-salience 或改透明底 PNG）")
+    coverage = float((mask > 127).mean())
+    if coverage > 0.92:
+        raise ValueError(f"{gid}: 掩码覆盖了 {coverage:.0%} 画面，等于没抠图（换 --force-salience 或换素材图）")
     rgb, mask = _crop_to_content(rgb, mask)
 
     category = str(item.get("category") or "").strip()
