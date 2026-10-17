@@ -1,0 +1,21 @@
+# yisu-cleanup-results.service
+# 试穿结果 TTL 清理服务（由 timer 触发）
+# 安装：复制到 /etc/systemd/system/ 后 systemctl daemon-reload
+# 不要直接 enable，应 enable 对应的 .timer
+
+[Unit]
+Description=衣溯AI 试穿结果 TTL 清理
+After=yisu-tryon.service
+Wants=yisu-tryon.service
+
+[Service]
+Type=oneshot
+User=www
+WorkingDirectory=/www/wwwroot/yisu/tryon_service
+ExecStart=/www/wwwroot/yisu/tryon_service/.venv/bin/python -m scripts.cleanup_results
+# 清理时不应与推理服务争抢 CPU
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

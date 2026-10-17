@@ -1,0 +1,14 @@
+# yisu-cleanup-results.timer
+# 每天凌晨 03:00 触发试穿结果清理
+# 安装：systemctl enable --now yisu-cleanup-results.timer
+
+[Unit]
+Description=衣溯AI 试穿结果清理定时器
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
