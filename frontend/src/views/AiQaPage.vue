@@ -114,6 +114,12 @@
             <el-button type="primary" :loading="chatting" @click="sendChat">发送</el-button>
           </div>
 
+          <!-- 智能推荐问题 -->
+          <div class="smart-suggest">
+            <span class="ss-label">💡 你可能想问：</span>
+            <button v-for="s in smartSuggestions.slice(0, 4)" :key="s" class="ss-chip" @click="chatInput = s">{{ s }}</button>
+          </div>
+
           <!-- 全网相关资讯 -->
           <div v-if="webQaItems !== null" class="web-qa">
             <div class="web-head">
@@ -311,16 +317,54 @@ function pickKeyword(q: string) {
   return s.slice(0, 6) || q.replace(/[，。？?、！!：:；;·\s"'“”‘’]/g, "").slice(0, 6);
 }
 
-const quickPrompts: Record<string, string> = {
-  poem: "请为一件明代马面裙写一首七言绝句，要体现它的形制特点和文化寓意。",
-  compare: "请对比唐代和宋代女子常服在形制、色彩、面料上的主要区别，分点说明。",
-  outfit: "我要参加一个传统汉服文化活动，请帮我搭配一套适合春季的宋制汉服，包括上衣、下裙、配饰和面料建议。",
-  pattern: "请描述一种适合用在明代女子襦裙上的传统纹样，要求：名称、寓意、常见配色、构图特点。",
-  restore: "假设我有一块出土的唐代半臂残片，上面能看到卷草纹和红色颜料痕迹，请推测这件半臂的完整形制、面料和穿着场合。",
+const quickPrompts: Record<string, string[]> = {
+  poem: [
+    "请为一件明代马面裙写一首七言绝句，要体现它的形制特点和文化寓意。",
+    "请为唐代齐胸襦裙写一首五言律诗，描绘它飘逸的美感。",
+    "请为清代旗袍写一首词，词牌自选，体现它的曲线美。",
+    "请为宋代褙子写一首七言绝句，体现它清雅素净的风格。",
+  ],
+  compare: [
+    "请对比唐代和宋代女子常服在形制、色彩、面料上的主要区别，分点说明。",
+    "请对比明代和清代女子服饰的主要差异，从形制、装饰、穿着场合三方面分析。",
+    "请对比汉服和和服在版型、系带方式、穿着场合上的区别。",
+    "请对比先秦深衣和后世汉服的形制传承与演变。",
+  ],
+  outfit: [
+    "我要参加一个传统汉服文化活动，请帮我搭配一套适合春季的宋制汉服，包括上衣、下裙、配饰和面料建议。",
+    "我要参加婚礼做伴娘，请帮我选一套明制汉服，要求端庄大气，给出具体搭配方案。",
+    "夏天快到了，请推荐一套适合日常穿着的轻量化汉服，要透气舒适。",
+    "我要拍一组古风写真，请帮我搭配一套魏晋风汉服，给出妆造和道具建议。",
+  ],
+  pattern: [
+    "请描述一种适合用在明代女子襦裙上的传统纹样，要求：名称、寓意、常见配色、构图特点。",
+    "请详细介绍唐代盛行的卷草纹，包括它的起源、寓意和典型应用场景。",
+    "请描述云纹在中国传统服饰中的演变历史，从先秦到明清各有什么特点。",
+    "请介绍百子图纹的寓意和常见使用场景，为什么它常出现在婚服上。",
+  ],
+  restore: [
+    "假设我有一块出土的唐代半臂残片，上面能看到卷草纹和红色颜料痕迹，请推测这件半臂的完整形制、面料和穿着场合。",
+    "假设我发现了一块战国时期的锦袍残片，上面有龙凤纹，请推测完整形制和使用者身份。",
+    "假设我有一件明代披风的残片，面料是织金缎，请复原它的完整样式和穿着场景。",
+    "假设出土了一件汉代曲裾深衣的彩绘俑，请根据俑像复原它的剪裁结构和穿着方式。",
+  ],
 };
 
+const smartSuggestions = [
+  "马面裙为什么在明代流行？",
+  "汉服的交领右衽有什么讲究？",
+  "香云纱是怎么制作的？",
+  "唐代女子为什么喜欢穿齐胸襦裙？",
+  "为什么旗袍在民国成为国服？",
+  "汉服和胡服有什么相互影响？",
+  "传统汉服的颜色等级怎么区分？",
+  "深衣为什么被称为圣人之服？",
+];
+
 function quickAction(type: string) {
-  chatInput.value = quickPrompts[type] || "";
+  const arr = quickPrompts[type] || [];
+  if (!arr.length) return;
+  chatInput.value = arr[Math.floor(Math.random() * arr.length)];
 }
 
 async function sendChat() {
@@ -532,6 +576,10 @@ onMounted(async () => {
 .lookup-row .el-input { flex: 1; }
 .lookup-result { font-size: 13px; line-height: 1.8; padding: 10px; background: rgba(201,162,39,.06); border-radius: 8px; }
 .lookup-result a { color: #c9a227; }
+.smart-suggest { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.ss-label { font-size: 12px; color: #999; }
+.ss-chip { background: rgba(201,162,39,.08); border: 1px solid rgba(201,162,39,.2); border-radius: 999px; padding: 4px 12px; font-size: 12px; color: #7a221c; cursor: pointer; transition: all .2s; }
+.ss-chip:hover { background: rgba(201,162,39,.18); border-color: rgba(201,162,39,.4); }
 .role-list { margin: 0; padding-left: 18px; color: var(--ys-ink-2); font-size: 13px; line-height: 2; }
 .ai-block { border-left: 4px solid var(--ys-red); padding: 10px 14px; background: #fffdf8; border-radius: 8px; }
 .answer-item { border-bottom: 1px dashed var(--ys-line); padding: 10px 0; }
