@@ -171,3 +171,27 @@ def eras(db: Session = Depends(get_db)):
     """档案按朝代分组统计（供筛选器）。"""
     rows = db.query(Costumes.dynasty).distinct().all()
     return {"eras": [{"name": r[0]} for r in rows if r[0]]}
+
+
+@router.get("/lookup")
+def lookup(code: str, db: Session = Depends(get_db)):
+    """按编号查找档案，支持模糊匹配。"""
+    import re
+    c = code.strip()
+    if not c:
+        return {"found": False, "msg": "编号不能为空"}
+    # 尝试直接按 code 字段精确匹配
+    row = db.query(Costumes).filter(Costumes.code == c).first()
+    if not row:
+        # 模糊匹配：去掉"档案-"前缀再试
+        c2 = re.sub(r'^(档案|衣制|面料|纹样|配饰)-?', '', c)
+        row = db.query(Costumes).filter(Costumes.code.contains(c2)).first()
+    if row:
+        return {
+            "found": True,
+            "id": row.id,
+            "code": row.code,
+            "title": row.name,
+            "url": f"/archive?id={row.id}",
+        }
+    return {"found": False, "msg": "未找到"}

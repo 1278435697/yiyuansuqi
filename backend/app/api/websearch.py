@@ -93,30 +93,8 @@ _STOPWORDS = [
 
 
 def _smart_query(query: str) -> str:
-    """把口语长句压缩成 Bing 友好的短语：朝代+服饰主题词组合。
-
-    例：'唐代女子日常穿什么服饰？' -> '唐代 服饰'
-        '它为什么叫响云纱？'        -> '响云纱'
-    仅在内部用于搜索请求，页面仍展示用户原文关键词。"""
-    s = query
-    for w in _STOPWORDS:
-        s = s.replace(w, " ")
-    parts = [p for p in re.split(r"[\s,，。？！!?、；;:：·\"'“”‘’【】\[\]]+", s) if len(p) >= 2]
-    text = "".join(parts)
-    if not text:
-        return query
-    dynasty = next((d for d in sorted(_DYNASTY_WORDS, key=len, reverse=True) if d in text), None)
-    topic = next((t for t in _TOPIC_WORDS if t in text), None)
-    if dynasty and topic:
-        return f"{dynasty} {topic}"
-    if topic:
-        for p in sorted(parts, key=len, reverse=True):
-            if topic in p:
-                return p
-        return topic
-    if dynasty:
-        return dynasty
-    return " ".join(parts[:3])
+    """直接使用用户整句作为搜索词，不压缩、不拆关键词。"""
+    return query.strip()
 
 
 def web_search(query: str, n: int = 8) -> list:

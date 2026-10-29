@@ -77,10 +77,40 @@
             <img :src="pendingImage" alt="待发截图" />
             <button class="pending-clear" @click="pendingImage = ''" title="移除">×</button>
           </div>
+
+          <!-- AI 快捷功能 -->
+          <div class="ai-quick-actions">
+            <button class="quick-btn" @click="quickAction('poem')">
+              <span class="quick-icon">✍️</span>
+              <span class="quick-name">AI 服饰写诗</span>
+              <span class="quick-desc">为选中服饰配一首古诗词</span>
+            </button>
+            <button class="quick-btn" @click="quickAction('compare')">
+              <span class="quick-icon">⚖️</span>
+              <span class="quick-name">AI 朝代对比</span>
+              <span class="quick-desc">对比两个朝代服饰差异</span>
+            </button>
+            <button class="quick-btn" @click="quickAction('outfit')">
+              <span class="quick-icon">👗</span>
+              <span class="quick-name">AI 穿搭推荐</span>
+              <span class="quick-desc">根据场合推荐汉服搭配</span>
+            </button>
+            <button class="quick-btn" @click="quickAction('pattern')">
+              <span class="quick-icon">🎨</span>
+              <span class="quick-name">AI 纹样生成</span>
+              <span class="quick-desc">描述风格生成传统纹样</span>
+            </button>
+            <button class="quick-btn" @click="quickAction('restore')">
+              <span class="quick-icon">🏺</span>
+              <span class="quick-name">AI 服饰复原</span>
+              <span class="quick-desc">上传残片推测完整服饰</span>
+            </button>
+          </div>
+
           <div class="chat-input-row">
             <input ref="fileInput" type="file" accept="image/*" hidden @change="onPickImage" />
             <button class="attach-btn" title="上传截图/照片" :disabled="chatting" @click="fileInput?.click()">📎</button>
-            <el-input v-model="chatInput" placeholder="输入问题，可粘贴服饰截图让 AI 识图…" size="large" @keyup.enter="sendChat" />
+            <el-input v-model="chatInput" type="textarea" :rows="2" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="输入问题，可粘贴服饰截图让 AI 识图…" @keydown.enter.exact.prevent="sendChat" />
             <el-button type="primary" :loading="chatting" @click="sendChat">发送</el-button>
           </div>
 
@@ -124,6 +154,16 @@
       </div>
 
       <aside class="qa-side">
+        <div class="ys-card">
+          <h3 class="ys-title">档案编号查找</h3>
+          <p class="side-text" style="font-size:12px;color:#999;margin-bottom:10px">输入档案编号快速跳转，如 0009、档案-0009、衣制-09</p>
+          <div class="lookup-row">
+            <el-input v-model="lookupCode" placeholder="输入编号…" size="default" @keyup.enter="goLookup" />
+            <el-button type="primary" @click="goLookup">跳转</el-button>
+          </div>
+          <div v-if="lookupResult" class="lookup-result" v-html="lookupResult"></div>
+        </div>
+
         <div class="ys-card">
           <h3 class="ys-title">社区勘误机制</h3>
           <p class="side-text">
@@ -200,6 +240,25 @@ const chatting = ref(false);
 const chatMsgs = ref<any[]>(loadChat());
 const chatBox = ref<HTMLElement | null>(null);
 const pendingImage = ref("");
+const lookupCode = ref("");
+const lookupResult = ref("");
+
+async function goLookup() {
+  const code = lookupCode.value.trim();
+  if (!code) return;
+  lookupResult.value = "搜索中…";
+  try {
+    const res: any = await fetch(`/api/archive/lookup?code=${encodeURIComponent(code)}`);
+    const data = await res.json();
+    if (data.found) {
+      lookupResult.value = `✅ 找到：<b>${data.title}</b>（${data.code}）<br><a href="${data.url}" target="_blank">查看详情 ↗</a>`;
+    } else {
+      lookupResult.value = "❌ 未找到该编号，请检查后重试";
+    }
+  } catch {
+    lookupResult.value = "搜索失败，请稍后重试";
+  }
+}
 const fileInput = ref<HTMLInputElement | null>(null);
 
 function readImageFile(f: File) {
@@ -250,6 +309,18 @@ function pickKeyword(q: string) {
   let s = q.replace(/[，。？?、！!：:；;·\s"'“”‘’]/g, "");
   s = s.replace(/(为什么|怎么|是什么|有啥|有什么区别|区别|如何|多少|哪些|哪个|怎样|它|他|她|吗|呢|吧|的|了|与|和)/g, "");
   return s.slice(0, 6) || q.replace(/[，。？?、！!：:；;·\s"'“”‘’]/g, "").slice(0, 6);
+}
+
+const quickPrompts: Record<string, string> = {
+  poem: "请为一件明代马面裙写一首七言绝句，要体现它的形制特点和文化寓意。",
+  compare: "请对比唐代和宋代女子常服在形制、色彩、面料上的主要区别，分点说明。",
+  outfit: "我要参加一个传统汉服文化活动，请帮我搭配一套适合春季的宋制汉服，包括上衣、下裙、配饰和面料建议。",
+  pattern: "请描述一种适合用在明代女子襦裙上的传统纹样，要求：名称、寓意、常见配色、构图特点。",
+  restore: "假设我有一块出土的唐代半臂残片，上面能看到卷草纹和红色颜料痕迹，请推测这件半臂的完整形制、面料和穿着场合。",
+};
+
+function quickAction(type: string) {
+  chatInput.value = quickPrompts[type] || "";
 }
 
 async function sendChat() {
@@ -457,6 +528,10 @@ onMounted(async () => {
 .q-ai-preview { margin-top: 8px; font-size: 13px; color: var(--ys-ink-3); line-height: 1.7; }
 .qa-side { display: flex; flex-direction: column; }
 .side-text { font-size: 13px; line-height: 1.8; color: var(--ys-ink-2); }
+.lookup-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.lookup-row .el-input { flex: 1; }
+.lookup-result { font-size: 13px; line-height: 1.8; padding: 10px; background: rgba(201,162,39,.06); border-radius: 8px; }
+.lookup-result a { color: #c9a227; }
 .role-list { margin: 0; padding-left: 18px; color: var(--ys-ink-2); font-size: 13px; line-height: 2; }
 .ai-block { border-left: 4px solid var(--ys-red); padding: 10px 14px; background: #fffdf8; border-radius: 8px; }
 .answer-item { border-bottom: 1px dashed var(--ys-line); padding: 10px 0; }
@@ -488,6 +563,14 @@ onMounted(async () => {
 .code-ref { color: var(--ys-red-deep); text-decoration: none; border-bottom: 1px dashed var(--ys-red); }
 .code-ref:hover { color: var(--ys-red); }
 .chat-actions { margin-top: 8px; }
+.ai-quick-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+.quick-btn { background: rgba(201,162,39,.08); border: 1px solid rgba(201,162,39,.25); border-radius: 10px; padding: 10px 8px; cursor: pointer; text-align: center; transition: all .2s; }
+.quick-btn:hover { background: rgba(201,162,39,.16); border-color: rgba(201,162,39,.5); transform: translateY(-1px); }
+.quick-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+.quick-name { display: block; font-size: 13px; font-weight: 600; color: #7a221c; margin-bottom: 2px; }
+.quick-desc { display: block; font-size: 11px; color: #999; line-height: 1.3; }
+@media (max-width: 768px) { .ai-quick-actions { grid-template-columns: repeat(2, 1fr); } }
+
 .chat-input-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
 .chat-input-row .el-input { flex: 1; }
 .attach-btn {
