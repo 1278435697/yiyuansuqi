@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
+from app.ai_engine.archive_codes import code_of
 from app.ai_engine.first_person_chat import first_person_chat
 from app.ai_engine.graphrag_engine import graphrag_answer
 from app.db.database import get_db
@@ -118,7 +119,8 @@ def costume_detail(costume_id: int, db: Session = Depends(get_db)):
     relations = [{"type": r.relation_type, "value": r.target_value,
                   "source_ref": r.source_ref} for r in c.relations or []]
     return {
-        "id": c.id, "name": c.name, "dynasty": c.dynasty, "category": c.category,
+        "id": c.id, "code": code_of("costume", c.id),
+        "name": c.name, "dynasty": c.dynasty, "category": c.category,
         "wearer": c.wearer, "source_type": c.source_type, "fabric": c.fabric,
         "pattern": c.pattern, "color": c.color, "shape_json": c.shape_json,
         "description": c.description, "relations": relations, "created_by": c.created_by,

@@ -5,7 +5,7 @@
 
 **核心特性**
 
-- **可插拔推理**：`VTON_BACKEND=auto|hrviton|tps|mock`，`auto` 按 `hrviton → tps → mock` 探测可用性并**显式记录降级原因**，绝不静默失败。
+- **可插拔推理**：`VTON_BACKEND=auto|aidge|hrviton|tps|mock`，`auto` 按 `aidge → hrviton → tps → mock` 探测可用性并**显式记录降级原因**，绝不静默失败。`aidge` 是云端生成式后端（阿里云 Aidge 虚拟试穿），没配凭据时自检即不可用，本机与生产都能原样退回本地 TPS。
 - **零权重也能出图**：默认路径 TPS（薄板样条）纯 CPU、不依赖任何 `.pth/.onnx`，无 GPU 的笔记本即可跑通端到端。
 - **Provider 链**：人像分割（VitonGPCI → U2Net → MediaPipe Selfie → GrabCut 启发式）与姿态（MediaPipe PoseLandmarker → mask 几何反推）逐项自检，有就用、没有就退。
 - **工程健壮性**：请求级 `request_id` 贯穿日志、上传真实格式校验（拒绝伪扩展名）、错误响应脱敏（`error_code` + 中文 `message` + `detail`（同值别名）+ `request_id`）、磁盘结果缓存（命中会明确告知，也可 `force_refresh` 强制重算）。
@@ -114,11 +114,22 @@ npm run build          # 产物 dist/
 
 ---
 
-## 三、配置项（`backend/.env`，全部有代码默认值）
+## 三、配置项（`tryon_service/.env`，全部有代码默认值）
+
+> 文件位置以代码为准：`app/config.py` 里 `BACKEND_ROOT = Path(__file__).resolve().parent.parent`，
+> `env_file` 因此是 **`tryon_service/.env`**，不是平台的 `backend/.env`。
+> 把 `YISU_AIDGE_*` 填进 `backend/.env` 会被完全忽略，云端后端仍然报 `missing_credentials`。
+> 生产那份由 `cloud_deploy_tryon.py` 的 env 阶段就地生成（0600），脚本只重写自己维护的几个键，
+> 人工加的 `YISU_AIDGE_ACCESS_KEY_*` / `YISU_PUBLIC_BASE_URL` 原样保留，并打印 `PRESERVED ...` 供核对。
 
 | 变量 | 默认 | 说明 |
 | --- | --- | --- |
-| `YISU_VTON_BACKEND` | `auto` | `auto / hrviton / tps / mock`；`auto` 会按优先级探测并降级 |
+| `YISU_VTON_BACKEND` | `auto` | `auto / aidge / hrviton / tps / mock`；`auto` 会按优先级探测并降级 |
+| `YISU_AIDGE_ACCESS_KEY_ID` / `_SECRET` | 空 | 云端试衣凭据。**只走 `.env`（0600）或 systemd Environment，别写进全局可读的 unit 文件，更不进仓库**；缺任一即 `available()=False`，流水线自动降级 |
+| `YISU_PUBLIC_BASE_URL` | 空 | 厂商能回访到的本服务地址，如 `http://47.93.14.11`。云端接口只收公网图片 URL，人像要先经 `data/outbox/` 换成一次性地址 |
+| `YISU_AIDGE_RESOLUTION` | `1K` | `1K` / `2K`，接口必填档位；2K 单价更高 |
+| `YISU_AIDGE_CLOTH_TYPE` | 空 | 留空按素材 `category` 推导（robe/dress→dresses、top→tops、skirt→bottoms）。实测厂商的 Auto 会把汉服大袖袍认成现代上衣，所以不建议交给它 |
+| `YISU_OUTBOX_TTL_SECONDS` | `600` | 出箱图片的存活上限；正常路径在试穿调用结束（`finally` 里 discard）时就删，这一档只兜进程崩溃。**不做读后即删**——厂商会 HEAD 预检、会重试，nginx 对 HEAD 还会多打一次上游，任何多余读取都会把真正取图那次打成 404 |
 | `YISU_DATABASE_URL` | 空（由 `platform_db_path` 推导） | 默认跟平台主库同一个 SQLite 文件；生产改 `mysql+aiomysql://...` 即切 MySQL，无需改代码 |
 | `YISU_PLATFORM_DB_PATH` | `../backend/data/yisu_prod.db` | 并入形态下指向平台主库；单独跑本模块时它就在 `backend/data/` 下 |
 | `YISU_SQLITE_WAL` | `false` | 默认不开 WAL：WAL 是写进库文件的持久设置，且会多出 `-wal/-shm` 旁文件，平台有按单文件拷贝库的习惯 |
@@ -210,7 +221,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/tryon \
 真人照(Base64) → 长边≤1024 归一 / EXIF 转正
    ├─ 人像分割：vitongpu → u2net → mediapipe_selfie → heuristic(GrabCut + 中心前景先验)
    ├─ 姿态估计：MediaPipe PoseLandmarker(33→COCO-17) → 由 mask 宽度分布反推肩线/腰线/衣摆
-   ├─ 试穿推理：hrviton(GPU + 双权重) → tps(9 对控制点薄板样条 + 遮挡还原 + LAB 亮度匹配) → mock
+   ├─ 试穿推理：aidge(云端生成式，需凭据+公网回取) → hrviton(GPU + 双权重) → tps(9 对控制点薄板样条 + 遮挡还原 + LAB 亮度匹配) → mock
    └─ 后处理：1–3px 边缘羽化 + 轻度降噪 + 可选锐化（不做全局平滑，保留衣纹）
 ```
 
@@ -347,7 +358,7 @@ python -m scripts.register_garments --person ../raw/model.png
 | 真实照片抠图带进了水印/桌面阴影 | 重跑 `register_garments` 时加 `--force-salience`，或自备同名 `_mask.png`（抠图不依赖 mediapipe，纯 numpy/scipy） |
 | 广袖/大摆被压成窄条 | 确认 `--category` 用对（`robe`/`dress` 才会按肩宽等比展开袖口，`top` 会被夹到髋膝之间） |
 | 前端素材库空白 | 后端未启动或未生成示例素材：`python -m scripts.gen_sample_garments --with-person && python -m scripts.seed_garments` |
-| 想强制走某条后端对比 | 在 `backend/.env` 设 `YISU_VTON_BACKEND=mock`（贴图基线）或 `tps`，重启后端 |
+| 想强制走某条后端对比 | 在 `backend/.env` 设 `YISU_VTON_BACKEND=mock`（贴图基线）、`tps`（本地兜底）或 `aidge`（云端，缺凭据时会带着原因自动降级），重启后端 |
 | 点了「一键试穿」结果图没变化 | 命中磁盘缓存，属预期行为：页面会可见提示（info 弹窗 + 结果区「命中磁盘缓存，本次未重跑推理」），不会静默复用。换素材 / 切 HD / 换照片，或勾选「跳过缓存强制重算」（接口传 `force_refresh=true`）才会真跑 |
 | 图片 404 但文件已落盘 | 先看响应里的 URL 前缀：`/tryon-assets`・`/tryon-results` 需要在 vite dev proxy 或 nginx 里有对应转发；若只改了 `YISU_RESULTS_ROOT` 而没改 `YISU_RESULTS_URL_PREFIX`，启动日志会直接给出告警 |
 
@@ -376,6 +387,8 @@ python -m scripts.register_garments --person ../raw/model.png
 - `yisu-tryon.service`：`User=www`（结果图要写进属 www 的 `backend/uploads/tryon`）、单 worker 有意（MediaPipe 模型与线程池在进程内）、`CPUQuota=150%` + `MemoryHigh=900M`（2 核 / 1.7G 的机器上给平台主服务与 MySQL 留一半），结果图指到 `backend/uploads/tryon`。
 - `yisu_nginx.conf`・`yisu_nginx_limit.conf`：**这两份是线上实况的镜像**（由 `scripts/cloud_sync_nginx.py` 回拉，不要反向推回服务器）。`/api/v1/` 反代到 sidecar 并按 IP 限流（`limit_req_zone` 只能写 `http{}`，所以单独一个文件，宝塔把 `vhost/nginx/*.conf` include 进 `http{}`）；`/tryon-assets/` 长缓存 7d；结果图复用既有 `/uploads/` 规则，生产不必新增 location。
 - `tryon_service/.env.example`・`requirements-mysql.txt`：生产切 MySQL 用的是**异步驱动 `aiomysql`**（平台侧同步 ORM 用 `pymysql`，两者互不影响）。
+- **云端试衣的出箱路由已于 2026-10-20 上线**：`location /api/v1/outbox/` + 独立的 `zone=tryon_outbox:240r/m`，`yisu_nginx.conf`・`yisu_nginx_limit.conf` 两份镜像已用 `cloud_sync_nginx.py` 回拉成实况。为什么单开一条：`/api/v1/` 的 `limit_req` 按 `$binary_remote_addr` 分桶、20r/m，而出箱图是**厂商服务器**来取的，这一桶记的是阿里云出口 IP，被 503 掉的表现是「URL 发出去了但厂商没取到图」，长得像模型故障。上线后实探：`GET /api/v1/outbox/<合法但不存在的 token>` 回 `{"error_code":"TASK_NOT_FOUND",...}` 404，说明 nginx 与路由都通。
+- 判断这条通了没：`curl -i http://47.93.14.11/api/v1/outbox/probe0000000000000000`。**404 + JSON = 通**（请求到了 FastAPI，路由在，只是这个 token 不存在）；503 = 被 `limit_req` 挡着，正是单开 location 要解决的；nginx 自带的 HTML 404 或连不上 = 根本没打到 sidecar（`PUBLIC_BASE` 那个 IP 归了别的 server 块，或 `/api/v1/` 那条 location 被人改过）。`stage_verify` 已把这条做成硬失败，不花钱也不需凭据。
 
 ### 12.3 开发时的四个坑（踩过，写在这儿防重复踩）
 
@@ -445,6 +458,8 @@ SSH 凭据也不写在脚本里，而是用正则从平台既有部署脚本 `_d
 | 连上生产 MySQL 后取连接就炸：`AsyncAdapt_aiomysql_connection.ping() missing 1 required positional argument: 'reconnect'` | SQLAlchemy 2.0.36 的 aiomysql 适配层签名是 `ping(self, reconnect)` 无默认值，而 `MySQLDialect_pymysql.do_ping` 在 `_send_false_to_ping=False` 时调的是无参 `ping()`；开了 `pool_pre_ping` 必炸。2.0.54 上游已改成 `ping(self, reconnect: bool = False)` | `requirements-core.txt` 把 `SQLAlchemy[asyncio]` 从 2.0.36 锁到 **2.0.54**（本地/平台/云端三处 venv 同步升级） | `test_db_contract.py` 加 `SQLALCHEMY_FLOOR=(2,0,54)` 版本地板测试。**本机走 sqlite 完全复现不了**，只能靠断言拦住降级 |
 | `pip install` 近 20 分钟装不完 | mediapipe 对 `opencv-contrib-python` **没有版本约束**，pip 从 5.0.0.93 往下逐个回溯，每个 80MB | 显式锁 `opencv-contrib-python==4.11.0.86`（与本地实测一致），重跑 4.5 分钟完成 | 锁定写进 `requirements-ai.txt` 并附「为什么不能放开」注释 |
 
+**2026-10-20 追加：`stage_verify` 的磁盘缓存假绿。** 之前 verify 的试穿 payload 没带 `force_refresh`，重跑时 0.2s 命中上一轮的磁盘缓存，返回的是**旧的 tps 结果**——云端链路到底通没通完全没测到，还会把旧图当成本轮出图存进 `tryon_qa/`。现在：payload 固定 `force_refresh: true`；先读 `/api/v1/health` 的 `vton_backend_resolved`，若解析为 `aidge` 而实际 `backend_used` 不是 `aidge`（降级）或 warnings 出现 `result_from_cache`，一律硬失败。用本地桩实测 5 个场景：云端正常 PASS、缓存命中 FAIL、aidge→tps 降级 FAIL、tps 正常 PASS、health 打不开 FAIL。注意：配置了云端后，每次 verify 会真实消耗一次云端额度（这是刻意的，否则测不到云端）。
+
 ### 13.4 上线验证记录（均为公网实测，非本地推断）
 
 ```text
@@ -469,6 +484,52 @@ GET  /uploads/tryon/<task>/result.jpg         200  44622B  image/jpeg
 
 - **仍是 HTTP 裸端口 80 + IP 直连**，没有 HTTPS、没有域名；服务本身**依旧无鉴权**，12.4 列的风险在生产上同样成立。
 - 限流 `20r/m` + `burst=5`（按客户端 IP）；2 核机器上 HD 画质会排队，`proxy_read_timeout` 已放宽到 300s。
-- 画质为 **TPS 几何兜底**（未装 torch）；降级原因在 `/api/v1/health`、启动日志、前端健康标签三处都可见。
+- 默认推理后端已是 **Aidge 云端换装**（`/api/v1/health` 报 `aidge`），画质不再受 TPS 几何兜底限制；代价是**按张计费**，免费额度 30 张，未用量随时可能被前端某次「强制重算」烧掉。
+- 云端结果与本地 TPS 结果共用同一套磁盘缓存键，**不含推理后端版本**：TPS 时代落过盘的组合（典型是示例人像 + 常见素材）会被直接命中，新访客第一次点击拿到的是本地几何兜底的旧图，前端只在标签上如实写「TPS 几何兜底」。要么清掉云端启用前的 `backend/uploads/tryon/*`，要么把后端版本纳入 `cache_key`。
 - 结果图无 TTL 清理，磁盘只有 13G 可用；`/root/.cache/pip` 已占 4.3G，可以清。
 - `backend/uploads/tryon/<task>/person_source.jpg` 随结果落盘，历史页要做原图对比 —— 对外开放前必须改成签名 URL。
+
+### 13.6 3D 博物馆子站的「虚拟试穿」交接（已上线，2026-10-20 20:29）
+
+线上 `/museum/` 整段由 3D 子站接管（nginx `location /museum/ { try_files /museum/index.html }`），子站自己打包了一个
+`TryonPlaceholder` 占位组件挂在它的路由 `/tryon` 上。所以展厅卡片的「试穿此服饰」和顶部「虚拟试穿」都只会进那张占位页，
+**不是链路坏，是子站根本没有真试穿页**。
+
+**子站是 hash 路由**，这一条决定成败：真实形态是 `http://…/museum/#/tryon?garment=…`，展品参数在 `#` 之后、
+不在 `location.search` 里。反过来，`http://…/museum/tryon?garment=…` 这种 pathname 写法**不会**触发子站路由，
+index.html 加载后 router 直接把它归到 `#/museum`，那个 chunk 连加载都不加载。
+
+实况与处置：
+
+| 事实 | 值 |
+| --- | --- |
+| 动过的文件（唯一） | `dist/museum/assets/TryonPlaceholder-Bp1Rhoms.js`，现 1562 B、`root:root 644`、md5 `a3cf99881f4990c70540b191fe47a88b` |
+| 原占位页备份 | 同目录 `TryonPlaceholder-Bp1Rhoms.js.bak.20261020_202732`（1595 B、666、md5 `e212ca98e5d5ece07c33dbcf52d9344f`） |
+| 另一份备份 | `.bak.20261020_202920` = 交接模块 v1（只读 `location.search`，会把 `garment` 丢掉，已被 v2 覆盖掉，别当回滚点用） |
+| 子站展品数据 | `assets/exhibits-Cb5qGZIp.js`：40 件里只有 4 件带 `tryonId`，其余 36 件的详情卡片压根不渲染按钮 |
+| 其中两个标识与 sidecar 素材库对不上 | `yuanlingpao-tang` 应为 `yuanling-pao`、`beizi-song` 应为 `beizi`；交接模块里映射掉了 |
+| 卡片按钮发出的东西 | `MuseumView-*.js`：`t.push({name:"tryon",query:{garment:D.tryonId,from:"museum"}})` |
+
+**做法**：把那个 chunk 换成仓根的 `museum_tryon_handoff.js`（文件名不变，子站其它产物与 nginx 一行都没动），
+模块里读 `search` 与 `hash` 两处参数、映射旧标识、补 `from=museum`，然后 `location.replace('/tryon?…')` 交给主站真页面。
+载荷本身带注释与 `export default {render:()=>null}`，所以即便被 router 当组件用也不报错。
+
+**已实测**（公网，2026-10-20 20:29–20:31）：
+
+```
+子站顶部「虚拟试穿」真点击  → http://…/tryon?from=museum        主站渲染、徽标「试穿服务正常 · Aidge 云端换装」
+#/tryon?garment=quju-shenyi → /tryon?garment=quju-shenyi&from=museum  卡片 is-active=汉代曲裾深衣，toast「已选中展厅带来的「曲裾深衣」」
+#/tryon?garment=beizi-song  → /tryon?garment=beizi&from=museum         旧标识映射生效，toast「已选中展厅带来的「对襟褙子」」
+```
+
+**没实测的一条**：展厅详情卡片上那个「试穿此服饰」按钮本身。它是 three.js 的 raycast 命中，内置浏览器用合成
+PointerEvent 扫了 28 个坐标都没命中展品（`hasCard` 始终 false），我不拿「它 push 的 URL 我已验证可用」冒充点过它。
+要确认就在真浏览器里点一次，它最终走的就是上面第二行那条 URL。
+
+两个必须知道的边界：① 这是**服务器侧产物直改**，子站哪天重新构建上传就会被占位页盖回去，重推 `museum_tryon_handoff.js` 即可；
+② `MuseumView-aROHavN7.js` 与 `index-BqJJw04H.js` 用户正在直接改（`_dl/` 里各有 `.bak` 且内容不同），
+所以这个改动刻意只碰占位 chunk，不碰那两个文件，也不要用 `_up_mus3.py`（它硬编码上传的正好是那两个）。
+
+还剩两笔可选账（都没做）：`/museum/tryon?garment=…` 这种 pathname 直达链接要能用，得给 nginx 加一条
+`location = /museum/tryon { return 302 /museum/#/tryon$is_args$args; }`；子站另外 36 件展品要出按钮，得改它的
+`exhibits-Cb5qGZIp.js` 数据（那是子站构建产物，直改等于替他的源码工作线做决定）。

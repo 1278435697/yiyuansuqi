@@ -1,0 +1,1 @@
+UPDATE pattern_library SET applied='衣襟、裙摆、荷包、镜套表面' WHERE id=159;

@@ -13,21 +13,59 @@
           </div>
           <div ref="chatBox" class="chat-box">
             <div v-if="!chatMsgs.length" class="chat-welcome">
-              <p>向衣溯AI提问任何与华夏服饰相关的问题，例如：</p>
+              <p>向衣溯 · 华夏衣冠志提问任何与华夏服饰相关的问题，例如：</p>
               <p class="welcome-examples">「马面裙和百褶裙有什么区别？」「唐代女子日常穿什么？」「香云纱是什么面料？」</p>
             </div>
-            <div v-for="(m, i) in chatMsgs" :key="i" :class="['chat-row', m.role]">
-              <div class="chat-bubble">
-                <template v-if="m.role === 'assistant'">
-                  <span class="chat-ai-tag">AI溯源</span>
-                </template>
-                <p class="chat-content">{{ m.content }}</p>
-                <p v-if="m.ref" class="chat-ref">引用：{{ m.ref }}</p>
-                <div v-if="m.role === 'assistant' && m.question" class="chat-actions">
-                  <el-button size="small" text type="warning" @click="publishChat(m)">存为社区问题 ↗</el-button>
+            <template v-for="(m, i) in chatMsgs" :key="i">
+              <div :class="['chat-row', m.role]">
+                <div class="chat-bubble">
+                  <template v-if="m.role === 'assistant'">
+                    <span class="chat-ai-tag">AI溯源</span>
+                  </template>
+                  <img v-if="m.image" class="chat-thumb" :src="m.image" alt="截图" />
+                  <p class="chat-content">
+                    <template v-for="(seg, si) in contentSegments(m)" :key="si">
+                      <component :is="seg.source.external ? 'a' : RouterLink" v-if="seg.source"
+                                 v-bind="linkAttrs(seg.source)" class="code-ref">{{ seg.text }}</component>
+                      <template v-else>{{ seg.text }}</template>
+                    </template>
+                  </p>
+                  <div v-if="m.sources?.length" class="src-row">
+                    <span class="chat-ref">引用：</span>
+                    <component :is="s.external ? 'a' : RouterLink" v-for="s in m.sources" :key="s.type + s.id"
+                               v-bind="linkAttrs(s)" class="src-chip">
+                      {{ s.title }} · {{ s.code }}
+                    </component>
+                  </div>
+                  <p v-else-if="m.ref" class="chat-ref">引用：{{ m.ref }}</p>
+                  <div v-if="m.role === 'assistant' && m.question" class="chat-actions">
+                    <el-button size="small" text type="warning" @click="publishChat(m)">存为社区问题 ↗</el-button>
+                  </div>
                 </div>
               </div>
-            </div>
+              <!-- 答后推荐检索：四类站内资料卡 + 推荐追问 -->
+              <div v-if="m.rec" class="chat-row assistant">
+                <div class="rec-wrap" data-lb-native>
+                  <template v-if="m.rec.cards?.length">
+                    <p class="rec-head">相关资料 · 来自站内档案</p>
+                    <div class="rec-cards">
+                      <component :is="c.external ? 'a' : RouterLink" v-for="c in m.rec.cards" :key="c.type + c.id"
+                                 v-bind="linkAttrs(c)" class="rec-card">
+                        <img v-if="c.image_url" :src="c.image_url" :alt="c.title" loading="lazy" />
+                        <span v-else class="rec-noimg">{{ c.title.slice(0, 4) }}</span>
+                        <span class="rec-type">{{ REC_TYPE_LABEL[c.type] || "资料" }}<i v-if="!c.exact"> · 非精确</i></span>
+                        <b>{{ c.title }}</b>
+                        <i>{{ c.code }}{{ c.subtitle ? " · " + c.subtitle : "" }}</i>
+                      </component>
+                    </div>
+                  </template>
+                  <div v-if="m.rec.asks?.length" class="ask-row">
+                    <span class="rec-head">你可能还想问</span>
+                    <button v-for="a in m.rec.asks" :key="a" class="ask-chip" @click="askFollowup(a)">{{ a }}</button>
+                  </div>
+                </div>
+              </div>
+            </template>
             <div v-if="chatting" class="chat-row assistant">
               <div class="chat-bubble">
                 <span class="chat-ai-tag">AI溯源</span>
@@ -35,8 +73,14 @@
               </div>
             </div>
           </div>
+          <div v-if="pendingImage" class="pending-img">
+            <img :src="pendingImage" alt="待发截图" />
+            <button class="pending-clear" @click="pendingImage = ''" title="移除">×</button>
+          </div>
           <div class="chat-input-row">
-            <el-input v-model="chatInput" placeholder="输入你的问题，如「香云纱是什么面料？」" size="large" @keyup.enter="sendChat" />
+            <input ref="fileInput" type="file" accept="image/*" hidden @change="onPickImage" />
+            <button class="attach-btn" title="上传截图/照片" :disabled="chatting" @click="fileInput?.click()">📎</button>
+            <el-input v-model="chatInput" placeholder="输入问题，可粘贴服饰截图让 AI 识图…" size="large" @keyup.enter="sendChat" />
             <el-button type="primary" :loading="chatting" @click="sendChat">发送</el-button>
           </div>
 
@@ -130,9 +174,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { createQuestion, fetchAiChat, fetchQuestions, fetchQuestionDetail, addAnswer, aiVerifyAnswer, fetchWebSearch, questionToPost, deleteQuestion, fetchMe } from "@/api/modules";
+import { createQuestion, fetchAiChat, fetchAiRecommend, fetchQuestions, fetchQuestionDetail, addAnswer, aiVerifyAnswer, fetchWebSearch, questionToPost, deleteQuestion, fetchMe } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
 import { useUserStore } from "@/store/user";
 
@@ -155,6 +199,25 @@ const chatInput = ref("");
 const chatting = ref(false);
 const chatMsgs = ref<any[]>(loadChat());
 const chatBox = ref<HTMLElement | null>(null);
+const pendingImage = ref("");
+const fileInput = ref<HTMLInputElement | null>(null);
+
+function readImageFile(f: File) {
+  const r = new FileReader();
+  r.onload = () => { pendingImage.value = String(r.result); };
+  r.readAsDataURL(f);
+}
+function onPickImage(e: Event) {
+  const f = (e.target as HTMLInputElement).files?.[0];
+  if (f) readImageFile(f);
+  (e.target as HTMLInputElement).value = "";
+}
+function onPaste(e: ClipboardEvent) {
+  const item = [...(e.clipboardData?.items || [])].find((it) => it.type.startsWith("image/"));
+  if (!item) return;
+  const f = item.getAsFile();
+  if (f) { readImageFile(f); e.preventDefault(); }
+}
 const questions = ref<any[]>([]);
 const loading = ref(false);
 const route = useRoute();
@@ -191,17 +254,23 @@ function pickKeyword(q: string) {
 
 async function sendChat() {
   const q = chatInput.value.trim();
-  if (!q) return;
   if (chatting.value) return;
-  chatMsgs.value.push({ role: "user", content: q });
+  if (!q && !pendingImage.value) return;
+  const b64 = pendingImage.value;
+  chatMsgs.value.push({ role: "user", content: q || "（看图识服饰）", image: b64 });
+  pendingImage.value = "";
   persistChat();
   chatInput.value = "";
   chatting.value = true;
   try {
     const history = chatMsgs.value.slice(0, -1).map((m) => ({ role: m.role, content: m.content }));
-    const res: any = await fetchAiChat({ question: q, history });
-    chatMsgs.value.push({ role: "assistant", content: res.answer, ref: res.source_ref, question: q });
+    const res: any = await fetchAiChat({ question: q, history, image_base64: b64 });
+    chatMsgs.value.push({
+      role: "assistant", content: res.answer, ref: res.source_ref,
+      sources: res.sources || [], question: q, imageNote: res.image_note || "",
+    });
     persistChat();
+    loadRecommend(chatMsgs.value.length - 1, q);
     webQaKeyword.value = q;
     await loadQaWeb();
   } catch {
@@ -211,6 +280,48 @@ async function sendChat() {
     chatting.value = false;
     scrollChat();
   }
+}
+
+const REC_TYPE_LABEL: Record<string, string> = {
+  costume: "服饰档案", pattern: "纹样", fabric: "面料", news: "资讯", accessory: "配饰",
+};
+
+const CODE_SPLIT = /(〔[^〔〕]+〕)/g;
+
+/** 答案正文切段：只有本次引用里出现过的〔编号〕才做成链接，模型自己编的留纯文本 */
+function contentSegments(m: any): { text: string; source: any | null }[] {
+  const known: Record<string, any> = {};
+  for (const s of m.sources || []) known[s.code] = s;
+  return String(m.content || "").split(CODE_SPLIT).reduce<{ text: string; source: any | null }[]>((acc, piece) => {
+    if (!piece) return acc;
+    const source = piece.startsWith("〔") && piece.endsWith("〕") ? known[piece.slice(1, -1).trim()] : null;
+    acc.push({ text: piece, source: source || null });
+    return acc;
+  }, []);
+}
+
+/** 配饰九卷是独立静态子页，不在单页路由表里，得用普通链接跳 */
+function linkAttrs(item: { link: string; external?: boolean }) {
+  return item.external ? { href: item.link } : { to: item.link };
+}
+
+/** 答后推荐：抽词命中站内资料则出卡；拉不到或没料就不占位，不打断对话 */
+async function loadRecommend(index: number, q: string) {
+  try {
+    const data: any = await fetchAiRecommend({ q });
+    const cards = data?.cards || [];
+    const asks = data?.asks || [];
+    if (!cards.length && !asks.length) return;
+    chatMsgs.value[index] = { ...chatMsgs.value[index], rec: { keywords: data?.keywords || [], cards, asks } };
+    persistChat();
+  } catch { /* 静默失败 */ }
+}
+
+/** 点追问 = 直接把这句话发出去 */
+function askFollowup(text: string) {
+  if (chatting.value) return;
+  chatInput.value = text;
+  sendChat();
 }
 
 /** 清空本地对话记录（仅登录后可操作） */
@@ -306,6 +417,7 @@ async function verify(aid: number) {
 }
 
 onMounted(async () => {
+  window.addEventListener("paste", onPaste);
   await load();
   // 恢复上次对话：滚动到底部 + 重刷全网资讯
   scrollChat();
@@ -321,7 +433,7 @@ onMounted(async () => {
 
 <style scoped>
 .page-sub { color: var(--ys-ink-3); margin: -6px 0 16px; }
-.qa-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+.qa-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; }
 .ask-foot { display: flex; justify-content: space-between; align-items: center; }
 .ai-answer { margin-top: 14px; border: 1px solid var(--ys-line); border-left: 4px solid var(--ys-red); border-radius: 8px; padding: 14px; background: #fffdf8; }
 .ai-badge { background: var(--ys-red); color: #fff; padding: 1px 8px; border-radius: 10px; font-size: 11px; margin-right: 6px; }
@@ -370,10 +482,43 @@ onMounted(async () => {
 .chat-ai-tag { display: inline-block; background: var(--ys-red); color: #fff; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-bottom: 6px; }
 .chat-content { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .chat-ref { margin: 8px 0 0; font-size: 12px; color: var(--ys-ink-3); }
+.src-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.src-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 2px 10px; border: 1px solid var(--ys-line); border-radius: 16px; background: #fffdf6; color: var(--ys-red-deep); font-size: 12px; text-decoration: none; }
+.src-chip:hover { border-color: var(--ys-red); color: var(--ys-red); }
+.code-ref { color: var(--ys-red-deep); text-decoration: none; border-bottom: 1px dashed var(--ys-red); }
+.code-ref:hover { color: var(--ys-red); }
 .chat-actions { margin-top: 8px; }
 .chat-input-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
 .chat-input-row .el-input { flex: 1; }
+.attach-btn {
+  flex: none; width: 40px; height: 40px; border-radius: 8px;
+  border: 1px solid var(--ys-line, #e5d9c3); background: #fffdf8;
+  cursor: pointer; font-size: 18px;
+}
+.attach-btn:hover:not(:disabled) { background: #f6ecd4; }
+.pending-img { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.pending-img img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--ys-line, #e5d9c3); }
+.pending-clear { border: none; background: #7a221c; color: #fff; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; }
+.chat-thumb { max-width: 180px; max-height: 180px; border-radius: 8px; margin: 0 0 6px; display: block; border: 1px solid var(--ys-line, #e5d9c3); }
+
+/* ---- 答后推荐检索 ---- */
+.rec-wrap { width: 100%; max-width: 86%; min-width: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.rec-head { margin: 0; font-size: 12px; color: var(--ys-ink-3); }
+.rec-cards { display: grid; grid-auto-flow: column; grid-auto-columns: 150px; gap: 8px; overflow-x: auto; min-width: 0; padding-bottom: 4px; }
+.rec-card { display: flex; flex-direction: column; border: 1px solid var(--ys-line); border-radius: 8px; overflow: hidden; background: #fffdf6; color: var(--ys-ink-1); text-decoration: none; }
+.rec-card:hover { border-color: var(--ys-red); }
+.rec-card img { display: block; width: 100%; height: 84px; object-fit: cover; background: #eee5d2; }
+.rec-noimg { display: grid; place-items: center; height: 84px; background: #eee5d2; color: var(--ys-red-deep); font-size: 13px; }
+.rec-type { align-self: flex-start; margin: 6px 8px 0; font-size: 10px; color: var(--ys-red); }
+.rec-type i { font-style: normal; color: var(--ys-ink-3); }
+.rec-card b { padding: 2px 8px 0; font-size: 13px; line-height: 1.4; }
+.rec-card > i { padding: 2px 8px 8px; font-style: normal; font-size: 11px; color: var(--ys-ink-3); line-height: 1.5; }
+.ask-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ask-chip { min-height: 44px; padding: 4px 12px; border: 1px dashed var(--ys-line); border-radius: 16px; background: #fffdf6; color: var(--ys-ink-2); font-size: 13px; cursor: pointer; }
+.ask-chip:hover { color: var(--ys-red-deep); border-color: var(--ys-red); }
 @media (max-width: 900px) {
-  .qa-layout { grid-template-columns: 1fr; }
+  .qa-layout { grid-template-columns: minmax(0, 1fr); }
+  .rec-wrap { max-width: 100%; }
+  .rec-cards { grid-auto-columns: 132px; }
 }
 </style>

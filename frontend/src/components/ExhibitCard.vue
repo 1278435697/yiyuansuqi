@@ -182,7 +182,7 @@ const activeImage = computed(() => (props.exhibit ? props.exhibit.images[activeI
 }
 
 .real-note {
-  font-size: 11px;
+  font-size: var(--ys-fs-micro);
   color: #8e8471;
 }
 

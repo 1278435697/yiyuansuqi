@@ -1,0 +1,9 @@
+
+sed: -e expression #1, char 23: unterminated `s' command
+--- check ---
+
+--- test ---
+nginx: the configuration file /www/server/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /www/server/nginx/conf/nginx.conf test is successful
+--- reload ---
+

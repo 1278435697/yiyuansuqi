@@ -1,0 +1,21 @@
+=== museum_bak_20261020_190743 assets ===
+assets.manifest.json
+exhibits
+exhibits-Cb5qGZIp.js
+fabrics
+gallery
+index-C3V5wcMs.css
+index-Q6w8Y7Pg.js
+MuseumView-BQ5pzBGt.js
+MuseumView-feyVYxtT.css
+patterns
+TryonPlaceholder-BpZwNlAo.css
+TryonPlaceholder-BU-hmU9k.js
+=== 备份内返回补丁 ===
+0
+=== 备份 index.html 引用 ===
+src="./assets/index-Q6w8Y7Pg.js"
+=== 品牌检查（衣溯AI 出现次数）===
+1
+=== /tmp 备份是否还在 ===
+-rw-r--r-- 1 root root 103640 Oct 18 22:27 /tmp/index-DOlOnALt.v2.js.bak_backbtn

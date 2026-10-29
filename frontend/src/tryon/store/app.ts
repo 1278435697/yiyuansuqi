@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { fetchGarments } from '@/tryon/api/garments'
 import { fetchHealth } from '@/tryon/api/health'
 import { describeError } from '@/tryon/api/client'
+import { backendBadge } from '@/tryon/utils/backend'
 import type { Garment, GarmentCategory, HealthOut } from '@/tryon/types'
 
 const ALL = '__all__'
@@ -42,7 +43,7 @@ export const useAppStore = defineStore('app', () => {
   const backendLabel = computed<string>(() => {
     const resolved = health.value?.vton_backend_resolved
     if (!resolved) return '检测中'
-    return resolved === 'hrviton' ? 'HR-VITON 高精度' : resolved === 'tps' ? 'TPS 几何兜底' : resolved
+    return backendBadge(resolved).label
   })
 
   async function loadGarments(force = false): Promise<void> {

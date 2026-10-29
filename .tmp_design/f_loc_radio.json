@@ -1,0 +1,36 @@
+http://127.0.0.1:5399/fabric  Tab×17
+{
+ "焦点": [
+  {
+   "sel": "input.el-radio-button__original-radio",
+   "outline": "none",
+   "boxShadow": "none",
+   "border": "0px rgb(0, 0, 0)"
+  },
+  {
+   "sel": "label.el-radio-button.is-active",
+   "outline": "none",
+   "boxShadow": "none",
+   "border": "0px rgb(58, 47, 36)"
+  },
+  {
+   "sel": "div.el-radio-group",
+   "outline": "none",
+   "boxShadow": "none",
+   "border": "0px rgb(58, 47, 36)"
+  },
+  {
+   "sel": "div.acc-filter-row.anim-rise",
+   "outline": "none",
+   "boxShadow": "none",
+   "border": "0px rgb(58, 47, 36)"
+  },
+  {
+   "sel": "div.fabric-page.acc-scope",
+   "outline": "none",
+   "boxShadow": "none",
+   "border": "0px rgb(58, 47, 36)"
+  }
+ ],
+ "matchesHint": true
+}

@@ -7,12 +7,33 @@
   --ys-ink: #3a2f24;
   --ys-ink-2: #5c4c3a;
   --ys-ink-3: #9a8a70;
+  /* 正文下限色：--ys-ink-3 在白卡上只有 3.36:1，够装饰不够读。
+     凡是要人看懂的句子（空态引导、说明文字）一律用这个，6.5:1 过 AA。 */
+  --ys-ink-text: #6b5a45;
   --ys-red: #7a221c;
   --ys-red-deep: #8f2f23;
   --ys-gold: #c9a227;
   --ys-line: rgba(201, 162, 39, 0.30);
   --ys-card: rgba(255, 253, 248, 0.92);
   --ys-shadow: 0 4px 14px rgba(90, 60, 30, 0.10);
+  /* 字阶：12px 是全站可读下限，低于它的正文一律不许出现 */
+  --ys-fs-micro: 12px;
+  --ys-fs-aux: 13px;
+  --ys-fs-body: 14px;
+  --ys-fs-h3: 16px;
+  --ys-fs-h2: 20px;
+  --ys-fs-h1: 26px;
+  /* 断点约定：≤480 手机 / ≤768 平板与窄窗 / ≥1024 桌面；留白随断点走 */
+  --ys-gutter: 20px;
+  /* Element Plus 主色收编：库默认蓝 #409eff 是这套深红+金里唯一漏网的强调色，
+     覆盖 --el-color-primary 一次管住 tab、分段控件、单选按钮、分页、链接、焦点环 */
+  --el-color-primary: #7a221c;
+  --el-color-primary-light-3: #a26460;
+  --el-color-primary-light-5: #bd918e;
+  --el-color-primary-light-7: #d7bdbb;
+  --el-color-primary-light-8: #e4d3d2;
+  --el-color-primary-light-9: #f2e9e8;
+  --el-color-primary-dark-2: #621b16;
   /* Element Plus 浅色变量 */
   --el-bg-color: #fffdf8;
   --el-bg-color-overlay: #fffdf8;
@@ -40,6 +61,17 @@ body {
   font-family: "Songti SC", "Noto Serif SC", "STSong", "SimSun", serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* 金色细滚动条 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #efe6d6; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c9a227, #a07d16);
+  border-radius: 6px;
+  border: 2px solid #efe6d6;
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d9b33d, #b08a1c); }
+::selection { background: rgba(201, 162, 39, 0.35); color: #3a2f24; }
 
 .app-shell {
   min-height: 100vh;
@@ -85,9 +117,10 @@ body {
 
 .brand-text h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 2px;
   color: #f5efe4;
+  white-space: nowrap;
 }
 
 .brand-text p {
@@ -99,7 +132,7 @@ body {
 .app-nav {
   display: flex;
   gap: 2px;
-  flex-wrap: wrap;
+  flex-wrap: wrap !important;
   flex: 1;
 }
 
@@ -108,6 +141,7 @@ body {
   color: rgba(245, 239, 228, 0.88);
   text-decoration: none;
   font-size: 15px;
+  letter-spacing: 1px;
   border-radius: 4px;
   transition: all 0.2s;
 }
@@ -115,12 +149,14 @@ body {
 .app-nav a:hover {
   color: #ffe9a8;
   background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 .app-nav a.router-link-active {
   color: #ffe9a8;
   font-weight: 700;
   background: rgba(255, 244, 214, 0.18);
+  box-shadow: inset 0 -2px 0 0 rgba(255, 233, 168, 0.65);
 }
 
 .header-right {
@@ -152,7 +188,7 @@ body {
   width: 100%;
   max-width: 1360px;
   margin: 0 auto;
-  padding: 24px 20px 48px;
+  padding: 24px var(--ys-gutter) 48px;
 }
 
 /* ========== 全站页面开场动画 ========== */
@@ -233,19 +269,28 @@ body {
 .anim-stagger > *:nth-child(8) { animation-delay: .74s; }
 
 .app-footer {
-  padding: 18px;
+  padding: 22px 18px 26px;
   text-align: center;
   color: var(--ys-ink-3);
   font-size: 13px;
+  letter-spacing: 1px;
   border-top: 1px solid var(--ys-line);
+  background: linear-gradient(180deg, transparent, rgba(201, 162, 39, 0.07));
+}
+
+.app-footer .footer-sub {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: rgba(120, 96, 66, 0.72);
 }
 
 /* 通用卡片（对齐 demo .card rgba(255,253,248,0.92)） */
 .ys-card {
   background: var(--ys-card);
   border: 1px solid #e6dcc8;
-  border-radius: 10px;
-  box-shadow: var(--ys-shadow);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(90, 60, 30, 0.08), 0 1px 3px rgba(90, 60, 30, 0.05);
   padding: 20px;
   color: var(--ys-ink);
 }
@@ -260,17 +305,27 @@ body {
   align-items: center;
   gap: 10px;
   margin: 0 0 14px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
+  letter-spacing: 3px;
   color: var(--ys-red);
 }
 
 .ys-title::before {
   content: "";
-  width: 4px;
-  height: 18px;
-  background: var(--ys-gold);
-  border-radius: 2px;
+  width: 5px;
+  height: 20px;
+  background: linear-gradient(180deg, #d9b33d, #a07d16);
+  border-radius: 3px;
+}
+
+.ys-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-left: 4px;
+  background: linear-gradient(90deg, rgba(201, 162, 39, 0.4), transparent);
+  min-width: 40px;
 }
 
 /* 标签（对齐 demo .card .tag 金底白字） */
@@ -286,11 +341,47 @@ body {
   cursor: pointer;
 }
 
-.ys-empty {
-  padding: 48px 0;
+/* 空态统一：一枚「空」字印章 + 一句引导 + 一个动作位。
+   .ys-empty 与 el-empty 共用同一观感，13 个页面不再各画一套。 */
+.ys-empty,
+.yisu-empty,
+.el-empty {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 40px 20px;
   text-align: center;
-  color: var(--ys-ink-3);
+  color: var(--ys-ink-text);
 }
+
+.ys-empty::before,
+.yisu-empty::before,
+.el-empty::before {
+  content: "空";
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(201, 162, 39, 0.6);
+  border-radius: 8px;
+  color: var(--ys-gold);
+  font-size: var(--ys-fs-h3);
+}
+
+.ys-empty,
+.yisu-empty { font-size: var(--ys-fs-body); line-height: 1.7; }
+.el-empty__image { display: none; }
+.el-empty__description,
+.el-empty__description p { font-size: var(--ys-fs-body); color: var(--ys-ink-text); margin: 0; }
+.ys-empty .el-button, .ys-empty button,
+.yisu-empty .el-button, .yisu-empty button,
+.el-empty .el-button, .el-empty button { margin-top: 4px; }
+
+/* 图表容器：宽度跟随父级、允许内部留白，坐标轴文字不许被容器裁掉。
+   （具体 grid 边距属各页配置，本层只保证容器不吃掉左侧标签带） */
+.ys-chart { width: 100%; min-width: 0; }
+.ys-chart canvas, .ys-chart svg { max-width: 100%; }
 
 /* Element Plus 主题微调 */
 .el-button--primary {
@@ -341,7 +432,16 @@ body {
   --el-table-row-hover-bg-color: rgba(201, 162, 39, 0.08);
 }
 
+/* ===== 断点规范：≤480 手机 / ≤768 平板与窄窗 / ≥1024 桌面 ===== */
+:root { --ys-break-mid: 768px; --ys-break-low: 480px; }
+
+@media (min-width: 1024px) {
+  :root { --ys-gutter: 28px; }
+}
+
 @media (max-width: 768px) {
+  :root { --ys-gutter: 12px; }
+
   .app-header {
     flex-wrap: wrap;
     gap: 10px;
@@ -353,7 +453,79 @@ body {
     overflow-x: auto;
     flex-wrap: nowrap;
   }
+  .app-nav a { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  /* 分页条窄屏换行居中：li 撑到 44 后整条更宽，所以 ul 本身也要能换行 */
+  .app-main .el-pagination { flex-wrap: wrap; justify-content: center; row-gap: 6px; }
+  .app-main .el-pagination button { min-width: 44px; }
+  .app-main .el-pager { flex-wrap: wrap; justify-content: center; }
+  .app-main .el-pager li { min-width: 44px; }
+  /* 头部那颗 small 主按钮同样在窄屏够点（它在 .app-main 之外） */
+  .app-header .el-button { min-height: 44px; }
   .app-main {
-    padding: 16px 12px 32px;
+    padding: 16px var(--ys-gutter) 32px;
   }
+
+  /* 筛选条/工具条窄屏必须换行 —— 之前是把整页撑出横向滚动的头号元凶 */
+  .section-head { flex-wrap: wrap; row-gap: 10px; }
+  .section-head .filters,
+  .filter-bar,
+  .filter-bar .filter-left,
+  .filter-bar .filter-right {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    min-width: 0;
+  }
+  .filter-bar .filter-right { margin-left: 0; }
+
+  /* 触控目标下限 44×44：只约束真控件，正文里的行内链接不强撑 */
+  .app-main .el-button,
+  .app-main .el-radio-button__inner,
+  .app-main .el-checkbox__label,
+  .app-main .el-tabs__item,
+  .app-main .el-pager li,
+  .app-main .el-pagination button,
+  .app-main .el-select__wrapper,
+  .app-main .el-input__inner,
+  .app-main button:not(.is-circle) {
+    min-height: 44px;
+  }
+  .app-main .el-button--small { min-height: 44px; }
+  /* 试穿子导航是裸 <a>（TryonLayout 的 .tabs），不吃 .el-button 那条，单独够点 */
+  .app-main .tabs a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  :root { --ys-gutter: 10px; }
+  .app-main .ys-title { font-size: var(--ys-fs-h3); letter-spacing: 2px; }
+}
+
+/* 全局浮动返回按钮（左下，避开右下 AI 球） */
+.ys-back-fab {
+  position: fixed; left: 24px; bottom: 24px; z-index: 60;
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 16px;
+  background: rgba(122, 34, 28, 0.92);
+  color: #f5efe4;
+  border: 1px solid rgba(201, 162, 39, 0.5);
+  border-radius: 999px;
+  font-size: 14px; letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(60, 20, 12, 0.28);
+  backdrop-filter: blur(6px);
+  transition: all .2s ease;
+  font-family: inherit;
+}
+.ys-back-fab:hover {
+  background: #7a221c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(60, 20, 12, 0.36);
+}
+.ys-back-arrow { font-size: 16px; line-height: 1; }
+.ys-back-text { white-space: nowrap; }
+@media (max-width: 680px) {
+  .ys-back-fab { left: 14px; bottom: 14px; padding: 7px 12px; font-size: 13px; }
 }

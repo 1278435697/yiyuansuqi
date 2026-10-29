@@ -7,7 +7,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.ratelimit import check_rate_limit
-from app.core.security import get_current_user
+from app.core.security import get_current_user, get_optional_user
 from app.db.database import get_db
 from app.db.models import (
     Users, ForumBoards, ForumPosts, ForumReplies,
@@ -74,13 +74,23 @@ def boards(db: Session = Depends(get_db)):
 def post_list(
     board_id: int | None = None,
     page: int = Query(1, ge=1), page_size: int = Query(10, ge=1, le=50),
-    keyword: str | None = None, db: Session = Depends(get_db),
+    keyword: str | None = None,
+    status: str | None = None,  # 管理员传 pending 看待审
+    db: Session = Depends(get_db),
+    user: Users | None = Depends(get_optional_user),
 ):
     q = db.query(ForumPosts)
     if board_id:
         q = q.filter(ForumPosts.board_id == board_id)
     if keyword:
         q = q.filter(ForumPosts.title.like(f"%{keyword}%"))
+    is_admin = bool(user and getattr(user, "role", "") in ("admin", "superadmin"))
+    if is_admin and status:
+        q = q.filter(ForumPosts.status == status)
+    else:
+        # 普通用户：只看已审核通过的；管理员不指定 status 时看全部
+        if not is_admin:
+            q = q.filter(ForumPosts.status == "approved")
     total = q.count()
     items = q.order_by(ForumPosts.is_pinned.desc(), ForumPosts.create_time.desc()) \
              .offset((page - 1) * page_size).limit(page_size).all()
@@ -89,7 +99,7 @@ def post_list(
         "content": (p.content or "")[:160], "image_url": p.image_url,
         "author": p.author.username,
         "author_id": p.author.id, "dynasty_tags": p.dynasty_tags,
-        "work_id": p.work_id, "is_pinned": p.is_pinned,
+        "work_id": p.work_id, "is_pinned": p.is_pinned, "status": p.status,
         "like_count": p.like_count, "collect_count": p.collect_count,
         "repost_count": p.repost_count, "reply_count": p.reply_count,
         "create_time": p.create_time.isoformat() if p.create_time else None,
@@ -97,10 +107,16 @@ def post_list(
 
 
 @router.get("/posts/{post_id}")
-def post_detail(post_id: int, db: Session = Depends(get_db)):
+def post_detail(post_id: int, db: Session = Depends(get_db),
+                user: Users | None = Depends(get_optional_user)):
     p = db.get(ForumPosts, post_id)
     if not p:
         raise HTTPException(404, "帖子不存在")
+    # 未审核帖子：仅作者本人或管理员可见
+    if p.status != "approved":
+        is_admin = bool(user and getattr(user, "role", "") in ("admin", "superadmin"))
+        if not (is_admin or (user and p.user_id == user.id)):
+            raise HTTPException(403, "该帖子正在审核中，暂不可见")
     replies = db.query(ForumReplies).filter_by(post_id=post_id) \
                 .order_by(ForumReplies.create_time.asc()).all()
     work = db.get(RevivalWorks, p.work_id) if p.work_id else None
@@ -108,7 +124,7 @@ def post_detail(post_id: int, db: Session = Depends(get_db)):
         "id": p.id, "title": p.title, "content": p.content, "image_url": p.image_url,
         "author": p.author.username, "author_id": p.user_id,
         "board_name": p.board.name if p.board else "",
-        "dynasty_tags": p.dynasty_tags, "is_pinned": p.is_pinned,
+        "dynasty_tags": p.dynasty_tags, "is_pinned": p.is_pinned, "status": p.status,
         "like_count": p.like_count, "collect_count": p.collect_count,
         "repost_count": p.repost_count, "reply_count": p.reply_count,
         "work": {"id": work.id, "image_url": work.image_url,
@@ -135,6 +151,7 @@ def create_post(body: PostCreate, db: Session = Depends(get_db),
         content=body.content, image_url=body.image_url,
         dynasty_tags=body.dynasty_tags,
         costume_ids=body.costume_ids, work_id=body.work_id,
+        status="approved",
     )
     db.add(p)
     board = db.get(ForumBoards, board_id)
@@ -142,7 +159,35 @@ def create_post(body: PostCreate, db: Session = Depends(get_db),
         board.post_count += 1
     db.commit()
     db.refresh(p)
-    return {"id": p.id, "title": p.title, "board_id": board_id}
+    return {"id": p.id, "title": p.title, "board_id": board_id, "status": p.status}
+
+
+@router.post("/posts/{post_id}/offline")
+def offline_post(post_id: int, db: Session = Depends(get_db),
+                 user: Users = Depends(get_current_user)):
+    """管理员下架不合格帖子。"""
+    if getattr(user, "role", "") not in ("admin", "superadmin"):
+        raise HTTPException(403, "需要管理员权限")
+    p = db.get(ForumPosts, post_id)
+    if not p:
+        raise HTTPException(404, "帖子不存在")
+    p.status = "rejected"
+    db.commit()
+    return {"id": p.id, "status": "rejected"}
+
+
+@router.post("/posts/{post_id}/online")
+def online_post(post_id: int, db: Session = Depends(get_db),
+                user: Users = Depends(get_current_user)):
+    """管理员恢复已下架帖子。"""
+    if getattr(user, "role", "") not in ("admin", "superadmin"):
+        raise HTTPException(403, "需要管理员权限")
+    p = db.get(ForumPosts, post_id)
+    if not p:
+        raise HTTPException(404, "帖子不存在")
+    p.status = "approved"
+    db.commit()
+    return {"id": p.id, "status": "approved"}
 
 
 @router.delete("/posts/{post_id}")

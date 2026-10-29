@@ -226,7 +226,7 @@ export async function buildHall(scene, hall, loader) {
     }
   }
   // 门楣匾额
-  const plaqueTex = makePlaqueTexture('衣溯 · 华夏服饰数字博物馆', { w: 1024, h: 200 });
+  const plaqueTex = makePlaqueTexture('华夏衣冠志 · 数字博物馆', { w: 1024, h: 200 });
   const plaque = new THREE.Mesh(
     new THREE.PlaneGeometry(5.6, 1.1),
     new THREE.MeshStandardMaterial({ map: plaqueTex, emissive: new THREE.Color('#3a0a0b'), emissiveIntensity: 0.6, roughness: 0.7 }),

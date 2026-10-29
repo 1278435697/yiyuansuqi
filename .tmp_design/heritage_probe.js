@@ -1,0 +1,16 @@
+global.window = {};
+require('C:/Users/lenovo/Desktop/heritage/data.js');
+require('C:/Users/lenovo/Desktop/heritage/sections.js');
+const I = window.FY_ITEMS, S = window.FY_SECTIONS;
+console.log('sections字段:', Object.keys(S[0]).join(','));
+console.log('卷:', S.map(s => `${s.no}·${s.name}(${s.en}) key=${s.id} img=${s.img} items=${I.filter(i => i.sec === s.id).length}`).join(' | '));
+console.log('工序总数:', I.reduce((a, i) => a + i.steps.length, 0));
+console.log('steps子字段:', Object.keys(I[0].steps[0]).join(','));
+console.log('histNodes子字段:', Object.keys(I[0].histNodes[0]).join(','));
+console.log('chain样例:', JSON.stringify(I[0].chain).slice(0, 200));
+console.log('video样例:', JSON.stringify(I[0].video).slice(0, 160));
+console.log('peak取值:', [...new Set(I.map(i => i.peak))].join(','));
+console.log('her取值:', [...new Set(I.map(i => i.her))].join(' / '));
+console.log('有inheritor字段:', I.filter(i => i.inheritor).length, '有inh:', I.filter(i => i.inh).length);
+console.log('img唯一?', new Set(I.map(i => i.img)).size, '重名项:', I.length - new Set(I.map(i => i.n)).size);
+console.log('feature平均字数:', Math.round(I.reduce((a, i) => a + i.feature.length, 0) / I.length), 'bio平均:', Math.round(I.reduce((a, i) => a + (i.bio || '').length, 0) / I.length), 'history平均:', Math.round(I.reduce((a, i) => a + (i.history || '').length, 0) / I.length));

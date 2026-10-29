@@ -1,0 +1,18 @@
+/www/server/panel/vhost/nginx/yisu.conf:14:    # 主动来取。若它落进下面 /api/v1/ 那条 location，会吃 tryon 区的 20r/m —— 那个限流按
+/www/server/panel/vhost/nginx/yisu.conf:17:    location /api/v1/outbox/ {
+/www/server/panel/vhost/nginx/yisu.conf:19:        proxy_pass http://127.0.0.1:8010/api/v1/outbox/;
+/www/server/panel/vhost/nginx/yisu.conf:29:    location /api/v1/ {
+/www/server/panel/vhost/nginx/yisu.conf:31:        proxy_pass http://127.0.0.1:8010/api/v1/;
+/www/server/panel/vhost/nginx/yisu.conf:48:    location /api/ {
+/www/server/panel/vhost/nginx/yisu.conf:49:        proxy_pass http://127.0.0.1:8765/api/;
+/www/server/panel/vhost/nginx/yisu.conf:66:    location /museum/api/ {
+/www/server/panel/vhost/nginx/yisu.conf:67:        proxy_pass http://127.0.0.1:8000/api/;
+---
+yisu.conf
+yisu.conf.bak.20261016140712
+yisu.conf.bak.20261016172936
+yisu.conf.bak.20261017191406
+yisu.conf.bak_20261018_301query
+yisu.conf.bak_20261018_museumprefix
+yisu.conf.bak_20261018_nocache
+yisu.conf.bak.20261020102516

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.ai_engine.archive_codes import code_of
 from app.db.database import get_db
 from app.db.models import Fabrics, Users
 from app.core.security import get_current_user
@@ -22,18 +23,23 @@ class FabricIn(BaseModel):
     description: str = ""
     image_url: str = ""
     source_ref: str = ""
+    craft: dict = {}             # {history_note, steps:[{label,desc}], images:{}, name}
+    poems: list = []             # [{src, text, url}]
 
 
 @router.get("/list")
-def fabric_list(category: str | None = None, db: Session = Depends(get_db)):
-    q = db.query(Fabrics)
+def fabric_list(category: str | None = None, q: str | None = None, db: Session = Depends(get_db)):
+    """面料列表：支持分类筛选 + 名称关键词检索（答后推荐卡复用）。"""
+    query = db.query(Fabrics)
     if category:
-        q = q.filter(Fabrics.category == category)
-    items = q.order_by(Fabrics.id).all()
+        query = query.filter(Fabrics.category == category)
+    if q:
+        query = query.filter(Fabrics.name.contains(q.strip()))
+    items = query.order_by(Fabrics.id).all()
     profile_items = []
     for f in items:
         item = {
-            "id": f.id, "name": f.name, "category": f.category,
+            "id": f.id, "code": code_of("fabric", f.id), "name": f.name, "category": f.category,
             "raw_material": f.raw_material, "dynasty_peak": f.dynasty_peak,
             "technique": f.technique, "description": f.description,
             "image_url": f.image_url or "", "source_ref": f.source_ref or "",
@@ -49,7 +55,11 @@ def fabric_list(category: str | None = None, db: Session = Depends(get_db)):
             item["process_steps"] = []
             item["poems"] = []
         # 面料工艺素材（分步流程 / 工艺示意图 / 史料依据）
-        craft = CRAFT_MAP.get(f.name) or CRAFT_MAP.get(NAME_ALIAS.get(f.name, ""))
+        if f.created_by:
+            craft = f.craft or None
+            item["poems"] = f.poems or []
+        else:
+            craft = CRAFT_MAP.get(f.name) or CRAFT_MAP.get(NAME_ALIAS.get(f.name, ""))
         item["craft"] = craft or None
         profile_items.append(item)
     return {
@@ -74,6 +84,7 @@ def create_fabric(
         dynasty_peak=body.dynasty_peak, technique=body.technique,
         description=body.description, image_url=body.image_url,
         source_ref=body.source_ref or "用户创建", created_by=user.id,
+        craft=body.craft or {}, poems=body.poems or [],
     )
     db.add(f)
     db.commit()

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none"><g stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="200" cy="194" r="126" fill="none" stroke="#c9a227" stroke-opacity=".18" stroke-dasharray="2 7"/><path d="M78 330H322" stroke="#c9a227" stroke-opacity=".3"/><circle cx="200" cy="194" r="3" fill="#9e2b25" fill-opacity=".35"/>
+<g stroke="#553b27" fill="none">
+  <path d="M200 58v272" stroke="#9b6a32" stroke-dasharray="3 8" opacity=".6"/>
+  <path d="M86 304V222c0-46 26-78 62-78s62 32 62 78v82" opacity=".8"/>
+  <path d="M250 304V232c0-38 22-64 50-64s50 26 50 64v72" opacity=".8"/>
+</g>
+<g stroke="#9e2b25" fill="#9e2b25" fill-opacity=".06">
+  <path d="M80 190c12-26 32-36 68-36s56 10 68 36"/>
+  <path d="M78 202c14-18 36-26 70-26s56 8 70 26"/>
+  <path d="M78 214c18 14 40 18 70 18s52-4 70-18"/>
+  <path d="M78 202c-18 10-24 26-20 44M216 202c18 10 24 26 20 44" fill="none"/>
+  <path d="M200 214c-10 20-10 40 0 60" fill="none" opacity=".4"/>
+</g>
+<g stroke="#9b6a32" fill="#c9a227" fill-opacity=".10">
+  <path d="M260 220c-18-32-2-58 20-58 6-28 36-32 48-8 28-8 42 22 24 42 14 20-2 42-24 36" fill="none"/>
+  <path d="M268 180l-18-32M332 180l18-32M300 168V116" fill="none"/>
+  <path d="M262 232h76" fill="none"/>
+  <circle cx="300" cy="148" r="6" fill="#c9a227" fill-opacity=".3"/>
+  <circle cx="254" cy="164" r="4" fill="#9e2b25" fill-opacity=".3" stroke="#9e2b25"/>
+  <circle cx="346" cy="164" r="4" fill="#9e2b25" fill-opacity=".3" stroke="#9e2b25"/>
+</g>
+</g></svg>

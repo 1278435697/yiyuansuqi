@@ -1,0 +1,23 @@
+=== assets 是否存在 app-IltAN4UR.js ===
+-rw-r--r-- 1 root root 3391 Oct 18 20:51 /www/wwwroot/yisu/frontend/dist/assets/app-IltAN4UR.js
+=== 服务器公网 curl app chunk ===
+code=200
+=== 服务器公网 curl TryonLayout ===
+code=200
+=== nginx 主站 root/location ===
+4:    root /www/wwwroot/yisu/frontend/dist;
+14:    # 主动来取。若它落进下面 /api/v1/ 那条 location，会吃 tryon 区的 20r/m —— 那个限流按
+17:    location /api/v1/outbox/ {
+29:    location /api/v1/ {
+42:    location /tryon-assets/ {
+48:    location /api/ {
+59:    location /uploads/ {
+60:        alias /www/wwwroot/yisu/backend/uploads/;
+66:    location /museum/api/ {
+77:    location = /museum {
+82:    location = /museum/ {
+88:    location = /museum/index.html {
+94:    location /museum/ {
+101:    location /museum/assets/ {
+107:    location = /index.html {
+113:    location / {

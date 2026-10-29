@@ -1,10 +1,27 @@
 <template>
-  <div class="archive-page">
+  <div class="archive-page acc-scope">
     <!-- 档案列表模式 -->
     <template v-if="!currentId">
-      <PageHero title="衣溯AI · 历代服饰档案" kicker="ARCHIVE · 华夏衣冠" sub="从出土实物到传世文献，每一件服饰都有迹可循、有史可查" seal="档" />
-      <div class="section-head">
-        <div class="filters anim-rise" style="animation-delay: .5s">
+      <PageHero grand
+        title="档案"
+        eyebrow-en="COSTUME ARCHIVE · 时空图谱"
+        eyebrow-index="VOL. 01–09"
+        kicker="华夏衣冠"
+        sub="从先秦的冕服深衣，到清代的旗装补褂；从出土实物到传世文献，每一件服饰都有迹可循、有史可查。"
+        seal="档"
+        vertical="先秦 · 秦汉 · 魏晋 · 隋唐 · 两宋 · 明代 · 清代"
+        primary-label="浏览本卷" primary-href="#catalog"
+        secondary-label="看出土地图" secondary-href="/geomap"
+        :stats="[
+          { n: '09', l: '朝代卷帙' },
+          { n: '93', l: '全量条目' },
+          { n: '16', l: '本期服饰' },
+          { n: '08', l: '阅读板块' },
+        ]" />
+      <!-- 工具条：区块标题在左、朝代类别筛选与创建在右（控件不变，只换皮） -->
+      <div class="acc-toolbar">
+        <AccSectionHead no="档" kicker="服饰名录 · 五类" title="服饰档案" :sub="`共 ${total} 件`" />
+        <div class="acc-toolbar-tools">
           <el-select v-model="dynasty" placeholder="按朝代" clearable size="small" style="width: 120px" @change="load">
             <el-option v-for="e in eras" :key="e.name" :label="e.name" :value="e.name" />
           </el-select>
@@ -65,9 +82,9 @@
       </el-dialog>
 
       <!-- 用户作品：其他用户创建的服饰档案（自社区迁移） -->
-      <div class="user-works ys-card">
+      <div class="user-works acc-aside-card">
         <div class="uw-head">
-          <h3 class="ys-title">用户作品 · 服饰档案</h3>
+          <AccSectionHead title="用户作品 · 服饰档案" size="sm" />
           <div class="uw-tools">
             <el-input v-model="uwKeyword" placeholder="搜索用户档案…" size="small" clearable style="width: 180px"
                       @keyup.enter="loadUserWorks" @clear="loadUserWorks" />
@@ -75,7 +92,8 @@
           </div>
         </div>
         <div class="uw-grid">
-          <div v-for="c in userWorks" :key="c.id" class="uw-card" @click="$router.push(`/archive/${c.id}`)">
+          <div v-for="c in userWorks" :key="c.id" class="uw-card" role="link" tabindex="0"
+               @click="$router.push(`/archive/${c.id}`)" @keydown.enter="$router.push(`/archive/${c.id}`)">
             <img v-if="c.image_url" :src="c.image_url" :alt="c.name" loading="lazy" />
             <div v-else class="uw-thumb">暂无实物图</div>
             <div class="uw-info">
@@ -89,9 +107,9 @@
       </div>
 
       <!-- 全网搜索结果（联动外部搜索） -->
-      <div v-if="webResults.length" class="ys-card web-results">
+      <div v-if="webResults.length" class="acc-aside-card web-results">
         <div class="web-head">
-          <h3 class="ys-title">全网结果 · “{{ webQuery }}”</h3>
+          <AccSectionHead :title="`全网结果 · “${webQuery}”`" size="sm" />
           <el-button size="small" text type="primary" @click="webResults = []">收起</el-button>
         </div>
         <a v-for="r in webResults" :key="r.url" class="web-item" :href="r.url" target="_blank" rel="noopener">
@@ -100,33 +118,23 @@
           <p class="web-item-snippet">{{ r.snippet }}</p>
         </a>
       </div>
-      <div v-else-if="webError" class="ys-card web-results">
+      <div v-else-if="webError" class="acc-aside-card web-results">
         <p class="ys-muted">{{ webError }}</p>
       </div>
 
-      <div v-loading="loading" class="costume-grid">
-        <div v-for="c in costumes" :key="c.id" class="costume-card ys-card" @click="openSplit(c)">
-          <div class="card-img">
-            <img v-if="c.image_url" :src="c.image_url" :alt="c.name" loading="lazy" />
-            <div v-else class="img-placeholder">暂无图</div>
-            <span class="dynasty-badge">{{ c.dynasty }}</span>
-            <span v-if="c.created_by" class="user-badge">用户创建</span>
-          </div>
-          <div class="card-body">
-            <div class="card-head">
-              <h3>{{ c.name }}</h3>
-              <el-button v-if="c.source_type === '用户创建'" size="small" text type="danger" class="del-btn" @click.stop="removeCostume(c)">删除</el-button>
-            </div>
-            <p class="costume-desc">{{ c.description || "（暂无简介）" }}</p>
-            <div class="costume-meta">
-              <span>{{ c.category }}</span>
-              <span>{{ c.fabric || "面料待考" }}</span>
-              <span>{{ c.source_type }}</span>
-            </div>
-            <div class="ys-tag" v-for="p in (c.pattern || '').split('·').slice(0, 2)" :key="p" v-show="p">{{ p }}</div>
-          </div>
-        </div>
-        <div v-if="!loading && !costumes.length" class="ys-empty">暂无档案，稍后接入数据后展示</div>
+      <!-- 服饰卡片网格：衣冠卡片解剖，图片区定高 + contain 不裁原图 -->
+      <div v-loading="loading" class="acc-grid">
+        <AccCard v-for="(c, i) in costumes" :key="c.id" :index="i" :title="c.name"
+                 :image="c.image_url" :alt="c.name" :meta="c.dynasty" :summary="c.description"
+                 :no="`${pad(i + 1)} / ${total}`" :volume="c.category"
+                 :tags="cardTags(c)" :badge="c.created_by || c.source_type === '用户创建' ? '用户创建' : ''"
+                 :tone="toneOf(c.category)" link-text="阅档案" @open="openSplit(c)">
+          <template #actions>
+            <el-button v-if="c.source_type === '用户创建'" size="small" text type="danger" class="del-btn"
+                       @click.stop="removeCostume(c)">删除</el-button>
+          </template>
+        </AccCard>
+        <el-empty v-if="!loading && !costumes.length" description="暂无档案，稍后接入数据后展示" />
       </div>
 
       <!-- 点击卡片：主图从中心放大、分裂翻转成三张素材卡片，点击任意一张进入详情 -->
@@ -139,63 +147,90 @@
       />
     </template>
 
-    <!-- 档案详情模式（含 AI 第一人称对话 + 史料详析 + 权威实例图） -->
+    <!-- 档案详情模式（衣冠卷面排版：主栏分节 + 右栏基础信息与 AI 对话） -->
     <template v-else>
       <div class="detail-layout">
-        <section class="ys-card detail-main">
+        <section class="acc-panel detail-main">
           <div class="detail-head">
             <el-button size="small" @click="$router.push('/archive')">返回列表</el-button>
-            <h2>{{ detail?.name }} <span class="dynasty">{{ detail?.dynasty }} · {{ detail?.category }}</span></h2>
-            <el-button v-if="detail?.source_type === '用户创建'" size="small" type="danger" plain style="margin-left: auto" @click="removeCostume(detail)">删除档案</el-button>
+            <el-button v-if="detail?.source_type === '用户创建'" size="small" type="danger" plain
+                       style="margin-left: auto" @click="removeCostume(detail)">删除档案</el-button>
           </div>
 
-          <el-descriptions :column="2" border size="small" style="margin: 14px 0">
-            <el-descriptions-item label="穿着者">{{ detail?.wearer || "待考" }}</el-descriptions-item>
-            <el-descriptions-item label="来源类型">{{ detail?.source_type }}</el-descriptions-item>
-            <el-descriptions-item label="面料">{{ detail?.fabric }}</el-descriptions-item>
-            <el-descriptions-item label="纹样">{{ detail?.pattern }}</el-descriptions-item>
-            <el-descriptions-item label="服色">{{ detail?.color }}</el-descriptions-item>
-            <el-descriptions-item label="出土文物">
-              <template v-if="detail?.relic">{{ detail.relic.name }}（{{ detail.relic.location }} · {{ detail.relic.museum }}）</template>
-              <template v-else>待考</template>
-            </el-descriptions-item>
-          </el-descriptions>
+          <!-- 眉标 + 大标题 + 属性行 -->
+          <div class="acc-eyebrow">
+            <span class="acc-eyebrow-line"></span>
+            <span>传统服饰档案</span>
+            <span v-if="detail?.code" class="acc-eyebrow-index">名录编号 {{ detail.code }}</span>
+          </div>
+          <h2 class="acc-detail-title" :class="{ 'is-long': titleLong }">{{ detail?.name }}</h2>
+          <div class="acc-detail-meta">
+            <span>{{ detail?.dynasty || "朝代待考" }}</span>
+            <span class="dot"></span>
+            <span>{{ detail?.category || "类别待考" }}</span>
+            <span class="dot"></span>
+            <span>{{ detail?.source_type || "来源待考" }}</span>
+          </div>
 
           <!-- 权威实例图 -->
-          <template v-if="detailData.relicImage">
-            <h3 class="ys-title">权威实例图</h3>
+          <div v-if="has('权威实例图')" class="section">
+            <AccSecHead :no="secNo('权威实例图')" title="权威实例图" sub="出土实物 / 传世图像" />
             <div class="relic-gallery">
               <div class="relic-card">
-                <img :src="detailData.relicImage" :alt="`${detail?.name}权威实例`" loading="lazy"
+                <img :src="detailData.relicImage" :alt="`${detail?.name}权威实例`" loading="lazy" data-lb-native
                      @click="relicLightbox = detailData.relicImage" />
                 <p class="relic-source">▲ {{ detailData.relicCaption }}</p>
               </div>
             </div>
-          </template>
+          </div>
 
-          <h3 class="ys-title">史料详析</h3>
-          <div class="detail-sections">
-            <div v-for="sec in detailData.sections" :key="sec.title" class="detail-sec">
-              <h4 class="sec-title">{{ sec.title }}</h4>
-              <p class="sec-body">{{ sec.body }}</p>
+          <!-- 史料详析 -->
+          <div v-if="has('史料详析')" class="section">
+            <AccSecHead :no="secNo('史料详析')" title="史料详析" sub="逐条考据" />
+            <div class="detail-sections">
+              <div v-for="sec in detailData.sections" :key="sec.title" class="detail-sec">
+                <h4 class="sec-title">{{ sec.title }}</h4>
+                <p class="sec-body">{{ sec.body }}</p>
+              </div>
             </div>
           </div>
 
-          <h3 class="ys-title">形制说明</h3>
-          <p class="body-text">{{ detail?.description || "（暂无形制说明）" }}</p>
-
-          <h3 class="ys-title">知识图谱关联</h3>
-          <div class="graph-nodes">
-            <span v-for="(r, i) in detail?.relations || []" :key="i" class="graph-node">
-              <i>{{ r.type }}</i>{{ r.value }}
-            </span>
+          <!-- 形制说明 -->
+          <div v-if="has('形制说明')" class="section">
+            <AccSecHead :no="secNo('形制说明')" title="形制说明" sub="名录简介" />
+            <p class="body-text">{{ detail?.description || "（暂无形制说明）" }}</p>
           </div>
-          <p v-if="!detail?.relations?.length" class="body-text">关联数据待补录</p>
+
+          <!-- 知识图谱关联 -->
+          <div v-if="has('知识图谱关联')" class="section">
+            <AccSecHead :no="secNo('知识图谱关联')" title="知识图谱关联" sub="名录字段速览" />
+            <div class="graph-nodes">
+              <span v-for="(r, i) in detail?.relations || []" :key="i" class="graph-node">
+                <i>{{ r.type }}</i>{{ r.value }}
+              </span>
+            </div>
+            <p v-if="!detail?.relations?.length" class="body-text">关联数据待补录</p>
+          </div>
         </section>
 
-        <aside class="detail-side">
-          <div class="ys-card chat-card">
-            <h3 class="ys-title">AI 第一人称对话</h3>
+        <aside class="detail-side acc-sticky">
+          <div class="acc-aside-card">
+            <AccSectionHead title="基础信息" size="sm" />
+            <el-descriptions :column="1" border size="small">
+              <el-descriptions-item label="穿着者">{{ detail?.wearer || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="来源类型">{{ detail?.source_type }}</el-descriptions-item>
+              <el-descriptions-item label="面料">{{ detail?.fabric }}</el-descriptions-item>
+              <el-descriptions-item label="纹样">{{ detail?.pattern }}</el-descriptions-item>
+              <el-descriptions-item label="服色">{{ detail?.color }}</el-descriptions-item>
+              <el-descriptions-item label="名录编号">{{ detail?.code || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="出土文物">
+                <template v-if="detail?.relic">{{ detail.relic.name }}（{{ detail.relic.location }} · {{ detail.relic.museum }}）</template>
+                <template v-else>待考</template>
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
+          <div class="acc-aside-card chat-card">
+            <AccSectionHead title="AI 第一人称对话" size="sm" />
             <div class="chat-box" ref="chatBox">
               <div v-for="(m, i) in messages" :key="i" class="chat-msg" :class="m.role">
                 <div class="chat-bubble">{{ m.content }}</div>
@@ -216,7 +251,7 @@
       </div>
 
       <!-- 实例图放大 -->
-      <div v-if="relicLightbox" class="lightbox" @click="relicLightbox = null">
+      <div v-if="relicLightbox" class="lightbox" data-lb-native @click="relicLightbox = null">
         <img :src="relicLightbox" alt="实例图放大" />
       </div>
     </template>
@@ -229,6 +264,10 @@ import { useRoute, useRouter } from "vue-router";
 import { fetchCostumes, fetchCostumeDetail, fetchEras, chatWithCostume, fetchArchiveWebSearch, createCostume, deleteCostume } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
 import SplitReveal from "@/components/SplitReveal.vue";
+import AccCard from "@/components/acc/AccCard.vue";
+import AccSectionHead from "@/components/acc/AccSectionHead.vue";
+import AccSecHead from "@/components/acc/AccSecHead.vue";
+import { pad, toneOf } from "@/components/acc/accMeta";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 const route = useRoute();
@@ -298,6 +337,7 @@ const dynasty = ref("");
 const category = ref("");
 const keyword = ref("");
 const loading = ref(false);
+const total = ref(0);
 /* 用户作品：其他用户创建的服饰档案（自社区迁移） */
 const uwKeyword = ref("");
 const userWorks = ref<any[]>([]);
@@ -789,11 +829,31 @@ const detailData = computed<any>(() => {
   };
 });
 
+/* 卡片标签：类别已由竖排卷名承载，这里放面料、来源与纹样拆词 */
+function cardTags(c: any): string[] {
+  const patterns = (c.pattern || "").split("·").map((s: string) => s.trim()).filter(Boolean);
+  return [c.fabric, c.source_type, ...patterns].filter(Boolean);
+}
+
+/* 详情分节：条件区块隐藏时节号仍连续 */
+const detailSections = computed<string[]>(() => {
+  const out: string[] = [];
+  if (detailData.value.relicImage) out.push("权威实例图");
+  out.push("史料详析");
+  out.push("形制说明");
+  out.push("知识图谱关联");
+  return out;
+});
+function has(k: string) { return detailSections.value.includes(k); }
+function secNo(k: string) { return pad(detailSections.value.indexOf(k) + 1); }
+const titleLong = computed(() => (detail.value?.name || "").length > 6);
+
 async function load() {
   loading.value = true;
   try {
     const data: any = await fetchCostumes({ dynasty: dynasty.value, category: category.value, keyword: keyword.value, page_size: 50 });
     costumes.value = data.items;
+    total.value = data.total ?? (data.items || []).length;
   } finally { loading.value = false; }
 }
 
@@ -857,95 +917,77 @@ watch(() => route.params.id, (id) => {
 </script>
 
 <style scoped>
-.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.filters { display: flex; gap: 8px; }
-.web-results { margin: 14px 0; padding: 14px 16px; }
-.web-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.web-item { display: block; padding: 10px 0; border-bottom: 1px dashed var(--ys-border, #e8e0d5); text-decoration: none; }
-.web-item:last-child { border-bottom: none; }
-.web-item-title { color: var(--ys-primary, #7a4b2a); font-weight: 600; font-size: 14px; }
-.web-item-title:hover { text-decoration: underline; }
-.web-item-src { font-size: 12px; color: #8a8a6a; margin: 2px 0; }
-.web-item-snippet { font-size: 13px; color: #5a544a; line-height: 1.6; margin: 0; }
-.costume-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; grid-auto-rows: 1fr; }
-.costume-card { cursor: pointer; transition: transform 0.15s; display: flex; flex-direction: column; overflow: hidden; }
-.costume-card:hover { transform: translateY(-2px); }
-.card-img { position: relative; height: 160px; overflow: hidden; background: #f6efe2; }
-.card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.25s ease; }
-.costume-card:hover .card-img img { transform: scale(1.05); }
-.card-img .img-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: #8a7a60; font-size: 13px; }
-.card-img .dynasty-badge {
-  position: absolute; top: 8px; right: 8px;
-  background: rgba(126, 36, 24, 0.85); color: #fff; font-size: 12px;
-  padding: 2px 8px; border-radius: 10px;
-}
-.card-img .user-badge {
-  position: absolute; top: 8px; left: 8px;
-  background: rgba(36, 96, 126, 0.85); color: #fff; font-size: 11px;
-  padding: 2px 7px; border-radius: 10px;
-}
-.card-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
-.card-head { display: flex; justify-content: space-between; align-items: baseline; }
-.card-head h3 { margin: 0; font-size: 17px; }
-.ys-tag { align-self: flex-start; }
-.dynasty { color: var(--ys-red-deep); font-size: 13px; }
-.costume-desc { color: var(--ys-ink-2); font-size: 13px; line-height: 1.6; min-height: 42px; flex: 1;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.costume-meta { display: flex; gap: 10px; font-size: 12px; color: var(--ys-ink-3); margin-bottom: 8px; }
+/* 容器宽度、卡片解剖与 EP 换皮由 acc-scope.css 统一接管，这里只补本页独有的版式 */
 
-.detail-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+/* 全网搜索结果 */
+.web-results { margin: 0 0 22px; }
+.web-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.web-item { display: block; padding: 10px 0; border-bottom: 1px dashed var(--acc-line, #e6dcc8); text-decoration: none; }
+.web-item:last-child { border-bottom: none; }
+.web-item-title { color: var(--acc-red, #7a221c); font-weight: 600; font-size: 14px; }
+.web-item-title:hover { text-decoration: underline; }
+.web-item-src { font-size: 12px; color: var(--acc-ink-3, #94836d); margin: 2px 0; letter-spacing: 1px; }
+.web-item-snippet { font-size: 13px; color: var(--acc-ink-2, #5c4c3a); line-height: 1.7; margin: 0; }
+
+/* ============ 详情模式（衣冠卷面：主栏 + 右栏） ============ */
+.detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 44px; align-items: start; }
 .detail-main { min-width: 0; }
-.detail-head { display: flex; align-items: center; gap: 14px; }
-.detail-head h2 { margin: 0; font-size: 22px; }
-.body-text { color: var(--ys-ink-2); line-height: 1.8; }
-.graph-nodes { display: flex; flex-wrap: wrap; gap: 8px; }
-.graph-node { border: 1px solid var(--ys-line); background: #fffdf8; border-radius: 6px; padding: 4px 10px; font-size: 13px; }
-.graph-node i { font-style: normal; color: var(--ys-red-deep); margin-right: 4px; }
+.detail-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+.body-text { margin: 10px 0 0; color: var(--acc-ink-2, #5c4c3a); font-size: 13.5px; line-height: 1.85; }
+.detail-side { display: flex; flex-direction: column; min-width: 0; }
+.section { margin-top: 30px; }
+.graph-nodes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.graph-node { border: 1px solid var(--acc-line, #e6dcc8); background: var(--acc-card-solid, #fffdf8); border-radius: 6px; padding: 4px 10px; font-size: 13px; color: var(--acc-ink-2, #5c4c3a); }
+.graph-node i { font-style: normal; color: var(--acc-red, #7a221c); margin-right: 6px; }
 
 /* 权威实例图 */
-.relic-gallery { margin: 10px 0 18px; }
+.relic-gallery { margin-top: 12px; }
 .relic-card { display: inline-block; max-width: 420px; }
-.relic-card img { width: 100%; max-height: 340px; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 20px rgba(122, 60, 30, 0.18); cursor: zoom-in; background: #fffdf6; }
-.relic-source { font-size: 12px; color: var(--ys-ink-3); margin-top: 6px; line-height: 1.6; }
+.relic-card img { width: 100%; max-height: 340px; object-fit: contain; border-radius: 8px; border: 1px solid var(--acc-line, #e6dcc8); box-shadow: 0 8px 20px rgba(90, 60, 30, 0.14); cursor: zoom-in; background: var(--acc-card-solid, #fffdf8); }
+.relic-source { font-size: 12px; color: var(--acc-ink-3, #94836d); margin-top: 6px; line-height: 1.6; letter-spacing: 1px; }
 .lightbox { position: fixed; inset: 0; z-index: 3000; background: rgba(0, 0, 0, 0.72); display: grid; place-items: center; cursor: zoom-out; }
 .lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; }
 
 /* 史料详析 */
-.detail-sections { margin: 10px 0 16px; display: flex; flex-direction: column; gap: 12px; }
-.detail-sec { border-left: 3px solid var(--ys-red); background: rgba(169, 50, 38, 0.04); border-radius: 0 8px 8px 0; padding: 10px 14px; }
-.sec-title { margin: 0 0 6px; font-size: 14px; color: var(--ys-red-deep); }
-.sec-body { margin: 0; color: var(--ys-ink-2); line-height: 1.8; font-size: 13.5px; }
+.detail-sections { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+.detail-sec { border-left: 3px solid var(--acc-gold, #c9a227); background: rgba(201, 162, 39, 0.06); border-radius: 0 8px 8px 0; padding: 10px 14px; }
+.sec-title { margin: 0 0 6px; font-size: 14px; color: var(--acc-red, #7a221c); letter-spacing: 1px; }
+.sec-body { margin: 0; color: var(--acc-ink-2, #5c4c3a); line-height: 1.85; font-size: 13.5px; }
 
-.chat-card { position: sticky; top: 76px; }
-.chat-box { height: 340px; overflow-y: auto; border: 1px solid var(--ys-line); border-radius: 8px; padding: 12px; background: #fffdf8; display: flex; flex-direction: column; gap: 10px; }
+/* AI 第一人称对话（随右栏一起 sticky） */
+.chat-box { margin-top: 10px; height: 340px; overflow-y: auto; border: 1px solid var(--acc-line, #e6dcc8); border-radius: 8px; padding: 12px; background: var(--acc-card-solid, #fffdf8); display: flex; flex-direction: column; gap: 10px; }
 .chat-msg { display: flex; flex-direction: column; }
 .chat-msg.user { align-items: flex-end; }
-.chat-msg.user .chat-bubble { background: var(--ys-red); color: #fff; }
-.chat-bubble { max-width: 88%; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.7; background: #f1e9d6; }
-.chat-source { font-size: 11px; color: var(--ys-ink-3); margin-top: 3px; }
-.chat-typing { color: var(--ys-ink-3); font-size: 12px; }
+.chat-msg.user .chat-bubble { background: var(--acc-red, #7a221c); color: #f6e7bf; }
+.chat-bubble { max-width: 88%; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.7; background: #f1e9d6; color: var(--acc-ink, #3a2f24); }
+.chat-source { font-size: 11px; color: var(--acc-ink-3, #94836d); margin-top: 3px; }
+.chat-typing { color: var(--acc-ink-3, #94836d); font-size: 12px; }
 .chat-input { display: flex; gap: 8px; margin-top: 10px; }
 .chat-suggests { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.suggest { cursor: pointer; }
+.chat-suggests .el-tag { cursor: pointer; border-color: rgba(201, 162, 39, 0.4); background: rgba(201, 162, 39, 0.1); color: var(--acc-ink-2, #5c4c3a); }
+.chat-suggests .el-tag:hover { border-color: rgba(201, 162, 39, 0.7); background: rgba(201, 162, 39, 0.18); }
 
 /* 用户作品：其他用户创建的服饰档案 */
-.user-works { margin-bottom: 14px; }
-.uw-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; }
-.uw-head .ys-title { margin: 0; }
+.user-works { margin: 0 0 26px; }
+.uw-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
 .uw-tools { display: flex; align-items: center; gap: 8px; }
 .uw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; }
-.uw-card { border: 1px solid var(--ys-line); border-radius: 8px; overflow: hidden; cursor: pointer; background: #fffdf8; transition: box-shadow .2s; }
-.uw-card:hover { box-shadow: 0 4px 14px rgba(122, 58, 32, .12); }
-.uw-card img { width: 100%; height: 96px; object-fit: cover; display: block; background: #f4ecdf; }
-.uw-thumb { width: 100%; height: 96px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #8a7a60; background: #f6efe4; }
+.uw-card { border: 1px solid var(--acc-line, #e6dcc8); border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--acc-card-solid, #fffdf8); transition: box-shadow .2s, border-color .2s; }
+.uw-card:hover { box-shadow: 0 6px 18px rgba(90, 60, 30, .14); border-color: rgba(201, 162, 39, .5); }
+.uw-card:focus-visible { outline: 2px solid var(--acc-gold, #c9a227); outline-offset: 2px; }
+.uw-card img { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: contain; display: block; background: #f4ead9; }
+.uw-thumb { width: 100%; aspect-ratio: 3 / 2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--acc-ink-3, #94836d); background: #f4ead9; }
 .uw-info { padding: 8px 10px; }
-.uw-info h4 { margin: 0 0 3px; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.uw-info p { margin: 1px 0; font-size: 12px; color: var(--ys-ink-3); }
+.uw-info h4 { margin: 0 0 3px; font-size: 14px; color: var(--acc-ink, #3a2f24); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uw-info p { margin: 1px 0; font-size: 12px; color: var(--acc-ink-3, #94836d); }
 .uw-info .uw-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
 .uw-empty-box { grid-column: 1 / -1; padding: 22px 0; }
 
+@media (max-width: 1023px) {
+  .detail-layout { gap: 24px; }
+}
+
 @media (max-width: 900px) {
   .detail-layout { grid-template-columns: 1fr; }
-  .chat-card { position: static; }
 }
 </style>

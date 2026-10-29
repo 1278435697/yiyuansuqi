@@ -4,6 +4,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { deleteHistoryRecord, fetchHistory } from '@/tryon/api/tryon'
 import { describeError } from '@/tryon/api/client'
 import { buildSnapshotName, downloadRemoteImage, snapshotImage } from '@/tryon/utils/snapshot'
+import { backendBadge } from '@/tryon/utils/backend'
 import type { TryOnRecord } from '@/tryon/types'
 
 const records = ref<TryOnRecord[]>([])
@@ -51,7 +52,7 @@ async function download(record: TryOnRecord): Promise<void> {
 async function snapshot(record: TryOnRecord): Promise<void> {
   try {
     await snapshotImage(record.result_url, buildSnapshotName(8, `history_${record.garment_name ?? record.task_id}`), {
-      title: `衣溯AI · 历史试穿记录`,
+      title: `衣溯 · 华夏衣冠志 · 历史试穿记录`,
       subtitle: record.garment_name ?? undefined,
       taskId: record.task_id,
       backend: record.backend_used,
@@ -125,7 +126,9 @@ onMounted(load)
           <div class="record-body">
             <strong>{{ record.garment_name ?? '临时上传服饰' }}</strong>
             <div class="meta">
-              <el-tag size="small" effect="plain">{{ record.backend_used }}</el-tag>
+              <el-tag size="small" effect="plain" :type="backendBadge(record.backend_used).tagType">
+                {{ backendBadge(record.backend_used).label }}
+              </el-tag>
               <el-tag size="small" effect="plain" type="info">{{ record.quality }}</el-tag>
               <span class="time">{{ record.created_at }}</span>
             </div>
@@ -237,7 +240,7 @@ onMounted(load)
 
 .task {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--ys-fs-micro);
   color: var(--yisu-ink-soft);
   word-break: break-all;
 }
@@ -251,7 +254,7 @@ onMounted(load)
   display: grid;
   place-items: center;
   height: 100%;
-  font-size: 11px;
+  font-size: var(--ys-fs-micro);
   color: var(--yisu-ink-soft);
 }
 

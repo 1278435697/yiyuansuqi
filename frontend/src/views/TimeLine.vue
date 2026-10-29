@@ -1,7 +1,5 @@
 <template>
   <div class="timeline-page">
-    <PageHero title="千年衣脉 · 服饰演变时间轴" kicker="TIMELINE · 衣制千年" sub="从上古到清代，拖动时间轴纵览华夏衣制的千年演变脉络" seal="脉" />
-
     <div v-loading="loading" class="timeline-wrap anim-stagger">
       <!-- 横向时间轴 -->
       <div class="timeline-scroll" ref="scrollEl">

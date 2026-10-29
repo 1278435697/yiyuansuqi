@@ -1,7 +1,5 @@
 <template>
   <div class="geomap-page">
-    <PageHero title="服饰出土地理热力图" kicker="GEO MAP · 时空溯源" sub="全国历代服饰文物出土分布 · 时空双维度溯源" seal="图" />
-
     <div class="map-layout anim-stagger">
       <div class="map-wrap">
         <div class="map-card ys-card">
@@ -223,7 +221,7 @@ const COSTUME_IMG: Record<string, string> = {
       });
     });
     layer.on("click", () => {
-      selectedItems.value = buildSelectedItems(items);
+      // 直接弹 popup，用户在 popup 里点具体件进详情；不在下方列卡片
     });
   };
 

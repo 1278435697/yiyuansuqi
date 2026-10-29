@@ -12,8 +12,10 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.ai_engine.archive_codes import code_of
 from app.ai_engine.llm_client import chat_completion
 from app.ai_engine import rag_store
+from app.ai_engine.retrieval import LINKS, archive_refs, prompt_lines, retrieve, sources_of
 from app.db.models import Costumes, CostumeRelations
 
 # 内置史料切片（演示 fallback，正式版从 ChromaDB 召回）
@@ -31,11 +33,43 @@ def _build_system_prompt() -> str:
     return (
         "你是华夏历代服饰史专业考据助手，请像一位服饰史学者一样与用户自然对话。回答规则：\n"
         "1. 优先严格依据提供的史料切片作答，并在回答中或末尾附史料来源；\n"
-        "2. 若检索史料未覆盖该问题，允许依据服饰史领域公认常识作答，"
+        "2. 引用站内资料时，在对应句子末尾用〔编号〕标出来处（如〔档案-0007〕）；"
+        "编号只能使用上面「可参考史料」里出现过的原文，严禁编造或改写编号；\n"
+        "3. 若检索史料未覆盖该问题，允许依据服饰史领域公认常识作答，"
         "但回答开头必须注明『（未检索到权威史料切片，以下为模型常识性回答，仅供参考）』；\n"
-        "3. 严禁编造形制、朝代混搭或混淆考古复原与影楼臆造；\n"
-        "4. 回答条理清晰、语言自然，直接解答用户问题。"
+        "4. 严禁编造形制、朝代混搭或混淆考古复原与影楼臆造；\n"
+        "5. 回答条理清晰、语言自然，直接解答用户问题。"
     )
+
+
+def _recall(
+    question: str,
+    db: Session | None,
+    exclude_costume_id: int | None = None,
+) -> tuple[list[str], list[str], list[str], list[dict]]:
+    """召回：站内四库真资料优先，档案没命中（或没有库连接）才退回内置通史切片。
+
+    返回 (提示词行, 来源标注, 正文列表, 条目)。兜底切片没有站内详情页可指，
+    条目列表留空，来源标注必须写「内置通史切片」，不冒充站内档案。
+    """
+    items = [
+        item for item in (retrieve(question, db, limit=8) if db is not None else [])
+        if not (item["type"] == "costume" and item["id"] == exclude_costume_id)
+    ]
+    if items:
+        return prompt_lines(items), archive_refs(items), [i["text"] for i in items], items
+
+    lines: list[str] = []
+    refs: list[str] = []
+    for hit in rag_store.vector_search(question, k=4):
+        if hit["id"] == "none":
+            continue
+        lines.append(hit["text"])
+        ref = (f"内置通史切片 · {hit['id'].removeprefix('slice-')}"
+               if hit["id"].startswith("slice-") else "衣溯AI向量知识库")
+        if ref not in refs:
+            refs.append(ref)
+    return lines, refs, list(lines), []
 
 
 def graphrag_answer(
@@ -49,7 +83,8 @@ def graphrag_answer(
     source_refs: list[str] = []
     if costume is not None:
         graph_hits.append(
-            f"{costume.name}（{costume.dynasty}）——形制：{costume.description or '见档案'}；"
+            f"{costume.name}（编号 {code_of('costume', costume.id)}，{costume.dynasty}）"
+            f"——形制：{costume.description or '见档案'}；"
             f"面料：{costume.fabric}；纹样：{costume.pattern}"
         )
         source_refs.append(f"衣溯AI档案库 · {costume.dynasty} {costume.name}")
@@ -59,21 +94,20 @@ def graphrag_answer(
                 if rel.source_ref:
                     source_refs.append(rel.source_ref)
 
-    # 2. 向量召回（ChromaDB 持久化向量库；失败回退内置切片）
-    vec_hits: list[str] = []
-    for hit in rag_store.vector_search(question, k=4):
-        if hit["id"] == "none":
-            continue
-        vec_hits.append(hit["text"])
-        if hit["id"].startswith("slice-"):
-            source_refs.append(f"史料切片 · {hit['id'].removeprefix('slice-')}")
-        elif hit["id"].startswith("rel-"):
-            source_refs.append("知识图谱关系")
-        else:
-            source_refs.append("衣溯AI向量知识库")
+    # 2. 站内档案检索（四库真资料；档案没命中才退回内置通史切片）
+    lines, refs, hits_text, items = _recall(question, db, costume.id if costume else None)
+    graph_hits += lines
+    source_refs += refs
+    sources = sources_of(items)
+    if costume is not None:
+        sources.insert(0, {"type": "costume", "id": costume.id,
+                           "code": code_of("costume", costume.id),
+                           "title": costume.name,
+                           "link": LINKS["costume"].format(id=costume.id),
+                           "external": False})
 
     # 3. 构造提示词
-    context = "\n".join(graph_hits + vec_hits) or "（未检索到与问题直接相关的史料切片）"
+    context = "\n".join(graph_hits) or "（未检索到与问题直接相关的史料切片）"
     messages = [
         {"role": "system", "content": _build_system_prompt()},
         {
@@ -86,18 +120,18 @@ def graphrag_answer(
     ]
     answer = chat_completion(messages)
     if not answer:
-        # 未配置大模型：回退「知识库直答」——依据召回切片给出可溯源回答，不编造
-        base_hits = [h for h in vec_hits if "（" not in h] or vec_hits
-        if base_hits:
+        # 未配置大模型：回退「知识库直答」——依据召回资料给出可溯源回答，不编造
+        if hits_text:
             answer = (
                 "（当前为离线知识库模式，未调用大模型）依据衣溯AI史料知识库检索结果：\n"
-                + "\n".join(f"· {t}" for t in base_hits[:3])
+                + "\n".join(f"· {t}" for t in hits_text[:3])
             )
         else:
             answer = "（当前为离线知识库模式）未检索到与该问题直接相关的权威史料记载。"
     return {
         "answer": answer,
         "source_ref": "；".join(source_refs) or "内置史料切片（演示）",
+        "sources": sources,
         "context": context,
     }
 
@@ -119,28 +153,17 @@ def graphrag_chat(
     history: list[dict] | None = None,
     db: Session | None = None,
 ) -> dict[str, Any]:
-    """多轮溯源对话：RAG 召回 + 豆包生成（支持连续追问）。
+    """多轮溯源对话：站内档案召回 + 豆包生成（支持连续追问）。
 
     与 graphrag_answer 相比：
     - 允许带历史消息（多轮上下文）；
-    - 知识库无切片时由大模型依据常识作答并显式标注，保证“能对话”。
+    - 档案与通史切片都没命中时由大模型依据常识作答并显式标注，保证“能对话”。
     """
-    # 1. 向量召回（ChromaDB 持久化向量库；失败回退内置切片）
-    vec_hits: list[str] = []
-    source_refs: list[str] = []
-    for hit in rag_store.vector_search(question, k=4):
-        if hit["id"] == "none":
-            continue
-        vec_hits.append(hit["text"])
-        if hit["id"].startswith("slice-"):
-            source_refs.append(f"史料切片 · {hit['id'].removeprefix('slice-')}")
-        elif hit["id"].startswith("rel-"):
-            source_refs.append("知识图谱关系")
-        else:
-            source_refs.append("衣溯AI向量知识库")
+    # 1. 召回（站内四库真资料优先，兜底内置通史切片）
+    lines, source_refs, hits_text, items = _recall(question, db)
 
     # 2. 构造多轮提示词（历史 + 当前问题 + 召回上下文）
-    context = "\n".join(vec_hits) or "（未检索到与问题直接相关的史料切片）"
+    context = "\n".join(lines) or "（未检索到与问题直接相关的史料切片）"
     messages: list[dict] = [{"role": "system", "content": _build_system_prompt()}]
     for h in (history or [])[-8:]:
         role = h.get("role")
@@ -160,19 +183,68 @@ def graphrag_chat(
     answer = chat_completion(messages)
     if not answer:
         # 未配置大模型：回退「知识库直答」
-        base_hits = [h for h in vec_hits if "（" not in h] or vec_hits
-        if base_hits:
+        if hits_text:
             answer = (
                 "（当前为离线知识库模式，未调用大模型）依据衣溯AI史料知识库检索结果：\n"
-                + "\n".join(f"· {t}" for t in base_hits[:3])
+                + "\n".join(f"· {t}" for t in hits_text[:3])
             )
         else:
             answer = "（当前为离线知识库模式）未检索到与该问题直接相关的权威史料记载。"
     return {
         "answer": answer,
         "source_ref": "；".join(source_refs) or "内置史料切片（演示）",
+        "sources": sources_of(items),
         "context": context,
     }
+
+
+def graphrag_chat_stream(question: str, history: list[dict] | None = None, db: Session | None = None):
+    """流式版本：先 yield 元信息（source_ref），再逐 token yield 回答片段。
+
+    产出约定：
+      第一条 SSE 事件 event: meta，data 为 JSON {source_ref, sources}
+      后续 event: delta，data 为文本片段
+      最后 event: done
+    """
+    from app.ai_engine.llm_client import chat_completion_stream
+
+    lines, source_refs, hits_text, items = _recall(question, db)
+    context = "\n".join(lines) or "（未检索到与问题直接相关的史料切片）"
+    messages: list[dict] = [{"role": "system", "content": _build_system_prompt()}]
+    for h in (history or [])[-8:]:
+        role = h.get("role")
+        content = h.get("content")
+        if role in ("user", "assistant") and content:
+            messages.append({"role": role, "content": str(content)[:1200]})
+    messages.append({
+        "role": "user",
+        "content": (
+            f"问题：{question}\n\n可参考史料：\n{context}\n\n"
+            "请回答上述问题。若可参考史料覆盖请优先依据史料并标注来源；"
+            "若史料未覆盖，请基于服饰史常识作答并按要求注明。"
+        ),
+    })
+
+    import json as _json
+    yield ("meta", _json.dumps({
+        "source_ref": "；".join(source_refs) or "内置史料切片（演示）",
+        "sources": sources_of(items),
+    }, ensure_ascii=False))
+
+    got = False
+    for piece in chat_completion_stream(messages):
+        got = True
+        yield ("delta", piece)
+
+    if not got:
+        # 未配置模型/失败：回退知识库直答（仍逐段 yield，保持打字机）
+        fallback = (
+            "（离线知识库模式）依据衣溯史料检索结果：\n" + "\n".join(f"· {t}" for t in hits_text[:3])
+            if hits_text else "（离线知识库模式）未检索到直接相关史料。"
+        )
+        for i in range(0, len(fallback), 12):
+            yield ("delta", fallback[i:i+12])
+    yield ("done", "")
 
 
 def ensure_index(db: Session | None = None) -> dict[str, int]:

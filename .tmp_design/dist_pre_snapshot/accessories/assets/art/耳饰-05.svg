@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+<g stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="200" cy="192" r="126" fill="none" stroke="#7b6650" stroke-opacity=".22" stroke-dasharray="2 8"/><path d="M78 330H322" stroke="#7b6650" stroke-opacity=".3"/>
+        <g stroke="#7b6650" fill="none">
+          <path d="M200 84c-18 0-32 14-32 32 0 16 10 28 24 32l8 12"/>
+          <path d="M200 84c18 0 32 14 32 32 0 16-10 28-24 32l-8 12" opacity=".7"/>
+          <path d="M200 160v40" stroke="#7a221c"/>
+          <path d="M200 200l28 34-28 54-28-54 28-34Z" fill="#7a221c" fill-opacity=".12" stroke="#7a221c"/>
+          <circle cx="200" cy="250" r="5" fill="#7b6650"/>
+          <path d="M168 88c18-14 46-14 64 0" opacity=".55"/>
+        </g></g>
+<text x="200" y="224" text-anchor="middle" font-family="KaiTi, STKaiti, SimSun, serif" font-size="112" fill="#7a221c" fill-opacity=".24">坠</text>
+<text x="200" y="364" text-anchor="middle" font-family="Georgia, serif" font-size="10" letter-spacing="4" fill="#7b6650" fill-opacity=".55">耳饰 / SCHEMATIC</text>
+</svg>

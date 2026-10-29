@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import (
     home, archive, timeline, geo_map, pattern_workshop,
     ai_qa, community, user_center, heritage_gen, ai_simulator, fabric, upload,
-    pattern_library,
+    pattern_library, accessories, identify,
 )
 from app.core.config import settings
 from app.db import models  # noqa: F401 确保模型注册
@@ -102,6 +102,8 @@ app.include_router(ai_simulator.router, prefix="/api/simulator", tags=["创新�
 app.include_router(fabric.router, prefix="/api/fabrics", tags=["服装面料·历代面料溯源"])
 app.include_router(pattern_library.router, prefix="/api/pattern-library", tags=["纹样资料库·十大分类"])
 app.include_router(upload.router, prefix="/api/upload", tags=["通用图片上传·云端存储"])
+app.include_router(accessories.router, prefix="/api/accessories", tags=["服饰与配饰·九卷档案"])
+app.include_router(identify.router, tags=["AI识纹样"])
 
 # 静态文件服务：uploads/ 目录对外可访问（图片 URL 形如 /uploads/images/202610/xxx.jpg）
 import os as _os

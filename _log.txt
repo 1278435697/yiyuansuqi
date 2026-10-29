@@ -1,0 +1,25 @@
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: WHERE costume_relations.costume_id = %(costume_id_1)s
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:09,507 INFO sqlalchemy.engine.Engine [cached since 0.1384s ago] {'costume_id_1': 57}
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:09,510 INFO sqlalchemy.engine.Engine SELECT costume_relations.id AS costume_relations_id, costume_relations.costume_id AS costume_relations_costume_id, costume_relations.relation_type AS costume_relations_relation_type, costume_relations.target_value AS costume_relations_target_value, costume_relations.source_ref AS costume_relations_source_ref
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: FROM costume_relations
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: WHERE costume_relations.costume_id = %(costume_id_1)s
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:09,510 INFO sqlalchemy.engine.Engine [cached since 0.1414s ago] {'costume_id_1': 58}
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:09,513 INFO sqlalchemy.engine.Engine SELECT costume_relations.id AS costume_relations_id, costume_relations.costume_id AS costume_relations_costume_id, costume_relations.relation_type AS costume_relations_relation_type, costume_relations.target_value AS costume_relations_target_value, costume_relations.source_ref AS costume_relations_source_ref
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: FROM costume_relations
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: WHERE costume_relations.costume_id = %(costume_id_1)s
+Oct 29 11:47:09 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:09,513 INFO sqlalchemy.engine.Engine [cached since 0.1444s ago] {'costume_id_1': 59}
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,558 INFO sqlalchemy.engine.Engine ROLLBACK
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,562 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,562 INFO sqlalchemy.engine.Engine SELECT 1
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,563 INFO sqlalchemy.engine.Engine [generated in 0.00046s] {}
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,564 INFO sqlalchemy.engine.Engine ROLLBACK
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,566 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,567 INFO sqlalchemy.engine.Engine SELECT 1
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,567 INFO sqlalchemy.engine.Engine [cached since 0.005103s ago] {}
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:16,569 INFO sqlalchemy.engine.Engine ROLLBACK
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: INFO:     Application startup complete.
+Oct 29 11:47:16 iZ2zec7150rri7825wp0f2Z python3[340759]: INFO:     Uvicorn running on http://0.0.0.0:8765 (Press CTRL+C to quit)
+Oct 29 11:47:31 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:31,802 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+Oct 29 11:47:31 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:31,802 INFO sqlalchemy.engine.Engine SELECT 1
+Oct 29 11:47:31 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:31,803 INFO sqlalchemy.engine.Engine [cached since 15.24s ago] {}
+Oct 29 11:47:31 iZ2zec7150rri7825wp0f2Z python3[340759]: 2026-10-29 11:47:31,804 INFO sqlalchemy.engine.Engine ROLLBACK

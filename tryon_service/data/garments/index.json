@@ -877,6 +877,70 @@
         "《簪花仕女图》（传周昉，辽宁省博物馆藏）",
         "阿斯塔那墓出土唐代绢衣（新疆博物馆藏）"
       ]
+    },
+    {
+      "id": "longfengpao-ming-flat",
+      "name": "大红绣龙凤圆领袍·平铺",
+      "dynasty": "明",
+      "category": "robe",
+      "tags": [
+        "圆领袍",
+        "方补",
+        "盘金绣",
+        "平铺"
+      ],
+      "image": "garments/longfengpao-ming-flat.png",
+      "mask": "garments/longfengpao-ming-flat_mask.png",
+      "thumb": "garments/longfengpao-ming-flat_thumb.png",
+      "keypoints": [
+        {
+          "name": "collar_center",
+          "x": 0.5,
+          "y": 0.0891
+        },
+        {
+          "name": "shoulder_L",
+          "x": 0.0523,
+          "y": 0.1605
+        },
+        {
+          "name": "shoulder_R",
+          "x": 0.9477,
+          "y": 0.1605
+        },
+        {
+          "name": "sleeve_L_end",
+          "x": 0.2928,
+          "y": 0.3924
+        },
+        {
+          "name": "sleeve_R_end",
+          "x": 0.7057,
+          "y": 0.3924
+        },
+        {
+          "name": "waist_L",
+          "x": 0.2952,
+          "y": 0.4994
+        },
+        {
+          "name": "waist_R",
+          "x": 0.7048,
+          "y": 0.4994
+        },
+        {
+          "name": "hem_L",
+          "x": 0.1493,
+          "y": 0.8919
+        },
+        {
+          "name": "hem_R",
+          "x": 0.8492,
+          "y": 0.8919
+        }
+      ],
+      "source_text": "",
+      "references": []
     }
   ]
 }

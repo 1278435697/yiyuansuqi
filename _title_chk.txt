@@ -1,0 +1,10 @@
+=== museum/index.html title ===
+<title>衣溯AI · 华夏服饰溯源与复原平台｜博物馆展厅</title>
+=== index chunk title 相关 ===
+
+=== MuseumView title 设置 ===
+
+=== 全目录搜 衣溯AI ===
+/www/wwwroot/yisu/frontend/dist/museum/assets/assets.manifest.json
+/www/wwwroot/yisu/frontend/dist/museum/assets/exhibits-Cb5qGZIp.js
+/www/wwwroot/yisu/frontend/dist/museum/index.html

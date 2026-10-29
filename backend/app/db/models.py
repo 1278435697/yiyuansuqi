@@ -114,6 +114,7 @@ class PatternLibrary(Base):
     compose = Column(Text, default="")                   # 体系组成
     similar = Column(Text, default="")                   # 相似纹样说明
     applied = Column(String(255), default="")            # 服饰应用部位
+    created_by = Column(Integer, default=0)              # 用户添加者 id（0=官方数据）
 
 
 class Relics(Base):
@@ -254,6 +255,7 @@ class ForumPosts(Base):
     costume_ids = Column(String(200), default="")
     work_id = Column(Integer, ForeignKey("revival_works.id"), nullable=True)
     is_pinned = Column(Boolean, default=False)
+    status = Column(String(16), nullable=False, default="pending")  # pending / approved / rejected
     like_count = Column(Integer, default=0)
     collect_count = Column(Integer, default=0)
     repost_count = Column(Integer, default=0)
@@ -349,6 +351,8 @@ class Fabrics(Base):
     description = Column(Text, default="")
     image_url = Column(String(255), default="")
     source_ref = Column(String(255), default="")
+    craft = Column(JSON, default=dict)           # 用户面料的工艺素材 {history_note, steps:[{label,desc}], images:{}, name}
+    poems = Column(JSON, default=list)           # 诗文引文 [{src, text, url}]
     created_by = Column(Integer, nullable=True, index=True)
     create_time = Column(DateTime, default=datetime.utcnow)
 

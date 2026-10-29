@@ -40,5 +40,9 @@ tryon_service/data/logs/
 tryon_service/data/cache/
 tryon_service/data/e2e/
 tryon_service/data/garments_src/
+# 用户真人原图：private/ 是迁移后的正式落点，outbox/ 是交给云端厂商的短时效出件目录。
+# 两者都是 PII，任何时候都不该进版本库。
+tryon_service/data/private/
+tryon_service/data/outbox/
 tryon_service/weights/
 

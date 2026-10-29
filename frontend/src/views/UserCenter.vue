@@ -38,7 +38,7 @@
     <div v-else>
       <div class="profile-card ys-card">
         <div class="profile-head">
-          <div class="avatar-wrap" @click="triggerAvatar">
+          <div class="avatar-wrap" data-lb-native @click="triggerAvatar">
             <img v-if="userStore.avatar" :src="userStore.avatar" class="avatar-img" alt="头像" />
             <div v-else class="avatar">{{ userStore.username?.[0]?.toUpperCase() }}</div>
             <div class="avatar-mask">
@@ -53,7 +53,7 @@
               <el-button size="small" text type="primary" @click="renameVisible = true">修改用户名</el-button>
             </h3>
             <div class="profile-meta">
-              <span class="role-badge">{{ userStore.role === "admin" ? "管理员" : "普通用户" }}</span>
+              <span class="role-badge">{{ userStore.role === "superadmin" ? "总管" : userStore.role === "admin" ? "管理员" : "普通用户" }}</span>
               <span v-if="userStore.email" class="meta">{{ userStore.email }}</span>
               <span v-if="meInfo.create_time" class="meta">注册于 {{ meInfo.create_time.slice(0, 10) }}</span>
             </div>
@@ -101,7 +101,7 @@
                 <span v-if="p.dynasty_tags" class="ys-tag" v-for="t in p.dynasty_tags.split(',')" :key="t" v-show="t">{{ t }}</span>
               </div>
               <span class="post-stats">赞 {{ p.like_count }} · 回 {{ p.reply_count }}</span>
-              <span class="time">{{ p.create_time?.slice(0, 10) }}</span>
+              <span class="time">{{ p.create_time?.slice(0, 10) }} <el-button size="small" type="danger" link @click.stop="delMyPost(p)">删除</el-button></span>
             </div>
           </div>
           <div v-else-if="!tabLoading" class="ys-empty">
@@ -129,7 +129,7 @@
           <div v-loading="tabLoading" class="log-list" v-if="questions.length">
             <div v-for="q in questions" :key="q.id" class="log-item post-item clickable" @click="go(`/aiqa?question=${q.id}`)">
               <b>{{ q.title }}</b>
-              <span class="time">{{ q.create_time?.slice(0, 10) }}</span>
+              <span class="time">{{ q.create_time?.slice(0, 10) }} <el-button size="small" type="danger" link @click.stop="delMyQuestion(q)">删除</el-button></span>
             </div>
           </div>
           <div v-else-if="!tabLoading" class="ys-empty">
@@ -137,14 +137,14 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="管理员" name="admin" v-if="userStore.role === 'admin'">
+        <el-tab-pane label="管理员" name="admin" v-if="userStore.role === 'admin' || userStore.role === 'superadmin'">
           <div class="admin-grid">
             <div class="ys-card">
               <h4 class="ys-title">用户管理</h4>
               <div v-for="u in adminUsers" :key="u.id" class="log-item admin-user">
                 <b>{{ u.username }}</b><span class="email">{{ u.email }}</span>
-                <span class="role-badge">{{ u.role === "admin" ? "管理员" : "普通用户" }}</span>
-                <el-button size="small" @click="toggleRole(u)">{{ u.role === "admin" ? "降为普通" : "设为管理员" }}</el-button>
+                <span class="role-badge">{{ u.role === "superadmin" ? "总管" : u.role === "admin" ? "管理员" : "普通用户" }}</span>
+                <el-button size="small" v-if="u.role !== 'superadmin'" @click="toggleRole(u)">{{ u.role === "admin" ? "降为普通" : "设为管理员" }}</el-button>
               </div>
             </div>
             <div class="ys-card">
@@ -189,7 +189,7 @@ import { useUserStore } from "@/store/user";
 import {
   fetchMyLogs, fetchMyStats, fetchMyCollections,
   fetchMyPosts, fetchMyQuestions, adminDeletePost, fetchAuditPosts, updateAvatar,
-  uploadImage,
+  uploadImage, deletePost, deleteQuestion,
 } from "@/api/modules";
 import request from "@/api/request";
 
@@ -346,7 +346,7 @@ async function initAfterAuth() {
   tab.value = "logs";
   await loadProfile();
   await loadTab("logs");
-  if (userStore.role === "admin") loadAdmin();
+  if (userStore.role === "admin" || userStore.role === "superadmin") loadAdmin();
 }
 
 async function loadProfile() {
@@ -379,6 +379,25 @@ async function loadTab(name: string) {
 function onTabChange(name: string | number) {
   if (userStore.token && !loadedTabs.has(String(name))) {
     loadTab(String(name));
+  }
+}
+
+async function delMyPost(p: any) {
+  try {
+    await deletePost(p.id);
+    ElMessage.success("已删除");
+    posts.value = posts.value.filter((x: any) => x.id !== p.id);
+  } catch (e: any) {
+    ElMessage.error("删除失败：" + (e?.response?.data?.detail || e.message));
+  }
+}
+async function delMyQuestion(q: any) {
+  try {
+    await deleteQuestion(q.id);
+    ElMessage.success("已删除");
+    questions.value = questions.value.filter((x: any) => x.id !== q.id);
+  } catch (e: any) {
+    ElMessage.error("删除失败：" + (e?.response?.data?.detail || e.message));
   }
 }
 

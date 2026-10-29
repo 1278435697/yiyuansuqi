@@ -1,0 +1,31 @@
+event: meta
+data: {"source_ref": "站内档案 · 深衣（档案-0001）；站内档案 · 曲裾深衣（档案-0003）；站内档案 · 朱子深衣（档案-0022）；站内档案 · 深衣体系（衣制-02）", "sources": [{"type": "costume", "id": 1, "code": "档案-0001", "title": "深衣", "link": "/archive/1", "external": false}, {"type": "costume", "id": 3, "code": "档案-0003", "title": "曲裾深衣", "link": "/archive/3", "external": false}, {"type": "costume", "id": 22, "code": "档案-0022", "title": "朱子深衣", "link": "/archive/22", "external": false}, {"type": "accessory", "id": "衣制-02", "code": "衣制-02", "title": "深衣体系", "link": "/accessories/index.html#/a/%E8%A1%A3%E5%88%B6-02", "external": true}]}
+
+event: delta
+data: "深"
+
+event: delta
+data: "衣"
+
+event: delta
+data: "是"
+
+event: delta
+data: "传统"
+
+event: delta
+data: "服饰"
+
+event: delta
+data: "中"
+
+event: delta
+data: "以"
+
+event: delta
+data: "“"
+
+event: delta
+data: "连"
+
+event: de

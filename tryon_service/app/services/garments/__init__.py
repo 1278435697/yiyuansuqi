@@ -48,6 +48,7 @@ class GarmentAsset:
     keypoints: dict[str, tuple[float, float]] = field(default_factory=dict)
     source_text: str = ""
     references: list[str] = field(default_factory=list)
+    cloud_cloth: np.ndarray | None = None  # 云端试穿专用的服装呈现图（平铺形），无则用 image
 
     @property
     def kp_list(self) -> list[Keypoint]:
@@ -235,8 +236,29 @@ def load_asset(gid: str) -> GarmentAsset:
             keypoints=keypoints,
             source_text=entry.get("source_text", ""),
             references=list(entry.get("references") or []),
+            cloud_cloth=_load_cloud_cloth(root, gid),
         )
     raise GarmentNotFoundError()
+
+
+def _load_cloud_cloth(root: Path, gid: str) -> np.ndarray | None:
+    """`{gid}_flat.png` 是这件衣服的**平铺呈现图**，只给云端试穿用。
+
+    展陈形（大袖横向撑开再垂下）对试衣模型是分布外输入：袖子的真实宽度在图里没有
+    信息，模型按现代连衣裙先验补成窄袖 + 从领口斜到腋下的插肩缝。实测同一人像同一
+    引擎，只把服装输入换成平铺 T 形，大袖、肩线、裙长全部回正。
+    本地 TPS 不吃这张——它要的是 image + 关键点，两套输入互不干扰。
+    """
+    flat = root / f"{gid}_flat.png"
+    if not flat.is_file():
+        return None
+    from app.utils.imageio import load_rgb
+
+    try:
+        return load_rgb(flat.read_bytes(), label="平铺呈现图")
+    except Exception:  # noqa: BLE001 - 呈现图坏了不该拖垮整次试穿
+        logger.warning("平铺呈现图加载失败，回退用素材图：%s", flat, exc_info=True)
+        return None
 
 
 def asset_from_bytes(raw: bytes, *, gid: str = "adhoc", name: str = "临时上传服饰") -> GarmentAsset:

@@ -9,6 +9,7 @@ import "./assets/styles/theme.css";
 import "./assets/styles/bg.css";
 import "./assets/styles/tailwind.css";
 import "./assets/styles/museum.css";
+import "./assets/styles/acc-scope.css";
 
 const app = createApp(App);
 app.use(createPinia());

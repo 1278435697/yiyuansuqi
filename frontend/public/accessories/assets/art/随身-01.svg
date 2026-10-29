@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+<g stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="200" cy="192" r="126" fill="none" stroke="#6f4c2c" stroke-opacity=".22" stroke-dasharray="2 8"/><path d="M78 330H322" stroke="#6f4c2c" stroke-opacity=".3"/>
+        <g stroke="#6f4c2c" fill="none">
+          <path d="M144 126h112l-10 132c-2 22-20 34-46 34s-44-12-46-34l-10-132Z" fill="#6f4c2c" fill-opacity=".03"/>
+          <path d="M144 126c10-20 30-30 56-30s46 10 56 30" stroke="#7a221c"/>
+          <path d="M144 126h112" stroke="#7a221c"/>
+          <path d="M200 158v92" opacity=".55"/>
+          <path d="M200 252v40" stroke="#7a221c"/>
+          <path d="M188 292h24" stroke="#7a221c"/>
+          <path d="M168 150c20 12 44 12 64 0" opacity=".5"/>
+        </g></g>
+<text x="200" y="224" text-anchor="middle" font-family="KaiTi, STKaiti, SimSun, serif" font-size="112" fill="#7a221c" fill-opacity=".24">扇</text>
+<text x="200" y="364" text-anchor="middle" font-family="Georgia, serif" font-size="10" letter-spacing="4" fill="#6f4c2c" fill-opacity=".55">随身 / SCHEMATIC</text>
+</svg>

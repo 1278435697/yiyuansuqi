@@ -8,6 +8,7 @@ import PipelineStepper from '@/tryon/components/PipelineStepper.vue'
 import ResultViewer from '@/tryon/components/ResultViewer.vue'
 import { useAppStore } from '@/tryon/store/app'
 import { useTryOnStore } from '@/tryon/store/tryon'
+import { backendBadge } from '@/tryon/utils/backend'
 
 const route = useRoute()
 const app = useAppStore()
@@ -48,7 +49,9 @@ async function submit(): Promise<void> {
         // 命中缓存时 timings 回传的是首次真实推理的耗时，不能当成“这次很快”
         ElMessage.info('命中磁盘缓存：结果与上次完全相同。换素材 / 切 HD / 换照片，或勾选「跳过缓存强制重算」才会重跑')
       } else {
-        ElMessage.success(`试穿完成（后端 ${data.backend_used}，总耗时 ${data.timings.total?.toFixed(2) ?? '—'}s）`)
+        ElMessage.success(
+          `试穿完成（${backendBadge(data.backend_used).label}，总耗时 ${data.timings.total?.toFixed(2) ?? '—'}s）`,
+        )
       }
     }
   }
@@ -81,8 +84,14 @@ onMounted(async () => {
       <div>
         <h2>上传真人照片 · 选择馆藏汉服 · 一键试穿</h2>
         <p class="yisu-hint">
-          管线：前端压缩（长边≤1024）→ 人像分割 → COCO-17 姿态 → 服饰 9 关键点 TPS/HR-VITON 形变 →
-          遮挡还原 + 光影匹配 + 边缘羽化 → 结果入库。当前推理后端：
+          <template v-if="store.isCloud">
+            云端管线：前端压缩（长边≤1024）→ 服饰图自动裁边 → Aidge 云端换装 → 结果落盘入库（云端不返回中间过程图）。
+          </template>
+          <template v-else>
+            管线：前端压缩（长边≤1024）→ 人像分割 → COCO-17 姿态 → 服饰 9 关键点 TPS/HR-VITON 形变 →
+            遮挡还原 + 光影匹配 + 边缘羽化 → 结果入库。
+          </template>
+          当前推理后端：
           <strong>{{ app.backendLabel }}</strong>
           <span v-if="app.health?.fallback_reason" class="fallback-reason">（{{ app.health.fallback_reason }}）</span>
         </p>
@@ -103,8 +112,13 @@ onMounted(async () => {
           <el-switch v-model="batchMode" active-text="批量连续试穿（加分项）" />
           <el-switch v-model="store.forceRefresh" active-text="跳过缓存强制重算" />
           <p v-if="store.forceRefresh" class="yisu-hint">
-            本次会忽略磁盘缓存重新跑一遍推理（CPU 兜底路径约 1–5 秒）。注意管线是确定性的，
-            同一照片 + 同一服饰 + 同一画质重跑结果仍会一模一样。
+            <template v-if="store.isCloud">
+              本次会跳过磁盘缓存重新调用云端（约 3–10 秒，消耗一次云端额度）；云端出图可能与上次有细微差异。
+            </template>
+            <template v-else>
+              本次会忽略磁盘缓存重新跑一遍推理（CPU 兜底路径约 1–5 秒）。注意管线是确定性的，
+              同一照片 + 同一服饰 + 同一画质重跑结果仍会一模一样。
+            </template>
           </p>
           <p v-if="batchMode" class="yisu-hint">
             在右侧勾选多件素材，一次提交由后端顺序产出多套效果图（单次最多 8 件）。

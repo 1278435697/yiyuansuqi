@@ -48,11 +48,18 @@ class PipelineOutput:
 
 
 def _cache_key(person_rgb: np.ndarray, garment: GarmentAsset, quality: str) -> str:
-    """缓存键同时纳入服饰图像与掩码，避免临时上传服饰（id 恒为 adhoc）互相误命中。"""
+    """缓存键同时纳入服饰图像与掩码，避免临时上传服饰（id 恒为 adhoc）互相误命中。
+
+    云端呈现图（`cloud_cloth`）也要进键：它不改素材本身、只改发给厂商的那张图，
+    漏了它的话给某件衣服补一张平铺图，线上仍会返回按展陈形算出来的旧结果。
+    """
     digest = hashlib.sha256()
     digest.update(np.ascontiguousarray(person_rgb).tobytes())
     digest.update(np.ascontiguousarray(garment.image).tobytes())
     digest.update(np.ascontiguousarray(garment.mask).tobytes())
+    if garment.cloud_cloth is not None:
+        digest.update(b"cloud_cloth:")
+        digest.update(np.ascontiguousarray(garment.cloud_cloth).tobytes())
     digest.update(garment.id.encode("utf-8"))
     digest.update(quality.encode("utf-8"))
     return digest.hexdigest()[:32]

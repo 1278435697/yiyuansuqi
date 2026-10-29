@@ -22,8 +22,8 @@
 
     <!-- 顶部小字标题 -->
     <div class="pl-top-title">
-      <span class="tt-cn">华夏服饰溯源与复原平台</span>
-      <span class="tt-en">YISU AI · HERITAGE OF CHINESE COSTUME</span>
+      <span class="tt-cn">衣溯 · 华夏衣冠志</span>
+      <span class="tt-en">YISU · CHRONICLE OF CHINESE COSTUME</span>
     </div>
 
     <!-- 中央：圆环预加载器 -->
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
 }
 .tt-en {
   font-family: "Georgia", "Times New Roman", serif;
-  font-size: 10px;
+  font-size: var(--ys-fs-micro);
   letter-spacing: 3px;
   text-transform: uppercase;
   color: rgba(107, 86, 60, 0.65);
@@ -448,7 +448,7 @@ onBeforeUnmount(() => {
 .pl-enter-en {
   margin-top: 2px;
   font-family: "Georgia", serif;
-  font-size: 11px;
+  font-size: var(--ys-fs-micro);
   letter-spacing: 4px;
   color: #a8322a;
   opacity: 0.85;
@@ -474,7 +474,7 @@ onBeforeUnmount(() => {
   transform: translateX(-50%);
   margin: 0;
   font-family: "Georgia", serif;
-  font-size: 11px;
+  font-size: var(--ys-fs-micro);
   letter-spacing: 5px;
   text-transform: uppercase;
   color: #a8322a;

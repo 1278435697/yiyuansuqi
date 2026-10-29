@@ -57,6 +57,8 @@ function onDocClick(e: MouseEvent) {
   if (!img || !img.src) return;
   // 数字博物馆展厅内的图片由展品卡片自行接管，避免抢占缩略图点击
   if (img.closest(".museum")) return;
+  // 宿主用 data-lb-native 声明自己接管点击（如纹样详情的多图灯箱），全局放大让路
+  if (img.closest("[data-lb-native]")) return;
   // 数据为空（如懒加载占位）不弹
   if (!img.currentSrc && !img.src) return;
   e.preventDefault();

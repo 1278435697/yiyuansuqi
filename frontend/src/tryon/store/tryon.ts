@@ -3,9 +3,10 @@ import { computed, ref } from 'vue'
 import { batchTryOn, submitTryOn, TRYON_TIMEOUT_MS } from '@/tryon/api/tryon'
 import { compressImage, type CompressedImage } from '@/tryon/utils/compressImage'
 import { describeError } from '@/tryon/api/client'
+import { useAppStore } from '@/tryon/store/app'
 import type { Quality, TryOnResult } from '@/tryon/types'
 
-export const PIPELINE_STEPS = [
+export const PIPELINE_STEPS_LOCAL = [
   '前端压缩上传',
   '人像分割（Provider 链）',
   '人体姿态 17 关键点',
@@ -14,9 +15,18 @@ export const PIPELINE_STEPS = [
   '结果落盘 + 记录入库',
 ] as const
 
+/** 云端引擎只做一次换装调用，本地那套分割/姿态/形变过程图它不返回。 */
+export const PIPELINE_STEPS_CLOUD = [
+  '前端压缩上传',
+  '服饰图自动裁边',
+  'Aidge 云端换装推理',
+  '结果落盘 + 记录入库',
+] as const
+
 /** 各阶段耗时（秒）经验值，仅用于视觉进度插值；真实耗时以后端 timings 为准。 */
-const STAGE_BUDGET_FAST = [0.4, 1.2, 0.3, 3.0, 1.0, 0.3]
-const STAGE_BUDGET_HD = [0.4, 2.0, 0.5, 9.0, 2.5, 0.5]
+const STAGE_BUDGET_LOCAL_FAST = [0.4, 1.2, 0.3, 3.0, 1.0, 0.3]
+const STAGE_BUDGET_LOCAL_HD = [0.4, 2.0, 0.5, 9.0, 2.5, 0.5]
+const STAGE_BUDGET_CLOUD = [0.4, 0.8, 4.0, 0.4]
 
 export interface PersonState {
   fileName: string
@@ -44,6 +54,10 @@ export const useTryOnStore = defineStore('tryon', () => {
   const batchResults = ref<TryOnResult[]>([])
   const error = ref<string | null>(null)
 
+  const app = useAppStore()
+  const isCloud = computed<boolean>(() => app.health?.vton_backend_resolved === 'aidge')
+  const steps = computed<readonly string[]>(() => (isCloud.value ? PIPELINE_STEPS_CLOUD : PIPELINE_STEPS_LOCAL))
+
   let controller: AbortController | null = null
   let ticker: number | null = null
 
@@ -63,7 +77,11 @@ export const useTryOnStore = defineStore('tryon', () => {
    * 响应返回后再用 timings 精确回填每个阶段的真实耗时。
    */
   function startTicker(): void {
-    const budget = quality.value === 'hd' ? STAGE_BUDGET_HD : STAGE_BUDGET_FAST
+    const budget = isCloud.value
+      ? STAGE_BUDGET_CLOUD
+      : quality.value === 'hd'
+        ? STAGE_BUDGET_LOCAL_HD
+        : STAGE_BUDGET_LOCAL_FAST
     const totalMs = budget.reduce((sum, s) => sum + s, 0) * 1000
     const startedAt = Date.now()
     stopTicker()
@@ -147,7 +165,7 @@ export const useTryOnStore = defineStore('tryon', () => {
       const data = await submitTryOn(payload, controller.signal)
       result.value = data
       progress.value = 100
-      stageIndex.value = PIPELINE_STEPS.length - 1
+      stageIndex.value = steps.value.length - 1
       if (data.status === 'failed') {
         error.value = data.message ?? '试穿合成失败，请更换正身、光线清晰的图片重试'
       }
@@ -184,7 +202,7 @@ export const useTryOnStore = defineStore('tryon', () => {
       )
       batchResults.value = list
       progress.value = 100
-      stageIndex.value = PIPELINE_STEPS.length - 1
+      stageIndex.value = steps.value.length - 1
       result.value = list.find((item) => item.status === 'succeeded') ?? list[0] ?? null
       if (result.value?.task_id) selectedGarmentId.value = result.value.trace_card?.garment_id ?? selectedGarmentId.value
       return list
@@ -221,6 +239,7 @@ export const useTryOnStore = defineStore('tryon', () => {
     runBatch,
     cancel,
     timeoutMs: TRYON_TIMEOUT_MS,
-    steps: PIPELINE_STEPS,
+    isCloud,
+    steps,
   }
 })

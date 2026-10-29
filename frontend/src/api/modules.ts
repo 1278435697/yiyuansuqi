@@ -1,4 +1,4 @@
-/** 衣溯AI · 九大模块 API 封装 */
+/** 衣溯 · 华夏衣冠志 · 九大模块 API 封装 */
 
 import request from "./request";
 
@@ -68,6 +68,7 @@ export const fetchMapConfig = () => request.get("/geomap/map-config");
 /* ---------- 模块6 · AI 溯源问答 ---------- */
 export const createQuestion = (body: Record<string, any>) => request.post("/aiqa/questions", body);
 export const fetchAiChat = (body: Record<string, any>) => request.post("/aiqa/chat", body);
+export const fetchAiRecommend = (params: Record<string, any>) => request.get("/aiqa/recommend", { params });
 export const fetchQuestions = (params: Record<string, any>) => request.get("/aiqa/questions", { params });
 export const fetchQuestionDetail = (id: number) => request.get(`/aiqa/questions/${id}`);
 export const questionToPost = (id: number) => request.post(`/aiqa/questions/${id}/to_post`);
@@ -90,11 +91,15 @@ export const toggleCollect = (postId: number, folderName?: string) =>
   request.post(`/community/posts/${postId}/collect`, null, { params: { folder_name: folderName } });
 export const repost = (postId: number, comment?: string) =>
   request.post(`/community/posts/${postId}/repost`, { comment });
+export const onlinePost = (postId: number) => request.post(`/community/posts/${postId}/online`);
+export const offlinePost = (postId: number) => request.post(`/community/posts/${postId}/offline`);
 
 /* ---------- 纹样资料库 ---------- */
 export const fetchPatternCategories = () => request.get("/pattern-library/categories");
 export const fetchPatternItems = (params: Record<string, any>) => request.get("/pattern-library/items", { params });
 export const fetchPatternDetail = (id: number) => request.get(`/pattern-library/${id}`);
+export const createPattern = (data: Record<string, any>) => request.post("/pattern-library", data);
+export const deletePattern = (id: number) => request.delete(`/pattern-library/${id}`);
 
 /* ---------- 模块9 · 文化传承生成 ---------- */
 export const fetchHeritageProfile = () => request.get("/heritage/profile");

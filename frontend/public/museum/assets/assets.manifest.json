@@ -1,0 +1,230 @@
+{
+  "note": "所有图片均来自权威博物馆官方网站，仅用于教学/竞赛演示，请勿商用。下载后落地到 public/assets 下，页面不热链外站。",
+  "minBytes": 8000,
+  "assets": [
+    {
+      "path": "exhibits/pre-qin/g1.jpg",
+      "url": "https://www.chnmuseum.cn/portals/0/web/zt/202409fhgg/img/1/pic12_1_b.jpg",
+      "museum": "中国国家博物馆",
+      "exhibit": "战国·凤纹绣绢䋇衣",
+      "credit": "中国国家博物馆《凤凰故国——青铜时代曾楚艺术展》，1982年江陵马山1号墓出土（荆州博物馆藏）",
+      "sourcePage": "https://www.chnmuseum.cn/portals/0/web/zt/202409fhgg/"
+    },
+    {
+      "path": "exhibits/pre-qin/g2.jpg",
+      "url": "https://www.chnmuseum.cn/portals/0/web/zt/202409fhgg/img/1/pic11_1_b.jpg",
+      "museum": "中国国家博物馆",
+      "exhibit": "战国·龙凤虎纹绣罗单衣袖",
+      "credit": "中国国家博物馆《凤凰故国——青铜时代曾楚艺术展》",
+      "sourcePage": "https://www.chnmuseum.cn/portals/0/web/zt/202409fhgg/"
+    },
+    {
+      "path": "exhibits/tang/g1.jpg",
+      "url": "https://www.chnmuseum.cn/Portals/0/web/zt/20180904dtfh/image/3.3@2x.jpg",
+      "museum": "中国国家博物馆",
+      "exhibit": "唐·蹀躞带胡服女立俑",
+      "credit": "中国国家博物馆《大唐风华》展，唐开元十二年（724年），西安博物院藏",
+      "sourcePage": "https://www.chnmuseum.cn/Portals/0/web/zt/20180904dtfh/"
+    },
+    {
+      "path": "exhibits/tang/g2.png",
+      "url": "https://www.chnmuseum.cn/Portals/0/web/zt/20180904dtfh/image/1.1.png",
+      "museum": "中国国家博物馆",
+      "exhibit": "唐·彩绘陶文官俑（圆领袍）",
+      "credit": "中国国家博物馆《大唐风华》展，1955年陕西省西安市高楼村出土，陕西历史博物馆藏",
+      "sourcePage": "https://www.chnmuseum.cn/Portals/0/web/zt/20180904dtfh/"
+    },
+    {
+      "path": "exhibits/song/g1.png",
+      "url": "https://www.chinasilkmuseum.com/uploadfiles/2021/09/20210916140522227.png",
+      "museum": "中国丝绸博物馆",
+      "exhibit": "南宋·素罗单衣（背子）",
+      "credit": "中国丝绸博物馆「一物 Vol.38 素罗单衣」，江西德安南宋周氏墓出土",
+      "sourcePage": "https://www.chinasilkmuseum.com/gskt/info_319.aspx?itemid=28354"
+    },
+    {
+      "path": "exhibits/song/g2.png",
+      "url": "https://www.chinasilkmuseum.com/uploadfiles/2021/09/20210916140547165.png",
+      "museum": "中国丝绸博物馆",
+      "exhibit": "南宋·罗质纽扣（工艺细节）",
+      "credit": "中国丝绸博物馆「一物 Vol.38 素罗单衣」，江西德安南宋周氏墓出土",
+      "sourcePage": "https://www.chinasilkmuseum.com/gskt/info_319.aspx?itemid=28354"
+    },
+    {
+      "path": "exhibits/ming/g1.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/da878737677e4434abb6abcd9af7d3d2.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·刺绣龙纹袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g2.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/1003e59b98434f9e94c7769c8bf0c3b9.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·织金妆花缎马面裙",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g3.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/a0dbf1a8519c4ac1ae489699b140f5fe.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·大红纱绣龙纹圆领袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "gallery/ming_1.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/6bcd001caa0f4d388233afd61ebe1abf.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·深青暗花大袖袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "gallery/ming_2.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/1a1c29e1d4d4456eb3dbb6e0cc586811.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·红地织金妆花缎马面裙",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "gallery/ming_3.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/541d637a8e7b49e58bddaa83ec0097c0.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·金饰冠",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g4.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/da2d28feb2c440798983c345e0225844.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·大红绣龙凤圆领袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g5.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/ef88a8cd54f94a5fae990c5d82dc83c4.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·圆领龙纹袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g6.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/efcca257db9f4296bbbafbb8f76e7adf.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·酱褐金龙云纹袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g7.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/85d9f7550a544409b3757a675a657cbe.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·大袖裙式袍",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g8.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/d85a40acf96644e088f7ad2af343a5f9.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·宝蓝方补服",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/ming/g9.jpg",
+      "url": "http://www.sdmuseum.com/picture/0/44ff801722a94999a96d4f19791b3bf5.jpg",
+      "museum": "山东博物馆",
+      "exhibit": "明·圆领补服",
+      "credit": "山东博物馆 明代服饰（孔府旧藏）",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/pre-qin/g6.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_geo_mashan_jinpao.jpg",
+      "museum": "荆州博物馆",
+      "exhibit": "战国·凤鸟花卉纹绣浅黄绢面绵袍",
+      "credit": "江陵马山一号楚墓出土（荆州博物馆藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "http://www.jzmuseum.com/"
+    },
+    {
+      "path": "exhibits/han/g7.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_han_quju_v2.jpg",
+      "museum": "湖南博物院",
+      "exhibit": "西汉·朱红菱纹罗丝绵袍（曲裾式）",
+      "credit": "长沙马王堆一号汉墓出土（湖南博物院藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.hnmuseum.com/"
+    },
+    {
+      "path": "exhibits/han/g8.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_han_yinhuafucai.jpg",
+      "museum": "湖南博物院",
+      "exhibit": "西汉·印花敷彩纱丝绵袍",
+      "credit": "长沙马王堆一号汉墓出土（湖南博物院藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.hnmuseum.com/"
+    },
+    {
+      "path": "exhibits/weijin/g4.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_geo_lourui_mural.jpg",
+      "museum": "山西博物院",
+      "exhibit": "北齐·太原娄睿墓《鞍马出行图》壁画",
+      "credit": "太原娄睿墓（武平元年，570年）出土（山西博物院藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "http://www.shanximuseum.com/"
+    },
+    {
+      "path": "exhibits/tang/g8.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_tang_futou.jpg",
+      "museum": "陕西历史博物馆",
+      "exhibit": "唐懿德太子墓壁画·戴幞头穿圆领袍人物",
+      "credit": "唐懿德太子墓壁画（陕西历史博物馆藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.sxhm.com/"
+    },
+    {
+      "path": "exhibits/tang/g9.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_tang_hufu.jpg",
+      "museum": "陕西历史博物馆",
+      "exhibit": "唐章怀太子墓《客使图》",
+      "credit": "唐章怀太子墓壁画（陕西历史博物馆藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.sxhm.com/"
+    },
+    {
+      "path": "exhibits/song/g8.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_song_zhuzishenyi.jpg",
+      "museum": "衣溯AI 主站文物影像库",
+      "exhibit": "宋·深衣着幅巾像（朱子深衣之制）",
+      "credit": "据《朱子家礼》考定之朱子深衣；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.dpm.org.cn/"
+    },
+    {
+      "path": "exhibits/ming/g11.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_xianqin_mianfu.jpg",
+      "museum": "衣溯AI 主站文物影像库",
+      "exhibit": "《兴献帝画像》· 十二团龙十二章衮服",
+      "credit": "明代帝王画像（冕服十二章之制承先秦《周礼》）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.dpm.org.cn/"
+    },
+    {
+      "path": "exhibits/ming/g12.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_ming_daopao.jpg",
+      "museum": "衣溯AI 主站文物影像库",
+      "exhibit": "明·道袍（束太带）",
+      "credit": "明代士人常服影像（孔府旧藏明代服饰对照）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "http://www.sdmuseum.com/col/col353160/index.html"
+    },
+    {
+      "path": "exhibits/qing/g4.jpg",
+      "url": "http://47.93.14.11/images/relics/relic_qing_kanjian.jpg",
+      "museum": "故宫博物院",
+      "exhibit": "清·石青地团牡丹暗八仙纹一字襟坎肩",
+      "credit": "清宫旧藏一字襟坎肩（故宫博物院藏）；影像取自衣溯AI主站文物影像库",
+      "sourcePage": "https://www.dpm.org.cn/"
+    }
+  ]
+}

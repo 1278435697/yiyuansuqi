@@ -1,0 +1,768 @@
+/* ============================================================
+   衣冠样式层（只服务 档案 / 面料 / 纹样 三页）
+   视觉语言复刻自 public/accessories/styles.css（配饰九卷子站），
+   数值逐条对照，不另起一套。
+   全部规则挂在 .acc-scope 作用域类或 .acc-* 前缀下：
+   其余页面不挂这个类，就一行都吃不到，theme.css 的
+   .ys-card / .ys-title / .ys-tag / .page-hero 保持原样。
+   ============================================================ */
+
+/* ---------- 令牌（对照子站 :root L6–33） ---------- */
+.acc-scope {
+  --acc-paper: #f5efe4;
+  --acc-card: rgba(255, 253, 248, 0.92);
+  --acc-card-solid: #fffdf8;
+  --acc-gold: #c9a227;
+  --acc-gold-deep: #9d771d;
+  --acc-gold-pale: #e4d3a5;
+  --acc-line-gold: rgba(201, 162, 39, 0.34);
+  --acc-red: #7a221c;
+  --acc-red-deep: #5e1713;
+  --acc-red-bright: #9e2b25;
+  --acc-ink: #3a2f24;
+  --acc-ink-2: #5c4c3a;
+  --acc-ink-3: #94836d;
+  --acc-line: #e6dcc8;
+  --acc-shadow-card: 0 4px 16px rgba(90, 60, 30, 0.08), 0 1px 3px rgba(90, 60, 30, 0.05);
+  --acc-font-serif: "Songti SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  --acc-font-kai: "KaiTi", "STKaiti", "Kaiti SC", "SimSun", serif;
+  --acc-font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --acc-r-card: 12px;
+  --acc-r-chip: 6px;
+  --acc-shell: 1240px;
+
+  /* 子站 body 直接吃宋体；这里只在三页作用域内接管字族与正文色 */
+  color: var(--acc-ink);
+  font-family: var(--acc-font-serif);
+  /* 三页统一容器宽（对照 .shell L127；主站 .app-main 已带 gutter，故不再减 64px） */
+  max-width: var(--acc-shell);
+  margin-inline: auto;
+}
+
+.acc-scope ::selection {
+  background: rgba(158, 43, 37, 0.16);
+}
+
+/* ---------- 区块头（对照 .eyebrow L131 / .section-kicker L161 / h2 L634–671） ---------- */
+.acc-section-head,
+.acc-sec-title-wrap {
+  min-width: 0;
+}
+
+.acc-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--acc-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--acc-ink-3);
+}
+
+.acc-eyebrow-line {
+  width: 34px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.acc-eyebrow-index {
+  margin-left: 4px;
+  padding-left: 12px;
+  border-left: 1px solid currentColor;
+  opacity: 0.62;
+}
+
+.acc-section-kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--acc-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--acc-red);
+}
+
+.acc-section-kicker b {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: var(--acc-r-chip);
+  font-family: var(--acc-font-serif);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--acc-red);
+  background: rgba(255, 253, 248, 0.6);
+}
+
+.acc-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 8px;
+  font-family: var(--acc-font-serif);
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 3px;
+  color: var(--acc-red);
+}
+
+.acc-section-title::before {
+  content: "";
+  width: 5px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #d9b33d, #a07d16);
+}
+
+.acc-section-title::after {
+  content: "";
+  flex: 1;
+  min-width: 40px;
+  height: 1px;
+  margin-left: 6px;
+  background: linear-gradient(90deg, rgba(201, 162, 39, 0.4), transparent);
+}
+
+.acc-section-title em {
+  font-family: var(--acc-font-serif);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--acc-ink-3);
+}
+
+/* 子块用（用户作品、右栏卡标题）：降到主站 h2 字号，不抢主标题 */
+.acc-section-title.is-sm {
+  font-size: 20px;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.acc-section-title.is-sm::before {
+  height: 17px;
+}
+
+.acc-section-sub {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+  color: var(--acc-ink-3);
+}
+
+/* 工具条：标题与筛选同行、底部分金线（对照 .catalog-head L802–809） */
+.acc-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 36px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--acc-line-gold);
+}
+
+.acc-toolbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* 可收缩：窄屏下让内部控件换行，而不是把整条撑出容器 */
+  flex: 0 1 auto;
+  max-width: 100%;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+/* 大类筛选独立一行（对照 .volume-rail L696：横向排布、可换行、不抢工具条宽度） */
+.acc-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+.acc-filter-row .el-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+}
+
+/* ---------- 网格（对照 .acc-grid L956，列数按主站断点规范走） ---------- */
+.acc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.acc-grid > .el-empty {
+  grid-column: 1 / -1;
+}
+
+/* ---------- 卡片（对照 .acc-card L962–1268） ---------- */
+.acc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--acc-line);
+  border-radius: var(--acc-r-card);
+  background: var(--acc-card);
+  box-shadow: var(--acc-shadow-card);
+  overflow: hidden;
+  color: var(--acc-ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  animation: accCardIn 520ms both;
+  /* 入场错峰由 --i 驱动，上限 360ms（子站 app.js L252 同口径） */
+  animation-delay: min(calc(var(--i, 0) * 45ms), 360ms);
+}
+
+.acc-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 14px 34px rgba(90, 60, 30, 0.14);
+}
+
+.acc-card:focus-visible {
+  outline: 2px solid var(--acc-gold);
+  outline-offset: 3px;
+}
+
+.acc-visual {
+  position: relative;
+  height: 188px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--acc-line);
+  background: #f4ead9;
+  background:
+    radial-gradient(circle at 76% 24%, color-mix(in srgb, var(--tone, #a8672f) 30%, transparent), transparent 34%),
+    linear-gradient(145deg, color-mix(in srgb, var(--tone, #a8672f) 16%, #fffdf8), #f8f0e1 64%, color-mix(in srgb, var(--tone, #a8672f) 20%, #f3e8d4));
+}
+
+.acc-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(122, 34, 28, 0.055) 1px, transparent 1px),
+    linear-gradient(rgba(122, 34, 28, 0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 82%);
+  opacity: 0.65;
+}
+
+.acc-visual::after {
+  content: "";
+  position: absolute;
+  right: -42px;
+  bottom: -76px;
+  width: 214px;
+  height: 214px;
+  border: 1px solid rgba(122, 34, 28, 0.14);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 20px rgba(122, 34, 28, 0.025),
+    0 0 0 42px rgba(122, 34, 28, 0.02);
+}
+
+.acc-no {
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  z-index: 2;
+  font-family: var(--acc-font-sans);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: rgba(58, 47, 36, 0.6);
+}
+
+/* 竖排卷名：子站这里放英文（.card-volume L1029），全站中文口径下改放中文类别名 */
+.acc-volume {
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: var(--acc-font-sans);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(58, 47, 36, 0.45);
+}
+
+/* 图片一律不裁：子站 .card-photo.is-contain 内缩 14/16px + contain（L1066–1071） */
+.acc-photo {
+  position: absolute;
+  inset: 14px 16px;
+  width: calc(100% - 32px);
+  height: calc(100% - 28px);
+  object-fit: contain;
+  display: block;
+  transition: transform 420ms ease;
+}
+
+.acc-card:hover .acc-photo {
+  transform: scale(1.025);
+}
+
+/* 无图：用 tone 底 + 楷体单字补位，不留空框 */
+.acc-seal {
+  position: absolute;
+  inset: 14px 16px;
+  display: grid;
+  place-items: center;
+  font-family: var(--acc-font-kai);
+  font-size: 62px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--tone, #a8672f) 62%, #fffdf8);
+  text-shadow: 0 2px 10px rgba(255, 253, 248, 0.8);
+  transition: transform 320ms ease;
+}
+
+.acc-card:hover .acc-seal {
+  transform: translateY(-3px) scale(1.015);
+}
+
+.acc-badge {
+  position: absolute;
+  left: 20px;
+  bottom: 14px;
+  z-index: 2;
+  padding: 2px 9px;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  border-radius: var(--acc-r-chip);
+  background: rgba(255, 253, 248, 0.72);
+  font-family: var(--acc-font-sans);
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  color: var(--acc-red);
+}
+
+.acc-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 18px 20px 16px;
+}
+
+.acc-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.acc-title {
+  margin: 0;
+  font-family: var(--acc-font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 2px;
+  color: var(--acc-ink);
+}
+
+/* 长名降号（子站按 name.length>4 加 .is-long，L1170） */
+.acc-title.is-long {
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: 1px;
+}
+
+.acc-code {
+  flex: 0 0 auto;
+  font-family: var(--acc-font-sans);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--acc-ink-3);
+  white-space: nowrap;
+}
+
+.acc-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 9px;
+  font-family: var(--acc-font-sans);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--acc-red);
+}
+
+.acc-meta::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: var(--acc-gold);
+}
+
+.acc-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 50px;
+  margin: 13px 0 14px;
+  font-size: 13px;
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+  color: var(--acc-ink-2);
+}
+
+.acc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.acc-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 8px;
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  border-radius: 4px;
+  background: rgba(201, 162, 39, 0.1);
+  font-family: var(--acc-font-sans);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--acc-ink-2);
+}
+
+.acc-tag.is-more {
+  border-color: transparent;
+  background: transparent;
+  padding-inline: 2px;
+  color: var(--acc-ink-3);
+}
+
+.acc-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid var(--acc-line-gold);
+  font-family: var(--acc-font-sans);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--acc-red);
+}
+
+.acc-link i {
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.acc-card:hover .acc-link i {
+  transform: translateX(4px);
+}
+
+/* ---------- 详情（对照 .detail-title 补丁 L3813 / .sec-head L1653 / aside sticky L1893） ---------- */
+.acc-detail-title {
+  margin: 0;
+  font-family: var(--acc-font-serif);
+  font-size: clamp(38px, 4.6vw, 56px);
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: 6px;
+  color: var(--acc-ink);
+}
+
+.acc-detail-title.is-long {
+  font-size: clamp(28px, 3.4vw, 42px);
+  letter-spacing: 3px;
+  line-height: 1.3;
+}
+
+.acc-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 9px 0 14px;
+  font-family: var(--acc-font-sans);
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  color: var(--acc-red);
+}
+
+.acc-detail-meta .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--acc-gold);
+}
+
+.acc-sec-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin: 0 0 14px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--acc-line);
+}
+
+.acc-sec-no {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  margin-top: 3px;
+  border: 1px solid var(--acc-line);
+  border-radius: 50%;
+  font-family: var(--acc-font-serif);
+  font-size: 10px;
+  color: var(--acc-red);
+}
+
+.acc-sec-title {
+  margin: 0;
+  font-family: var(--acc-font-serif);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 1px;
+  color: var(--acc-ink);
+}
+
+.acc-sec-sub {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--acc-font-sans);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--acc-ink-3);
+}
+
+.acc-detail-copy {
+  font-size: 15px;
+  line-height: 1.95;
+  letter-spacing: 0.025em;
+  color: var(--acc-ink-2);
+}
+
+/* 右栏卡（对照 .aside-card + sticky top 96px L1893） */
+.acc-panel,
+.acc-aside-card {
+  padding: 16px 18px;
+  border: 1px solid var(--acc-line);
+  border-radius: var(--acc-r-card);
+  background: var(--acc-card);
+  box-shadow: var(--acc-shadow-card);
+}
+
+.acc-panel {
+  padding: 22px 24px;
+}
+
+.acc-aside-card + .acc-aside-card {
+  margin-top: 14px;
+}
+
+.acc-sticky {
+  position: sticky;
+  top: 96px;
+}
+
+/* ---------- Element Plus 换皮：控件与交互语义不动，只画外观 ---------- */
+
+/* 分段筛选条 → 子站「卷切换」白卡观感（对照 .volume-card L703–794） */
+.acc-scope .el-radio-button {
+  margin: 0 8px 8px 0;
+}
+
+.acc-scope .el-radio-button__inner {
+  border: 1px solid var(--acc-line) !important;
+  border-radius: var(--acc-r-chip) !important;
+  background: rgba(255, 253, 248, 0.6);
+  box-shadow: none !important;
+  color: var(--acc-ink-2);
+  font-family: var(--acc-font-sans);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.acc-scope .el-radio-button__inner:hover {
+  color: var(--acc-red);
+  border-color: rgba(201, 162, 39, 0.55) !important;
+  background: var(--acc-card);
+}
+
+.acc-scope .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  color: #f6e7bf;
+  border-color: rgba(201, 162, 39, 0.5) !important;
+  background: linear-gradient(135deg, #7e2418 0%, #a93226 100%);
+  box-shadow: 0 10px 26px rgba(111, 31, 20, 0.16) !important;
+}
+
+.acc-scope .el-radio-button__original-radio:focus-visible + .el-radio-button__inner {
+  outline: 2px solid var(--acc-gold);
+  outline-offset: 2px;
+}
+
+/* 输入框 / 下拉（对照 .search-box input L852–875、.select-box select L901–928） */
+.acc-scope .el-input__wrapper,
+.acc-scope .el-select__wrapper {
+  border-radius: var(--acc-r-chip) !important;
+  background: rgba(255, 253, 248, 0.75) !important;
+  box-shadow: 0 0 0 1px var(--acc-line) inset !important;
+  font-family: var(--acc-font-sans);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.acc-scope .el-input__wrapper.is-focus,
+.acc-scope .el-select__wrapper.is-focused {
+  box-shadow:
+    0 0 0 1px rgba(201, 162, 39, 0.55) inset,
+    0 0 0 1px rgba(201, 162, 39, 0.3) !important;
+  background: var(--acc-card-solid) !important;
+}
+
+.acc-scope .el-input__inner,
+.acc-scope .el-select__placeholder,
+.acc-scope .el-select__selected-item {
+  color: var(--acc-ink) !important;
+}
+
+/* 按钮：主按钮金、次按钮米白描金、创建按钮朱红描边（对照子站 hero 两颗钮） */
+.acc-scope .el-button {
+  border-radius: var(--acc-r-chip);
+  font-family: var(--acc-font-sans);
+  letter-spacing: 1px;
+}
+
+.acc-scope .el-button--primary.is-plain {
+  --el-button-bg-color: rgba(255, 253, 248, 0.75);
+  --el-button-border-color: rgba(201, 162, 39, 0.55);
+  --el-button-text-color: var(--acc-red);
+  --el-button-hover-bg-color: var(--acc-red);
+  --el-button-hover-border-color: var(--acc-red);
+  --el-button-hover-text-color: #ffe9a8;
+}
+
+.acc-scope .el-button--danger.is-plain {
+  --el-button-bg-color: rgba(255, 253, 248, 0.75);
+  --el-button-border-color: rgba(122, 34, 28, 0.42);
+  --el-button-text-color: var(--acc-red);
+  --el-button-hover-bg-color: var(--acc-red);
+  --el-button-hover-border-color: var(--acc-red);
+  --el-button-hover-text-color: #ffe9a8;
+}
+
+.acc-scope .el-button--default {
+  --el-button-bg-color: rgba(255, 253, 248, 0.75);
+  --el-button-border-color: var(--acc-line);
+  --el-button-text-color: var(--acc-ink-2);
+  --el-button-hover-bg-color: var(--acc-card-solid);
+  --el-button-hover-border-color: rgba(201, 162, 39, 0.55);
+  --el-button-hover-text-color: var(--acc-red);
+}
+
+/* 描述表（详情右栏） */
+.acc-scope .el-descriptions {
+  --el-descriptions-item-bordered-label-background: rgba(201, 162, 39, 0.07);
+  font-family: var(--acc-font-sans);
+}
+
+.acc-scope .el-descriptions__label {
+  color: var(--acc-ink-3) !important;
+  letter-spacing: 1px;
+  /* 右栏只有 300~340px，四字以上标签会被拆成两行；标签列定宽并禁止折行 */
+  width: 104px;
+  white-space: nowrap;
+}
+
+.acc-scope .el-descriptions__content {
+  color: var(--acc-ink-2) !important;
+}
+
+/* ---------- 入场动画（对照 @keyframes cardIn L2270） ---------- */
+@keyframes accCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- 响应式：主站断点规范 ≤768 平板 / ≤480 手机 ---------- */
+@media (max-width: 1023px) {
+  .acc-grid {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .acc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .acc-toolbar {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .acc-section-title {
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+
+  .acc-detail-title {
+    font-size: clamp(26px, 7vw, 36px);
+    letter-spacing: 3px;
+  }
+
+  .acc-visual {
+    height: 168px;
+  }
+
+  .acc-sticky {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .acc-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .acc-section-title {
+    font-size: 19px;
+  }
+
+  .acc-summary {
+    min-height: 0;
+  }
+}
+
+/* 尊重系统减动效偏好（对照子站 L2281–2290） */
+@media (prefers-reduced-motion: reduce) {
+  .acc-scope .acc-card,
+  .acc-scope .acc-card *,
+  .acc-scope .acc-card::before,
+  .acc-scope .acc-card::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

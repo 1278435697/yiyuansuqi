@@ -11,6 +11,7 @@
           <span class="ai-badge">AI摘要</span>
           <span>{{ news.source }}</span>
           <span class="date">{{ news.publish_time?.slice(0, 10) }}</span>
+          <span v-if="news.code" class="date">编号 {{ news.code }}</span>
           <a v-if="news.source_url" class="src-link" :href="news.source_url" target="_blank" rel="noopener">查看原文 ↗</a>
         </div>
         <h1 class="detail-title">{{ news.title }}</h1>

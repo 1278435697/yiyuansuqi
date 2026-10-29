@@ -1,11 +1,16 @@
 """模块6 · AI 智能溯源问答（AI 初答 + 社区勘误共治）"""
 from datetime import datetime
 
+import requests
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.ai_engine.graphrag_engine import graphrag_answer, graphrag_chat
+from app.ai_engine.graphrag_engine import graphrag_answer, graphrag_chat, graphrag_chat_stream
+from app.ai_engine.query_terms import build_dictionary, dynasties_in, extract_terms
+from app.ai_engine.retrieval import retrieve
+from app.core.config import settings
 from app.core.security import get_current_user
 from app.db.database import get_db
 from app.db.models import Questions, Answers, Users
@@ -26,20 +31,98 @@ class AnswerIn(BaseModel):
 class ChatIn(BaseModel):
     question: str
     history: list[dict] = []
+    image_base64: str = ""   # 可选：截图/照片（data:image/...;base64, 纯 base64 均可）
+
+
+def _describe_outfit_image(image_b64: str) -> str:
+    """调用豆包视觉模型描述服饰图片，返回结构化文字描述。失败返回空串。"""
+    if not image_b64:
+        return ""
+    url = image_b64 if image_b64.startswith("data:image") else f"data:image/jpeg;base64,{image_b64}"
+    api_key = settings.LLM_API_KEY
+    if not api_key or api_key.startswith("sk-your"):
+        return ""
+    try:
+        resp = requests.post(
+            f"{settings.LLM_BASE_URL}/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
+                "model": settings.LLM_MODEL,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": (
+                                "你是华夏服饰史研究员。请观察这张服饰/文物截图，用 120 字以内客观描述："
+                                "服饰类别（深衣/袍/襦裙/补服/冠帽等）、颜色与面料质感、纹样题材（龙凤/缠枝/云纹等）、"
+                                "可见形制特征（交领/圆领/宽袖/系带等）、疑似朝代。只描述可见事实，不编造。"
+                            )},
+                            {"type": "image_url", "image_url": {"url": url}},
+                        ],
+                    }
+                ],
+                "temperature": 0.2,
+                "max_tokens": 300,
+            },
+            timeout=45,
+        )
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"].strip()
+    except Exception as exc:
+        return f"[图片识别暂不可用] {exc}"
 
 
 @router.post("/chat")
 def ai_chat(body: ChatIn, db: Session = Depends(get_db)):
-    """多轮溯源对话：豆包大模型生成，支持连续追问（无需登录）。"""
+    """多轮溯源对话：豆包大模型生成，支持连续追问；带截图时先视觉识别再 RAG。"""
     q = (body.question or "").strip()
-    if not q:
+    if not q and not body.image_base64:
         raise HTTPException(400, "问题不能为空")
+    # 有图：先视觉识别，把描述作为上下文拼进问题
+    image_note = ""
+    if body.image_base64:
+        image_note = _describe_outfit_image(body.image_base64)
+        if image_note and not image_note.startswith("["):
+            q = f"{q}\n[参考截图识别] {image_note}\n请结合这张截图/照片回答。" if q else f"请识别并介绍这张服饰截图：{image_note}"
     rag = graphrag_chat(q, body.history or [], db=db)
     return {
         "answer": rag["answer"],
         "source_ref": rag["source_ref"],
-        "note": "AI 溯源对话：回答优先依据衣溯AI史料知识库，常识性补充已显式标注，仅供参考。",
+        "sources": rag["sources"],
+        "image_note": image_note,
+        "note": "AI 溯源对话：回答优先依据衣溯史料知识库；带截图时已先做视觉识别。仅供参考。",
     }
+
+
+@router.post("/chat/stream")
+def ai_chat_stream(body: ChatIn, db: Session = Depends(get_db)):
+    """流式 SSE 对话：先视觉识别（如有图），再逐 token 推送 RAG 回答。"""
+    import json as _json
+
+    q = (body.question or "").strip()
+    if not q and not body.image_base64:
+        raise HTTPException(400, "问题不能为空")
+    if body.image_base64:
+        note = _describe_outfit_image(body.image_base64)
+        if note and not note.startswith("["):
+            q = f"{q}\n[参考截图识别] {note}\n请结合这张截图/照片回答。" if q else f"请识别并介绍这张服饰截图：{note}"
+    else:
+        note = ""
+
+    def gen():
+        # 先推图识别结果（前端可在等待时展示）
+        if note:
+            yield f"event: meta\ndata: {_json.dumps({'image_note': note}, ensure_ascii=False)}\n\n"
+        for ev, data in graphrag_chat_stream(q, body.history or [], db=db):
+            if ev == "meta":
+                yield f"event: meta\ndata: {data}\n\n"
+            elif ev == "delta":
+                yield f"event: delta\ndata: {_json.dumps(data, ensure_ascii=False)}\n\n"
+            else:
+                yield "event: done\ndata: {}\n\n"
+
+    return StreamingResponse(gen(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @router.post("/questions")
@@ -49,7 +132,7 @@ def create_question(
     user: Users = Depends(get_current_user),
 ):
     """提问：AI 基于 RAG 知识库先行回答，社区随后补充勘误。"""
-    rag = graphrag_answer(body.title + " " + body.content)
+    rag = graphrag_answer(body.title + " " + body.content, db=db)
     q = Questions(
         user_id=user.id, title=body.title, content=body.content,
         dynasty_tags=body.dynasty_tags, ai_answer=rag["answer"],
@@ -181,7 +264,7 @@ def ai_verify_answer(aid: int, db: Session = Depends(get_db)):
     a = db.get(Answers, aid)
     if not a:
         return {"error": "回答不存在"}
-    rag = graphrag_answer(a.content)
+    rag = graphrag_answer(a.content, db=db)
     # 简单冲突检测：回答包含知识库中明确否定的表述
     conflict = "朝代混搭" in a.content or "影楼" in a.content.lower()
     return {
@@ -190,3 +273,44 @@ def ai_verify_answer(aid: int, db: Session = Depends(get_db)):
         "verdict": "回答与知识库存在冲突，建议复核" if conflict else "回答与知识库基本一致",
         "reference": rag["source_ref"],
     }
+
+
+# ===== 答后推荐检索（四类站内资料卡 + 推荐追问） =====
+
+_CARD_KEYS = ("type", "id", "code", "title", "subtitle", "image_url", "link", "external", "exact")
+_ASK_ANGLES = {
+    "costume": ["形制", "面料", "出土溯源", "常见搭配"],
+    "pattern": ["寓意", "常见搭配", "盛行朝代"],
+    "fabric": ["工艺流程", "代表纹样", "原料"],
+}
+
+
+def _asks(cards: list[dict]) -> list[str]:
+    """推荐追问只从已命中的站内实体生成，保证每个问题背后都有资料可读，且不额外调模型。
+
+    资讯标题是整句话、配饰九卷没有预设追问角度，两类都不拿来当追问主体。
+    """
+    out: list[str] = []
+    for card in [c for c in cards if c["type"] in _ASK_ANGLES][:2]:
+        for angle in _ASK_ANGLES[card["type"]][:2]:
+            ask = f"{card['title']}的{angle}是什么？"
+            if ask not in out:
+                out.append(ask)
+    return out[:4]
+
+
+@router.get("/recommend")
+def recommend(
+    q: str = "",
+    limit: int = Query(8, ge=1, le=12),
+    db: Session = Depends(get_db),
+):
+    """答后推荐检索：与对话召回同一入口（app.ai_engine.retrieval.retrieve），卡片只给导航字段。"""
+    question = (q or "").strip()
+    if not question:
+        return {"keywords": [], "dynasties": [], "cards": [], "asks": []}
+    items = retrieve(question, db, per_type=3, limit=limit)
+    cards = [{key: item[key] for key in _CARD_KEYS} for item in items]
+    return {"keywords": extract_terms(question, build_dictionary(db)),
+            "dynasties": dynasties_in(question), "cards": cards, "asks": _asks(cards)}
+

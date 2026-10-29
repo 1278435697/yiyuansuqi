@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
+from app.ai_engine.archive_codes import code_of
 from app.ai_engine.ner_news_parse import run_news_pipeline
 from app.ai_engine.news_fetcher import dress_match
 from app.db.database import get_db
@@ -111,7 +112,8 @@ def news_detail(news_id: int, db: Session = Depends(get_db)):
     if not n:
         return {"error": "资讯不存在"}
     return {
-        "id": n.id, "title": n.title, "summary": n.summary, "content": n.content,
+        "id": n.id, "code": code_of("news", n.id),
+        "title": n.title, "summary": n.summary, "content": n.content,
         "source": n.source, "source_url": n.source_url,
         "dynasty_tags": n.dynasty_tags.split(",") if n.dynasty_tags else [],
         "entity_tags": n.entity_tags.split(",") if n.entity_tags else [],

@@ -1,0 +1,2 @@
+files=/www/wwwroot/yisu/frontend/dist/museum/assets/assets.manifest.json
+ctx=

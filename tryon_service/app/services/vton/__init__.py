@@ -1,6 +1,6 @@
 """试穿推理后端选择与降级。
 
-resolve("auto") 按 hrviton -> tps -> mock 探测；显式指定后端不可用时，
+resolve("auto") 按 aidge -> hrviton -> tps -> mock 探测；显式指定后端不可用时，
 自动降级到下一个可用后端，并把降级原因写入 warnings（绝不静默）。
 """
 
@@ -9,6 +9,7 @@ from __future__ import annotations
 from app.config import get_settings
 from app.errors import TryOnFailedError
 from app.logs import get_logger
+from app.services.vton.aidge import AidgeBackend
 from app.services.vton.base import TryOnContext, TryOnOutput
 from app.services.vton.hrviton import HRVITONBackend
 from app.services.vton.mock import MockBackend
@@ -16,13 +17,18 @@ from app.services.vton.tps import TPSBackend
 
 logger = get_logger("app.services.vton")
 
-_PRIORITY = ("hrviton", "tps", "mock")
+_PRIORITY = ("aidge", "hrviton", "tps", "mock")
 _INSTANCES: dict[str, object] = {}
 
 
 def _instance(name: str):
     if name not in _INSTANCES:
-        _INSTANCES[name] = {"hrviton": HRVITONBackend, "tps": TPSBackend, "mock": MockBackend}[name]()
+        _INSTANCES[name] = {
+            "aidge": AidgeBackend,
+            "hrviton": HRVITONBackend,
+            "tps": TPSBackend,
+            "mock": MockBackend,
+        }[name]()
     return _INSTANCES[name]
 
 
@@ -39,8 +45,9 @@ def resolve(requested: str | None = None) -> tuple[object, str | None]:
         if ok:
             if name != "auto" and candidate != name:
                 return backend, f"requested={name}_unavailable:{reason};use={candidate}"
-            if name == "auto" and candidate != _PRIORITY[0]:
-                return backend, f"hrviton_unavailable:{_instance(_PRIORITY[0]).available()[1]}"  # type: ignore[attr-defined]
+            # auto 命中非首选时，把「为什么没用更靠前的那个」原样带出去
+            if first_reason is not None:
+                return backend, first_reason
             return backend, None
         if first_reason is None:
             first_reason = f"{candidate}_unavailable:{reason}"
@@ -90,4 +97,4 @@ def status() -> dict[str, object]:
     return out
 
 
-__all__ = ["MockBackend", "TPSBackend", "TryOnContext", "TryOnOutput", "resolve", "run", "status"]
+__all__ = ["AidgeBackend", "MockBackend", "TPSBackend", "TryOnContext", "TryOnOutput", "resolve", "run", "status"]

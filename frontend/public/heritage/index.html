@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>传统服饰非遗技艺 · 六卷</title>
+<style>
+  :root{
+    --paper:#f5efdf;
+    --paper-2:#efe6cf;
+    --card:#fffdf8;
+    --ink:#2f261c;
+    --ink-2:#5c4c3a;
+    --ink-3:#94836d;
+    --red:#7a221c;
+    --red-bright:#9e2b25;
+    --gold:#c9a227;
+    --gold-deep:#9d771d;
+    --line:rgba(122,34,28,.14);
+    --line-2:rgba(122,34,28,.26);
+    --font-song:"Songti SC","Noto Serif SC","STSong","SimSun",serif;
+    --font-kai:"KaiTi","楷体","STKaiti","Kaiti SC",serif;
+    --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --shell:1220px;
+    --tone:#a8672f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(1100px 520px at 10% -8%, rgba(201,162,39,.10), transparent 62%),
+      radial-gradient(900px 480px at 94% 4%, rgba(122,34,28,.055), transparent 60%),
+      linear-gradient(180deg,#f8f2e4 0%, #f3ebd8 46%, #ece2c9 100%);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:var(--font-song);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 右下角淡色传统云纹/水波纹装饰 */
+  body::after{
+    content:"";position:fixed;right:-60px;bottom:-60px;width:560px;height:560px;z-index:0;pointer-events:none;opacity:.10;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 560 560'%3E%3Cg fill='none' stroke='%237a221c' stroke-width='1.2'%3E%3Cpath d='M80 480c40-30 80-30 120 0s80 30 120 0 80-30 120 0'/%3E%3Cpath d='M60 510c50-35 100-35 150 0s100 35 150 0 100-35 150 0'/%3E%3Cpath d='M120 440c30-22 60-22 90 0s60 22 90 0 60-22 90 0'/%3E%3Ccircle cx='280' cy='380' r='40'/%3E%3Ccircle cx='280' cy='380' r='70' stroke-dasharray='4 6'/%3E%3Cpath d='M400 120l30 30-30 30-30-30z'/%3E%3Cpath d='M420 140l15 15-15 15-15-15z'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  a{color:inherit;text-decoration:none;}
+  img{display:block;}
+  button{font-family:inherit;}
+  .shell{width:100%;max-width:var(--shell);margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+
+  /* ---------- 顶栏：深红横条 ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:linear-gradient(180deg,#8a2a22,#6e1d17);
+    border-bottom:1px solid rgba(201,162,39,.3);
+    box-shadow:0 2px 12px rgba(60,15,10,.18);
+  }
+  .topbar-in{max-width:var(--shell);margin:0 auto;padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .brand-seal{
+    width:34px;height:34px;background:linear-gradient(135deg,#d4af37,#b8892a);
+    color:#fff;font-family:var(--font-kai);font-size:16px;letter-spacing:0;
+    display:flex;align-items:center;justify-content:center;border-radius:4px;
+    box-shadow:inset 0 0 0 1px rgba(255,240,200,.4), 0 2px 6px rgba(0,0,0,.2);
+  }
+  .brand b{font-family:var(--font-kai);font-size:20px;letter-spacing:.16em;color:#f6e8c8;font-weight:400;}
+  .brand span{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.22em;color:rgba(246,232,200,.65);}
+  .topnav{display:flex;align-items:center;gap:24px;font-family:var(--font-sans);font-size:12px;letter-spacing:.12em;color:rgba(246,232,200,.85);}
+  .topnav a{position:relative;padding:4px 0;transition:color .18s;color:rgba(246,232,200,.85);}
+  .topnav a:hover{color:#fff;}
+  .topnav a.is-live{color:#ffd98a;}
+  .topnav a.is-live::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:#ffd98a;}
+  .subnav{display:none;}
+
+  /* ---------- 总览 ---------- */
+  .intro{padding-top:66px;padding-bottom:16px;}
+  .kicker{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.3em;color:var(--gold-deep);}
+  .intro h1{margin:16px 0 0;font-family:var(--font-kai);font-weight:400;font-size:54px;line-height:1.24;letter-spacing:.05em;}
+  .intro h1 em{font-style:normal;color:var(--red);}
+  .intro p{margin-top:16px;max-width:700px;font-size:15.5px;line-height:2.05;color:var(--ink-2);}
+  .intro-stats{display:flex;gap:46px;margin-top:26px;flex-wrap:wrap;}
+  .intro-stats div b{display:block;font-family:var(--font-song);font-size:32px;line-height:1;color:var(--red);font-weight:400;}
+  .intro-stats div span{display:block;margin-top:7px;font-family:var(--font-sans);font-size:10.5px;letter-spacing:.18em;color:var(--ink-3);}
+
+  .vols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:54px 38px;padding-top:42px;padding-bottom:92px;}
+  .vol{display:block;transition:transform .3s ease;}
+  .vol:hover{transform:translateY(-3px);}
+
+  .vol-art{
+    position:relative;aspect-ratio:4/3;overflow:hidden;background:#1b1611;border-radius:2px;
+    box-shadow:0 12px 30px rgba(80,55,30,.13);transition:box-shadow .3s ease;
+  }
+  .vol:hover .vol-art{box-shadow:0 22px 46px rgba(80,55,30,.22);}
+  .vol-art img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.3,1);}
+  .vol:hover .vol-art img{transform:scale(1.045);}
+  .vol-art .veil{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(14,10,7,0) 32%, rgba(14,10,7,.42) 62%, rgba(14,10,7,.84) 100%);
+  }
+  /* 名字与钩子压在图片内部的下方 */
+  .vol-cap{position:absolute;left:22px;right:22px;bottom:18px;z-index:2;}
+  .vol-cap .meta{
+    display:flex;align-items:center;gap:9px;
+    font-family:var(--font-sans);font-size:9.5px;letter-spacing:.2em;color:rgba(250,242,228,.72);
+  }
+  .vol-cap .meta i{display:block;width:16px;height:1px;background:rgba(250,242,228,.5);font-style:normal;}
+  .vol-cap h2{
+    margin:6px 0 0;font-family:var(--font-kai);font-weight:400;
+    font-size:38px;line-height:1.15;letter-spacing:.09em;color:#fdf7ea;
+    text-shadow:0 2px 18px rgba(0,0,0,.5);
+  }
+  .vol-cap p{
+    margin-top:5px;font-size:14px;line-height:1.7;color:rgba(250,242,228,.88);
+    text-shadow:0 1px 10px rgba(0,0,0,.55);
+  }
+
+  /* ---------- Hero 深红横幅 ---------- */
+  .hero{padding-top:40px;padding-bottom:20px;}
+  .hero-banner{
+    position:relative;overflow:hidden;
+    background:linear-gradient(135deg,#7a221c 0%,#5e1812 60%,#4a120e 100%);
+    border-radius:14px;
+    padding:54px 60px 0;
+    color:#f6e8c8;
+    box-shadow:0 20px 50px rgba(80,30,20,.25);
+  }
+  .hero-banner::before{
+    content:"";position:absolute;inset:0;opacity:.08;
+    background-image:repeating-linear-gradient(45deg, rgba(255,220,150,.5) 0 1px, transparent 1px 22px);
+  }
+  .hero-top{position:relative;display:flex;align-items:center;gap:14px;font-family:var(--font-sans);font-size:11px;letter-spacing:.3em;color:rgba(246,232,200,.65);}
+  .hero-top::before{content:"";width:40px;height:1px;background:rgba(246,232,200,.4);}
+  .hero-banner h2{
+    position:relative;margin:18px 0 0;
+    font-family:var(--font-kai);font-weight:400;
+    font-size:120px;line-height:1;letter-spacing:.08em;
+    color:#e8c97a;
+    text-shadow:0 4px 30px rgba(0,0,0,.3);
+  }
+  .hero-banner .hero-lead{
+    position:relative;margin:22px 0 0;max-width:620px;
+    font-size:15.5px;line-height:2.0;color:rgba(246,232,200,.88);
+  }
+  .hero-btns{position:relative;display:flex;gap:14px;margin-top:28px;}
+  .hero-btns a{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 22px;font-family:var(--font-sans);font-size:12.5px;letter-spacing:.1em;
+    transition:.2s;
+  }
+  .btn-gold{background:linear-gradient(135deg,#d4af37,#b8892a);color:#3a1510;border-radius:2px;}
+  .btn-gold:hover{filter:brightness(1.1);}
+  .btn-ghost{border:1px solid rgba(246,232,200,.4);color:#f6e8c8;border-radius:2px;}
+  .btn-ghost:hover{background:rgba(246,232,200,.1);}
+  .hero-seal{
+    position:absolute;right:60px;top:50%;transform:translateY(-50%);
+    width:170px;height:170px;border-radius:50%;
+    border:1.5px solid rgba(232,201,122,.4);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-kai);font-size:80px;color:rgba(232,201,122,.55);
+  }
+  .hero-seal::before{
+    content:"";position:absolute;inset:14px;border-radius:50%;
+    border:1px dashed rgba(232,201,122,.3);
+  }
+  .hero-stats{
+    position:relative;display:flex;margin:36px -60px 0;
+    border-top:1px solid rgba(246,232,200,.18);
+  }
+  .hero-stats div{flex:1;padding:20px 24px;border-right:1px solid rgba(246,232,200,.12);}
+  .hero-stats div:last-child{border-right:0;}
+  .hero-stats b{display:block;font-family:var(--font-song);font-size:30px;font-weight:400;color:#e8c97a;line-height:1;}
+  .hero-stats span{display:block;margin-top:6px;font-family:var(--font-sans);font-size:10.5px;letter-spacing:.16em;color:rgba(246,232,200,.55);}
+  @media (max-width:900px){
+    .hero-banner{padding:36px 26px 0;}
+    .hero-banner h2{font-size:72px;}
+    .hero-seal{display:none;}
+    .hero-stats{margin:28px -26px 0;flex-wrap:wrap;}
+    .hero-stats div{flex:0 0 50%;}
+  }
+
+  /* ---------- 板块纵向列表：一排一个 ---------- */
+  .vols{display:flex;flex-direction:column;gap:30px;padding-top:42px;padding-bottom:60px;}
+  .vol{
+    display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:0;
+    background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    box-shadow:0 4px 18px rgba(80,55,30,.07);
+    transition:box-shadow .3s, transform .2s;
+  }
+  .vol:hover{box-shadow:0 18px 40px rgba(80,55,30,.16);transform:translateY(-2px);}
+  .vol-art{position:relative;aspect-ratio:4/3;background:#1b1611;}
+  .vol-art img{width:100%;height:100%;object-fit:cover;}
+  .vol-art .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,10,7,.1) 30%,rgba(14,10,7,.78) 100%);}
+  .vol-cap{position:absolute;left:26px;right:26px;bottom:22px;}
+  .vol-cap .meta{display:flex;align-items:center;gap:9px;font-family:var(--font-sans);font-size:10px;letter-spacing:.2em;color:rgba(250,242,228,.78);}
+  .vol-cap .meta i{display:block;width:18px;height:1px;background:rgba(250,242,228,.5);font-style:normal;}
+  .vol-cap h2{margin:8px 0 0;font-family:var(--font-kai);font-weight:400;font-size:44px;line-height:1.15;letter-spacing:.09em;color:#fdf7ea;text-shadow:0 2px 18px rgba(0,0,0,.5);}
+  .vol-cap p{margin-top:8px;font-size:14.5px;line-height:1.75;color:rgba(250,242,228,.9);}
+
+  .vol-body{padding:26px 30px;display:flex;flex-direction:column;}
+  .vol-body .vb-en{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.28em;color:var(--tone);}
+  .vol-body .vb-lead{margin-top:10px;font-size:14px;line-height:1.95;color:var(--ink-2);}
+  .vol-body .vb-stats{display:flex;gap:26px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
+  .vol-body .vb-stats b{font-family:var(--font-song);font-size:22px;color:var(--red);font-weight:400;line-height:1;}
+  .vol-body .vb-stats span{display:block;margin-top:5px;font-family:var(--font-sans);font-size:10px;letter-spacing:.14em;color:var(--ink-3);}
+  .vol-body .vb-res{margin-top:14px;}
+  .vol-body .vb-res h4{font-family:var(--font-sans);font-size:10px;letter-spacing:.2em;color:var(--ink-3);margin-bottom:8px;font-weight:400;}
+  .vol-body .vr{display:flex;align-items:flex-start;gap:9px;padding:5px 0;font-size:13px;line-height:1.65;color:var(--ink-2);}
+  .vol-body .vr i{flex:0 0 auto;width:6px;height:6px;border-radius:50%;margin-top:7px;background:var(--red);opacity:.85;}
+  .vol-body .vr.doing i{background:transparent;border:1.5px solid var(--gold-deep);}
+  .vol-body .vr b{font-weight:400;color:var(--ink);}
+  .vol-body .vr em{font-style:normal;color:var(--ink-3);font-size:11px;margin-left:6px;font-family:var(--font-sans);}
+  .vol-body .vr-tag{
+    margin-left:6px;padding:0 5px;vertical-align:1px;
+    font-family:var(--font-sans);font-size:9px;letter-spacing:.05em;
+    color:var(--gold-deep);border:1px solid rgba(157,119,29,.45);
+  }
+  .vol-body .vb-more{
+    margin-top:auto;padding-top:16px;display:inline-flex;align-items:center;gap:7px;align-self:flex-start;
+    font-family:var(--font-sans);font-size:11px;letter-spacing:.16em;color:var(--tone);
+  }
+  .vol:hover .vb-more{gap:12px;}
+  @media (max-width:900px){
+    .vol{grid-template-columns:1fr;}
+    .vol-art{aspect-ratio:16/9;}
+  }
+
+  /* ---------- 技艺全景（跨卷一起看） ---------- */
+  .panorama{padding:40px 0 80px;}
+  .pfilt{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px;}
+  .pfilt button{
+    padding:7px 16px;background:var(--card);border:1px solid var(--line);
+    font-family:var(--font-sans);font-size:12px;letter-spacing:.08em;color:var(--ink-2);
+    cursor:pointer;transition:.18s;border-radius:2px;
+  }
+  .pfilt button:hover{border-color:var(--line-2);}
+  .pfilt button.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+  .pcard{
+    display:block;padding:18px 20px 16px;background:var(--card);
+    border:1px solid var(--line);border-left:3px solid var(--pc,#a8672f);
+    transition:transform .2s, box-shadow .2s, border-color .2s;
+  }
+  .pcard:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(80,55,30,.12);}
+  .pcard .ptag{
+    display:inline-block;font-family:var(--font-sans);font-size:9.5px;letter-spacing:.16em;
+    color:var(--pc,#a8672f);border:1px solid currentColor;padding:1px 7px;margin-bottom:10px;
+  }
+  .pcard h3{font-family:var(--font-kai);font-weight:400;font-size:21px;letter-spacing:.04em;line-height:1.3;}
+  .pcard p{margin-top:8px;font-size:13px;line-height:1.8;color:var(--ink-2);}
+  .pcard .pmeta{
+    margin-top:14px;padding-top:11px;border-top:1px dashed var(--line);
+    display:flex;gap:14px;font-family:var(--font-sans);font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);
+  }
+  .pcard .pmeta b{font-weight:400;color:var(--ink);}
+  @media (max-width:1080px){ .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media (max-width:640px){ .pgrid{grid-template-columns:1fr;} }
+
+  /* 难度格 + 工序条 */
+  .diff{display:inline-flex;gap:2px;vertical-align:middle;margin-left:4px;}
+  .diff i{width:6px;height:10px;background:var(--line-2);display:inline-block;}
+  .diff i.on{background:var(--pc,#a8672f);}
+  .bar{height:4px;background:var(--line);position:relative;overflow:hidden;margin-top:6px;}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--pc,#a8672f);opacity:.7;}
+
+  /* 源流时间轴 */
+  .tree-axis{position:relative;height:26px;margin-top:6px;border-top:1px solid var(--line-2);}
+  .tree-axis .tick{position:absolute;top:4px;transform:translateX(-50%);font-family:var(--font-sans);font-size:9.5px;letter-spacing:.05em;color:var(--ink-3);white-space:nowrap;}
+  .tree-axis .tick::before{content:"";position:absolute;top:-6px;left:50%;width:1px;height:6px;background:var(--line-2);}
+
+  /* 技艺页横向流程图 */
+  .flow{display:flex;align-items:flex-start;gap:0;margin:20px 0 4px;overflow-x:auto;padding-bottom:8px;}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:14px 0 8px;}
+  .flow-arrow{
+    flex:0 0 auto;color:var(--ink-3);font-size:11px;margin:0 1px;
+  }
+  .flow-node{
+    flex:0 0 auto;display:block;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:2px;
+    padding:4px 9px;font-family:inherit;transition:.16s;
+  }
+  .flow-node:hover{border-color:var(--line-2);}
+  .flow-node.on{border-color:rgba(122,34,28,.5);background:rgba(122,34,28,.05);}
+  .flow-dot{
+    width:34px;height:34px;border-radius:50%;background:var(--card);border:1.5px solid var(--line-2);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-kai);font-size:13px;color:var(--ink-2);
+    transition:.2s;
+  }
+  .flow-node.on .flow-dot{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 0 4px rgba(122,34,28,.12);}
+  .flow-node:hover .flow-dot{border-color:var(--tone);}
+  .flow-label{font-family:var(--font-song);font-size:12px;letter-spacing:.02em;color:var(--ink-2);white-space:nowrap;}
+  .flow-node.on .flow-label{color:var(--red);}
+  .flow-node.on .flow-label{color:var(--red);}
+  .flow-link{flex:0 0 auto;width:26px;height:1.5px;background:var(--line-2);margin-top:16px;}
+
+  /* ---------- 板块页 ---------- */
+  .crumb{padding-top:24px;font-family:var(--font-sans);font-size:11px;letter-spacing:.12em;color:var(--ink-3);}
+  .crumb a:hover{color:var(--red);}
+  .banner{display:grid;grid-template-columns:minmax(0,410px) minmax(0,1fr);gap:50px;align-items:center;padding-top:24px;padding-bottom:48px;}
+  .banner-img{position:relative;aspect-ratio:5/4;overflow:hidden;background:#1b1611;border-radius:2px;}
+  .banner-img img{width:100%;height:100%;object-fit:cover;}
+  .banner-copy h1{margin:12px 0 0;font-family:var(--font-kai);font-weight:400;font-size:48px;line-height:1.16;letter-spacing:.07em;}
+  .banner-hook{margin-top:14px;font-size:18px;color:var(--red);line-height:1.8;font-family:var(--font-kai);}
+  .banner-intro{margin-top:12px;padding:10px 16px;border-left:3px solid var(--gold);background:rgba(201,162,39,.06);font-size:13.5px;line-height:1.9;color:var(--ink-2);}
+  .banner-lead{margin-top:14px;font-size:14.5px;line-height:2.05;color:var(--ink-2);}
+  .banner-stats{display:flex;gap:34px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .banner-stats b{display:block;font-family:var(--font-song);font-size:26px;line-height:1;color:var(--tone);font-weight:400;}
+  .banner-stats span{display:block;margin-top:7px;font-family:var(--font-sans);font-size:10px;letter-spacing:.16em;color:var(--ink-3);}
+
+  .sec{padding-top:36px;padding-bottom:8px;}
+  .sec-head{display:flex;align-items:center;gap:14px;}
+  .sec-no{font-family:var(--font-sans);font-size:11px;letter-spacing:.2em;color:var(--tone);}
+  .sec-head h2{
+    font-family:var(--font-kai);font-weight:400;font-size:28px;letter-spacing:.1em;
+    padding-left:14px;border-left:4px solid var(--tone);line-height:1.1;
+  }
+  .sec-head span{font-family:var(--font-sans);font-size:9.5px;letter-spacing:.24em;color:var(--ink-3);}
+  .sec-sub{font-size:13.5px;color:var(--ink-3);margin:10px 0 18px;padding-left:18px;}
+
+  /* ---------- 树 ---------- */
+  .tree-wrap{overflow-x:auto;padding:14px 10px 10px;scrollbar-width:thin;background:rgba(255,253,248,.55);border:1px solid var(--line);}
+  .tree-wrap::-webkit-scrollbar{height:6px;}
+  .tree-wrap::-webkit-scrollbar-thumb{background:rgba(122,34,28,.18);}
+  .tree{position:relative;}
+  .tree svg.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;}
+  .tree svg.links path{fill:none;stroke:var(--line-2);stroke-width:1;}
+  .tree svg.links path.is-branch{stroke-dasharray:4 4;}
+  .tnode{
+    position:absolute;width:160px;
+    padding:9px 12px 10px;text-align:left;
+    background:var(--card);border:1px solid var(--line);border-radius:4px;
+    cursor:pointer;transition:border-color .18s, box-shadow .18s, background .18s, transform .18s;
+  }
+  .tnode:hover{border-color:var(--line-2);box-shadow:0 8px 18px rgba(90,60,30,.1);transform:translateY(-1px);}
+  .tnode .ty{display:block;font-family:var(--font-sans);font-size:9.5px;letter-spacing:.08em;color:var(--ink-3);}
+  .tnode .tt{
+    display:block;margin-top:5px;font-family:var(--font-kai);font-size:16px;line-height:1.35;
+    color:var(--ink);letter-spacing:.03em;
+  }
+  .tnode.is-branch{border-style:dashed;}
+  .tnode.on{
+    border-color:var(--tone);background:#fffefa;
+    box-shadow:0 0 0 3px rgba(168,103,47,.12), 0 10px 22px rgba(90,60,30,.12);
+  }
+  .tnode.on .tt{color:var(--tone);}
+
+  .tree-panel{
+    margin-top:18px;padding:22px 26px;min-height:148px;
+    background:linear-gradient(180deg,#fbf6e8,#f6eed8);
+    border:1px solid var(--line);border-left:4px solid var(--tone);
+    border-radius:0 6px 6px 0;
+    animation:rise .28s ease both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+  .tree-panel .py{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.18em;color:var(--tone);}
+  .tree-panel h3{margin:6px 0 10px;font-family:var(--font-kai);font-weight:400;font-size:24px;letter-spacing:.05em;}
+  .tree-panel h3 em{
+    font-style:normal;margin-left:10px;vertical-align:3px;
+    font-family:var(--font-sans);font-size:9px;letter-spacing:.1em;color:var(--tone);
+    border:1px solid currentColor;padding:1px 5px;
+  }
+  .tree-panel p{max-width:900px;font-size:14.5px;line-height:2.05;color:var(--ink-2);white-space:pre-line;}
+
+  /* ---------- 本卷技艺卡片 ---------- */
+  .art-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:6px;}
+  .art-card{
+    display:block;padding:0;background:var(--card);overflow:hidden;
+    border:1px solid var(--line);border-radius:6px;text-decoration:none;color:inherit;
+    transition:.2s;
+  }
+  .art-cover{
+    position:relative;aspect-ratio:16 / 10;overflow:hidden;background:#ece3d2;
+  }
+  .art-cover img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .6s cubic-bezier(.2,.7,.3,1);
+  }
+  .art-card:hover .art-cover img{transform:scale(1.045);}
+  .art-body{padding:15px 18px 17px;}
+  .art-card:hover{border-color:var(--tone);box-shadow:0 8px 24px rgba(80,55,30,.1);transform:translateY(-2px);}
+  .art-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .art-top b{font-family:var(--font-kai);font-size:19px;font-weight:400;color:var(--ink);}
+  .art-top em{font-style:normal;font-family:var(--font-sans);font-size:10px;letter-spacing:.1em;padding:2px 8px;border-radius:2px;}
+  .diff-1{background:rgba(93,107,82,.15);color:#5d6b52;}
+  .diff-2{background:rgba(201,162,39,.15);color:#9d771d;}
+  .diff-3{background:rgba(158,43,37,.12);color:#9e2b25;}
+  .art-sum{margin-top:8px;font-size:13px;line-height:1.8;color:var(--ink-2);}
+  .art-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-family:var(--font-sans);font-size:10.5px;color:var(--ink-3);}
+  .art-meta span{padding:2px 8px;background:rgba(122,34,28,.05);border-radius:2px;}
+  .art-open{
+    display:inline-block;margin-top:11px;
+    font-family:var(--font-sans);font-size:10.5px;letter-spacing:.1em;color:var(--tone);opacity:.85;
+  }
+  .art-card:hover .art-open{opacity:1;}
+
+  /* ---------- 技艺详情面板（抽屉） ---------- */
+  .dr-mask{
+    position:fixed;inset:0;z-index:80;
+    background:rgba(28,20,14,.44);
+    backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;transition:opacity .26s ease;
+  }
+  .dr-mask.on{opacity:1;pointer-events:auto;}
+  .dr{
+    position:fixed;left:50%;top:50%;z-index:81;
+    width:min(900px,92vw);max-height:86vh;
+    display:flex;flex-direction:column;
+    background:var(--paper);
+    border:1px solid rgba(201,162,39,.32);
+    border-radius:8px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(40,20,10,.4), 0 4px 12px rgba(40,20,10,.16);
+    opacity:0;pointer-events:none;
+    transform:translate(-50%,-50%) scale(.965);
+    transition:opacity .2s ease, transform .26s cubic-bezier(.22,.7,.28,1);
+  }
+  .dr.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+  .dr-head{
+    position:relative;
+    padding:24px 34px 20px;
+    background:linear-gradient(135deg,#8a2a22,#6e1d17);
+    color:#f6e8c8;
+  }
+  .dr-head .k{font-family:var(--font-sans);font-size:10px;letter-spacing:.2em;color:rgba(246,232,200,.7);}
+  .dr-head h2{margin:8px 0 0;font-family:var(--font-kai);font-weight:400;font-size:36px;letter-spacing:.06em;line-height:1.2;}
+  .dr-head .full{margin-top:5px;font-size:12.5px;color:rgba(246,232,200,.62);}
+  .dr-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .dr-tags span{
+    font-family:var(--font-sans);font-size:10.5px;letter-spacing:.08em;
+    padding:3px 9px;border:1px solid rgba(246,232,200,.35);border-radius:2px;
+    color:rgba(246,232,200,.92);
+  }
+  .dr-close{
+    position:absolute;top:20px;right:22px;
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    background:transparent;border:1px solid rgba(246,232,200,.4);border-radius:2px;
+    color:rgba(246,232,200,.85);font-size:13px;cursor:pointer;transition:.18s;
+  }
+  .dr-close:hover{background:rgba(246,232,200,.14);border-color:#f6e8c8;color:#fff;}
+
+  .dr-body{flex:1 1 auto;overflow-y:auto;padding:24px 34px 10px;}
+  .dr-body::-webkit-scrollbar{width:8px;}
+  .dr-body::-webkit-scrollbar-thumb{background:rgba(122,34,28,.18);border-radius:4px;}
+
+  .dr-sum{font-size:14px;line-height:2;color:var(--ink-2);}
+  .dr-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+  .dr-facts div{padding:11px 14px;background:rgba(122,34,28,.04);border-left:2px solid rgba(122,34,28,.28);border-radius:0 3px 3px 0;}
+  .dr-facts span{display:block;font-family:var(--font-sans);font-size:9.5px;letter-spacing:.16em;color:var(--ink-3);}
+  .dr-facts b{display:block;margin-top:4px;font-family:var(--font-kai);font-weight:400;font-size:15px;color:var(--ink);line-height:1.5;}
+
+  .dr-sec-title{
+    display:flex;align-items:baseline;gap:10px;margin:24px 0 10px;
+    font-family:var(--font-sans);font-size:10px;letter-spacing:.18em;color:var(--ink-3);
+  }
+  .dr-sec-title b{font-family:var(--font-kai);font-weight:400;font-size:17px;letter-spacing:.06em;color:var(--ink);}
+
+  .dr-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .dr-flow i{font-style:normal;color:var(--ink-3);font-size:11px;}
+  .dr-flow span{
+    padding:4px 9px;background:var(--card);border:1px solid var(--line);border-radius:2px;
+    font-size:11.5px;color:var(--ink-2);
+  }
+
+  .dr-step{border-top:1px solid var(--line);}
+  .dr-step:last-child{border-bottom:1px solid var(--line);}
+  #drSteps{position:relative;}
+  #drSteps::before{
+    content:"";position:absolute;left:13px;top:24px;bottom:24px;width:1px;background:var(--line-2);
+  }
+  .dr-step{position:relative;}
+  .dr-step-btn{
+    width:100%;display:grid;grid-template-columns:26px minmax(0,1fr) auto 14px;
+    align-items:center;gap:10px;padding:13px 2px;background:none;border:0;cursor:pointer;text-align:left;
+    outline:none;
+  }
+  .dr-step-no{
+    display:block;width:8px;height:8px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--tone);
+    position:relative;z-index:1;justify-self:center;
+  }
+  .dr-step-btn:focus-visible{outline:1px solid rgba(122,34,28,.35);outline-offset:2px;}
+  .dr-step-btn:hover{background:rgba(201,162,39,.05);}
+
+  .dr-step-name{font-family:var(--font-kai);font-size:16px;color:var(--ink);letter-spacing:.03em;}
+  .dr-step-time{font-family:var(--font-sans);font-size:10px;color:var(--ink-3);}
+  .dr-step-mark{color:var(--ink-3);font-size:13px;transition:transform .2s;}
+  .dr-step.on .dr-step-mark{transform:rotate(45deg);color:var(--red);}
+  .dr-step.on .dr-step-no{background:var(--tone);}
+  .dr-step.on .dr-step-name{color:var(--red);}
+  .dr-step-body{padding:0 0 15px 40px;}
+  .dr-step-body dl{display:grid;grid-template-columns:52px minmax(0,1fr);gap:6px 12px;padding-left:13px;border-left:2px solid rgba(201,162,39,.4);}
+  .dr-step-body dt{font-family:var(--font-sans);font-size:9.5px;letter-spacing:.1em;color:var(--ink-3);padding-top:3px;}
+  .dr-step-body dd{margin:0;font-size:13px;line-height:1.9;color:var(--ink-2);}
+  .dr-step-body .sub{margin:0;padding-left:12px;list-style:none;counter-reset:s;}
+  .dr-step-body .sub li{position:relative;counter-increment:s;padding:2px 0 2px 18px;font-size:12.5px;line-height:1.8;}
+  .dr-step-body .sub li::before{content:counter(s,cjk-ideographic);position:absolute;left:0;top:3px;font-size:10px;color:var(--gold-deep);}
+  .dr-step-body .sub li b{font-weight:600;color:var(--ink);}
+  .d-极高{color:#9e2b25;font-weight:600;}
+  .d-高{color:#9a5f22;}
+
+  /* 详细档案小节 */
+  .dr-part{border-top:1px solid var(--line);margin-top:18px;padding-top:16px;}
+  .dr-part h4{
+    display:flex;align-items:baseline;gap:9px;margin-bottom:9px;
+    font-family:var(--font-kai);font-weight:400;font-size:17px;letter-spacing:.06em;color:var(--ink);
+  }
+  .dr-part h4 span{font-family:var(--font-sans);font-size:9px;letter-spacing:.18em;color:var(--ink-3);}
+  .dr-part p{font-size:13.5px;line-height:2.05;color:var(--ink-2);}
+  .dr-inh{display:flex;flex-direction:column;margin-bottom:10px;}
+  .dr-inh .inh-item{padding:8px 0;border-bottom:1px dashed var(--line);}
+  .dr-inh .inh-item:last-child{border-bottom:0;padding-bottom:0;}
+  .dr-inh .inh-item:first-child{padding-top:0;}
+  .dr-inh .inh-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;}
+  .dr-inh .inh-bio{margin-top:4px;font-size:12.5px;line-height:1.85;color:var(--ink-3);}
+  .dr-inh b{font-family:var(--font-kai);font-weight:400;font-size:15px;color:var(--ink);}
+  .dr-inh em{font-style:normal;font-family:var(--font-sans);font-size:10.5px;color:var(--ink-3);}
+  .inh-link{
+    display:inline-block;
+    font-family:var(--font-sans);font-size:10px;letter-spacing:.06em;
+    color:var(--red);border-bottom:1px solid rgba(122,34,28,.35);
+    padding-bottom:1px;transition:.16s;
+  }
+  .inh-link:hover{color:#fff;background:var(--red);border-color:var(--red);}
+  .dr-heritage{
+    font-size:12.5px;line-height:1.95;color:var(--ink-2);
+    padding:11px 14px;background:rgba(122,34,28,.04);border-left:2px solid rgba(122,34,28,.26);
+  }
+
+  .dr-foot{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 34px;border-top:1px solid var(--line);background:rgba(255,253,248,.7);
+  }
+  .dr-foot .tip{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);}
+  .dr-foot a{
+    font-family:var(--font-sans);font-size:11px;letter-spacing:.1em;color:var(--red);
+    padding:7px 14px;border:1px solid rgba(122,34,28,.4);border-radius:3px;transition:.18s;
+  }
+  .dr-foot a:hover{background:var(--red);color:#f8f1e3;border-color:var(--red);}
+
+  @media (max-width:760px){
+    .dr{width:94vw;max-height:90vh;}
+    .cmp-flow{grid-template-columns:1fr;}
+    .cmp-col + .cmp-col{border-left:0;border-top:1px solid var(--line);padding:2px 0 8px;}
+    .lc-head{padding:9px 14px;}
+    .lc-row > span{padding:11px 12px;font-size:12.5px;}
+    .lc-k{font-size:10.5px;}
+    .dr-head{padding:20px 20px 16px;}
+    .dr-head h2{font-size:28px;}
+    .dr-body{padding:18px 20px 8px;}
+    /* 详细档案小节 */
+  .dr-part{border-top:1px solid var(--line);margin-top:18px;padding-top:16px;}
+  .dr-part h4{
+    display:flex;align-items:baseline;gap:9px;margin-bottom:9px;
+    font-family:var(--font-kai);font-weight:400;font-size:17px;letter-spacing:.06em;color:var(--ink);
+  }
+  .dr-part h4 span{font-family:var(--font-sans);font-size:9px;letter-spacing:.18em;color:var(--ink-3);}
+  .dr-part p{font-size:13.5px;line-height:2.05;color:var(--ink-2);}
+  .dr-inh{display:flex;flex-direction:column;margin-bottom:10px;}
+  .dr-inh .inh-item{padding:8px 0;border-bottom:1px dashed var(--line);}
+  .dr-inh .inh-item:last-child{border-bottom:0;padding-bottom:0;}
+  .dr-inh .inh-item:first-child{padding-top:0;}
+  .dr-inh .inh-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;}
+  .dr-inh .inh-bio{margin-top:4px;font-size:12.5px;line-height:1.85;color:var(--ink-3);}
+  .dr-inh b{font-family:var(--font-kai);font-weight:400;font-size:15px;color:var(--ink);}
+  .dr-inh em{font-style:normal;font-family:var(--font-sans);font-size:10.5px;color:var(--ink-3);}
+  .inh-link{
+    display:inline-block;
+    font-family:var(--font-sans);font-size:10px;letter-spacing:.06em;
+    color:var(--red);border-bottom:1px solid rgba(122,34,28,.35);
+    padding-bottom:1px;transition:.16s;
+  }
+  .inh-link:hover{color:#fff;background:var(--red);border-color:var(--red);}
+  .dr-heritage{
+    font-size:12.5px;line-height:1.95;color:var(--ink-2);
+    padding:11px 14px;background:rgba(122,34,28,.04);border-left:2px solid rgba(122,34,28,.26);
+  }
+
+  .dr-foot{padding:12px 20px;}
+    .dr-facts{grid-template-columns:1fr;}
+    .dr-step-body{padding-left:26px;}
+  }
+
+
+  /* ---------- 技法台 ---------- */
+  .lab{border:1px solid var(--line);background:var(--card);border-radius:6px;overflow:hidden;box-shadow:0 4px 18px rgba(80,55,30,.07);}
+  .lab-tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);}
+  .lab-tab{
+    position:relative;
+    flex:1 1 auto;min-width:170px;
+    padding:13px 18px;background:none;border:0;border-right:1px solid var(--line);
+    text-align:left;cursor:pointer;transition:background .18s, color .18s;
+  }
+  .lab-tab .mark{
+    position:absolute;top:9px;right:12px;
+    font-family:var(--font-sans);font-size:12px;line-height:1;
+    color:var(--tone);opacity:0;transition:opacity .18s;
+  }
+  .lab-tab.machine .mark{color:#7a6a52;}
+  .lab-tab.on .mark{opacity:1;}
+  .lab-tab:last-child{border-right:0;}
+  .lab-tab .n{display:block;font-family:var(--font-kai);font-size:16px;color:var(--ink-2);letter-spacing:.03em;}
+  .lab-tab .k{
+    display:block;margin-top:2px;font-family:var(--font-sans);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);
+  }
+  .lab-tab:hover{background:rgba(201,162,39,.05);}
+  .lab-tab.on{background:rgba(168,103,47,.07);}
+  .lab-tab.on .n{color:var(--tone);}
+  .lab-tab.on .k{color:var(--tone);}
+  .lab-tab.on .k::before{content:"● ";}
+  .lab-tab.machine.on{background:rgba(90,80,66,.06);}
+  .lab-tab.machine.on .n,.lab-tab.machine.on .k{color:#7a6a52;}
+
+  .lab-bar{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:thin;}
+  .lab-bar::-webkit-scrollbar{height:6px;}
+  .lab-bar::-webkit-scrollbar-thumb{background:rgba(122,34,28,.16);}
+  .lb-item{
+    flex:0 0 auto;padding:12px 16px;border:0;border-right:1px solid var(--line);
+    background:none;cursor:pointer;font-family:var(--font-kai);font-size:15px;letter-spacing:.03em;
+    color:var(--ink-2);white-space:nowrap;transition:.18s;
+  }
+  .lb-item:hover{background:rgba(201,162,39,.06);}
+  .lb-item.on{background:rgba(168,103,47,.09);color:var(--tone);box-shadow:inset 0 -2px 0 var(--tone);}
+  .lb-item.is-machine{
+    font-family:var(--font-sans);font-size:12px;letter-spacing:.05em;color:#7a6a52;
+    background:rgba(90,80,66,.05);
+  }
+  .lb-item.is-machine span{
+    color:var(--ink-3);font-size:9px;letter-spacing:.1em;border:1px solid var(--line);
+    padding:1px 5px;margin-left:7px;border-radius:2px;
+  }
+
+  .lab-stage{padding:10px 14px 0;background:#fffdf8;}
+  .lab-stage svg{width:100%;height:auto;display:block;}
+
+  .lab-info{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:0;border-top:1px solid var(--line);}
+  .lab-pts{padding:18px 20px;}
+  .lab-pts li{
+    position:relative;list-style:none;padding:3px 0 3px 18px;
+    font-size:13.5px;line-height:1.85;color:var(--ink-2);
+  }
+  .lab-pts li::before{
+    content:"";position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;
+    background:var(--tone);opacity:.7;
+  }
+  .lab-stat{
+    padding:18px 20px;border-left:1px solid var(--line);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .lab-stat span{font-family:var(--font-sans);font-size:9.5px;letter-spacing:.18em;color:var(--ink-3);}
+  .lab-stat b{margin-top:6px;font-family:var(--font-kai);font-weight:400;font-size:19px;color:var(--ink);line-height:1.4;}
+  /* 详细对照 */
+  .lab-cmp{border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:thin;}
+  .lab-cmp::-webkit-scrollbar{height:7px;}
+  .lab-cmp::-webkit-scrollbar-thumb{background:rgba(122,34,28,.16);border-radius:4px;}
+  .lc-head,.lc-row{display:grid;grid-template-columns:128px minmax(0,1fr) minmax(0,1fr);}
+  .lc-head{padding:11px 20px;border-bottom:1px solid var(--line);background:rgba(201,162,39,.04);}
+  .lc-head span{
+    font-family:var(--font-sans);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);
+  }
+  .lc-head .h-cur{color:var(--tone);}
+  .lc-head .h-col{display:flex;flex-direction:column;gap:3px;}
+  .lc-head .h-col b{
+    font-family:var(--font-kai);font-weight:400;font-size:14.5px;letter-spacing:.02em;color:var(--ink);
+    line-height:1.35;
+  }
+  .lc-head .h-col em{
+    font-style:normal;font-family:var(--font-sans);font-size:9.5px;letter-spacing:.04em;
+    color:var(--ink-3);line-height:1.5;
+  }
+  .lc-head .h-col.is-machine b{color:#7a6a52;}
+  .lc-row{border-bottom:1px solid var(--line);cursor:pointer;transition:background .16s;}
+  .lc-row:hover{background:rgba(201,162,39,.035);}
+  .lc-row .lc-a,.lc-row .lc-b{
+    white-space:normal;overflow:visible;
+  }
+  .lc-row .lc-k{display:flex;align-items:flex-start;gap:6px;white-space:nowrap;}
+  .lc-tg{
+    flex:0 0 auto;font-style:normal;font-size:12px;line-height:1.6;
+    color:var(--ink-3);transition:color .16s;
+  }
+  .lc-row.open .lc-tg{color:var(--red);}
+  .cell-note[hidden]{display:none;}
+  .cell-note{
+    display:block;margin-top:10px;padding-top:9px;
+    border-top:1px dashed rgba(122,34,28,.2);
+    font-style:normal;font-size:12px;line-height:1.9;
+    color:var(--gold-deep);
+  }
+  .cell-note::before{
+    content:"补充";
+    display:inline-block;margin-right:7px;padding:0 5px;
+    font-family:var(--font-sans);font-size:9px;letter-spacing:.1em;
+    color:var(--gold-deep);border:1px solid rgba(157,119,29,.4);border-radius:2px;
+    vertical-align:1px;
+  }
+  .lc-row:last-child{border-bottom:0;}
+  .lc-row > span{padding:13px 20px;font-size:13px;line-height:1.85;}
+  .lc-k{font-family:var(--font-sans);font-size:11.5px;letter-spacing:.04em;color:var(--ink-3);}
+  .lc-a{color:var(--ink);background:rgba(201,162,39,.055);border-left:1px solid var(--line);}
+  .lc-b{color:var(--ink-3);}
+  .lc-a.is-grey{background:rgba(90,80,66,.05);color:var(--ink-2);}
+  .lc-b.is-grey{background:rgba(90,80,66,.04);color:var(--ink-2);}
+  .lc-hint{padding:22px;text-align:center;font-family:var(--font-sans);font-size:12px;letter-spacing:.08em;color:var(--ink-3);}
+
+  /* 技艺两两对比：双列工序链 */
+  .cmp-flow{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .cmp-col{padding:2px 18px 8px 0;}
+  .cmp-col + .cmp-col{padding:2px 0 8px 18px;border-left:1px solid var(--line);}
+  .cmp-col-name{
+    font-family:var(--font-kai);font-weight:400;font-size:18px;letter-spacing:.05em;
+    color:var(--tone);padding:10px 0 8px;border-bottom:1px solid var(--line-2);
+  }
+  .cmp-col + .cmp-col .cmp-col-name{color:var(--red);}
+  .cmp-col .dr-step{border-top:1px solid var(--line);}
+  .cmp-col .dr-step-body{padding-left:22px;}
+  .cmp-col .dr-step-body dl{border-left:2px solid rgba(201,162,39,.4);}
+
+
+  .lab-verdict{
+    padding:16px 22px;border-top:1px solid var(--line);
+    display:block;
+    font-size:13.5px;line-height:1.9;color:var(--ink-2);background:rgba(201,162,39,.035);
+  }
+  .lab-verdict .vd-row{
+    display:flex;align-items:flex-start;gap:10px;padding:3px 0;
+    font-size:13.5px;line-height:1.9;color:var(--ink-2);
+  }
+  .lab-verdict .vd-row em{
+    flex:0 0 auto;font-style:normal;
+    font-family:var(--font-kai);font-size:14px;color:var(--tone);
+    padding-top:1px;
+  }
+  .lab-verdict b{
+    font-weight:400;color:var(--tone);margin-right:6px;
+    font-family:var(--font-sans);font-size:11px;letter-spacing:.14em;
+  }
+
+  /* 动画 */
+  .anim .ln{
+    stroke-dasharray:var(--l,600);stroke-dashoffset:var(--l,600);
+    animation:draw 3.6s cubic-bezier(.45,0,.25,1) infinite;
+    animation-delay:var(--d,0s);
+  }
+  @keyframes draw{
+    0%{stroke-dashoffset:var(--l,600);opacity:0}
+    3%{opacity:1}
+    52%{stroke-dashoffset:0;opacity:1}
+    84%{stroke-dashoffset:0;opacity:1}
+    100%{stroke-dashoffset:0;opacity:0}
+  }
+  .anim .dt{opacity:0;animation:pop 3.6s ease infinite;animation-delay:var(--d,0s);}
+  @keyframes pop{
+    0%,8%{opacity:0}
+    24%,80%{opacity:1}
+    94%,100%{opacity:0}
+  }
+
+  /* ---------- 特性 ---------- */
+  .feat{display:flex;flex-direction:column;}
+  .feat-item{display:grid;grid-template-columns:70px minmax(0,1fr);gap:22px;padding:24px 0;border-bottom:1px solid var(--line);}
+  .feat-item:first-child{padding-top:4px;}
+  .feat-no{align-self:start;padding-top:4px;font-family:var(--font-song);font-size:28px;line-height:1;color:var(--tone);opacity:.5;}
+  .feat-item h3{font-family:var(--font-kai);font-weight:400;font-size:21px;letter-spacing:.04em;margin-bottom:8px;}
+  .feat-item p{max-width:920px;font-size:14px;line-height:2;color:var(--ink-2);}
+  .feat-why{
+    max-width:920px;margin-top:11px;padding:11px 15px;
+    background:rgba(122,34,28,.045);border-left:2px solid rgba(122,34,28,.32);
+    font-size:13px;line-height:1.9;color:var(--ink-2);
+  }
+  .feat-why b{font-weight:400;color:var(--red);font-family:var(--font-sans);font-size:10.5px;letter-spacing:.12em;margin-right:7px;}
+
+  /* ---------- 技艺索引条 ---------- */
+  .tech-index{
+    margin-top:22px;padding:14px 0 0;border-top:1px solid var(--line);
+    font-family:var(--font-sans);font-size:11.5px;letter-spacing:.06em;color:var(--ink-3);
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;
+  }
+  .tech-index b{font-weight:400;color:var(--ink-2);font-family:var(--font-serif);font-size:11.5px;letter-spacing:.14em;margin-right:4px;}
+  .tech-index a{padding:2px 7px;border:1px solid var(--line);color:var(--ink-2);transition:.18s;}
+  .tech-index a:hover{border-color:var(--line-2);color:var(--red);background:#fffdf8;}
+
+  /* ---------- 技艺详情面板 ---------- */
+  var drOpen = false;
+  function openTech(name){
+    var p = byName(name);
+    if(!p) return;
+    var s = secById(p.sec);
+
+    document.getElementById("drKicker").textContent = (s?s.name:"") + " · " + (p.her||"");
+    document.getElementById("drTitle").textContent = p.n;
+    document.getElementById("drFull").textContent = (p.full && p.full!==p.n) ? p.full : "";
+    document.getElementById("drTags").innerHTML =
+      '<span>难度峰值 '+esc(p.peak||"—")+'</span>'+
+      '<span>'+p.steps.length+' 道工序</span>'+
+      (p.inh?'<span>传承人 '+esc(p.inh)+'</span>':'')+
+      (s?'<span>'+esc(s.name)+'</span>':'');
+
+    var html = '<p class="dr-sum">'+esc(p.sum||"")+'</p>';
+    if(p.bn||p.ir){
+      html += '<div class="dr-facts">'+
+        (p.bn?'<div><span>瓶颈</span><b>'+esc(p.bn)+'</b></div>':'')+
+        (p.ir?'<div><span>不可替代</span><b>'+esc(p.ir)+'</b></div>':'')+
+      '</div>';
+    }
+    /* 传承人：放在工序链之前 */
+    if((p.inheritor&&p.inheritor.length)||p.bio){
+      var inhHtml = '';
+      if(p.inheritor && p.inheritor.length){
+        inhHtml += '<div class="dr-inh">'+p.inheritor.map(function(x){
+          return '<div class="inh-item">'+
+            '<div class="inh-top"><b>'+esc(x.name)+'</b><em>'+esc(x.role||'')+'</em>'+
+              (x.baike ? '<a class="inh-link" href="'+x.baike+'" target="_blank" rel="noopener noreferrer">百科 ↗</a>' : '')+
+            '</div>'+
+            (x.bio ? '<p class="inh-bio">'+esc(x.bio)+'</p>' : '')+
+          '</div>';
+        }).join("")+'</div>';
+      }
+      if(p.bio) inhHtml += '<p>'+esc(p.bio)+'</p>';
+      html += '<div class="dr-part"><h4>传承人<span>INHERITOR</span></h4>'+inhHtml+'</div>';
+    }
+
+    html += '<div class="dr-sec-title"><b>工序链</b><span>'+p.steps.length+' STEPS</span></div>'+
+      '<div class="dr-flow">'+p.steps.map(function(x,i){
+        return (i?'<i>→</i>':'')+'<span>'+esc(x.n)+'</span>';
+      }).join("")+'</div>';
+
+    html += '<div class="dr-sec-title"><b>逐道拆开</b><span>DETAIL</span></div>'+
+      '<div id="drSteps">'+p.steps.map(function(x,i){
+        return '<div class="dr-step">'+
+          '<button class="dr-step-btn" type="button">'+
+            '<span class="dr-step-no"></span>'+
+            '<span class="dr-step-name">'+esc(x.n)+'</span>'+
+            '<span class="dr-step-time">'+esc(x.h)+'</span>'+
+            '<span class="dr-step-mark">+</span>'+
+          '</button>'+
+          '<div class="dr-step-body" hidden>'+
+            '<dl>'+
+              '<dt>动作</dt><dd>'+esc(x.a)+'</dd>'+
+              (x.sub&&x.sub.length?'<dt>细分</dt><dd><ol class="sub">'+x.sub.map(function(u){
+                return '<li><b>'+esc(u.n)+'</b>'+(u.a?'　'+esc(u.a):'')+'</li>';
+              }).join("")+'</ol></dd>':'')+
+              '<dt>工具</dt><dd>'+esc(x.t)+'</dd>'+
+              '<dt>耗时</dt><dd>'+esc(x.h)+'</dd>'+
+              '<dt>难度</dt><dd class="d-'+esc(x.d)+'">'+esc(x.d)+'</dd>'+
+              '<dt>注解</dt><dd>'+esc(x.k)+'</dd>'+
+            '</dl>'+
+          '</div>'+
+        '</div>';
+      }).join("")+'</div>';
+
+    /* —— 详细档案（10/23 版全字段）—— */
+    function part(title, en, body, isBox){
+      return '<div class="dr-part"><h4>'+title+'<span>'+en+'</span></h4>'+
+        (isBox ? '<p class="dr-heritage">'+body+'</p>' : '<p>'+body+'</p>')+'</div>';
+    }
+    if(p.feature) html += part('技艺特征','TECHNIQUE',esc(p.feature));
+    if(p.history) html += part('历史脉络','HISTORY',esc(p.history));
+    if(p.meaning) html += part('文化内涵与传承','CULTURE',esc(p.meaning));
+    if(p.herFull) html += part('非遗信息','HERITAGE',esc(p.herFull),true);
+
+    document.getElementById("drBody").innerHTML = html;
+    document.getElementById("drMore").setAttribute("href", "#/a/"+encodeURIComponent(p.n));
+    document.getElementById("drBody").scrollTop = 0;
+
+    Array.prototype.forEach.call(document.querySelectorAll("#drSteps .dr-step-btn"), function(b){
+      b.addEventListener("click", function(){
+        var box = b.parentNode;
+        var on = box.classList.toggle("on");
+        box.querySelector(".dr-step-body").hidden = !on;
+      });
+    });
+
+    document.querySelector(".dr-foot").style.display = "";
+    document.getElementById("drMask").hidden = false;
+    requestAnimationFrame(function(){
+      document.getElementById("drMask").classList.add("on");
+      document.getElementById("dr").classList.add("on");
+    });
+    document.getElementById("dr").setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+    drOpen = true;
+    document.getElementById("drBody").scrollTop = 0;
+  }
+  function closeTech(){
+    if(!drOpen) return;
+    document.getElementById("drMask").classList.remove("on");
+    document.getElementById("dr").classList.remove("on");
+    document.getElementById("dr").setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+    drOpen = false;
+    setTimeout(function(){ if(!drOpen) document.getElementById("drMask").hidden = true; }, 300);
+  }
+  (function bindDrawer(){
+    var mask = document.getElementById("drMask");
+    var close = document.getElementById("drClose");
+    if(mask) mask.addEventListener("click", closeTech);
+    if(close) close.addEventListener("click", closeTech);
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && drOpen) closeTech();
+    });
+    var more = document.getElementById("drMore");
+    if(more) more.addEventListener("click", function(){ closeTech(); });
+  })();
+
+  /* ---------- 图片灯箱 ---------- */
+  (function bindLightbox(){
+    var lb = document.getElementById("lb");
+    var lbImg = document.getElementById("lbImg");
+    var cap = document.getElementById("lbCap");
+    if(!lb || !lbImg) return;
+    function openImg(src, alt){
+      lbImg.src = src;
+      lbImg.alt = alt || "";
+      cap.textContent = alt || "";
+      lb.hidden = false;
+      requestAnimationFrame(function(){ lb.classList.add("on"); });
+      lb.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeImg(){
+      lb.classList.remove("on");
+      lb.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+      setTimeout(function(){
+        if(!lb.classList.contains("on")){ lb.hidden = true; lbImg.src = ""; }
+      }, 230);
+    }
+    document.addEventListener("click", function(e){
+      var fig = e.target.closest ? e.target.closest(".tech-fig img") : null;
+      if(fig){ e.preventDefault(); openImg(fig.getAttribute("src"), fig.getAttribute("alt")); return; }
+      if(e.target === lb || e.target === lbImg || (e.target.classList && e.target.classList.contains("lb-close"))) closeImg();
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && lb.classList.contains("on")) closeImg();
+    });
+  })();
+
+  /* ---------- 技艺页 ---------- */
+  .tech{padding-top:24px;padding-bottom:64px;}
+  .tech h1{font-family:var(--font-kai);font-weight:400;font-size:44px;letter-spacing:.06em;margin:8px 0 0;}
+  .tech-full{margin-top:6px;font-size:14px;color:var(--ink-3);}
+  .tech-head{
+    display:grid;grid-template-columns:minmax(0,1fr) 368px;
+    gap:34px;align-items:start;
+    max-width:920px;            /* 与下方正文同宽，图片右边缘与正文右边缘对齐 */
+  }
+  .tech-head.no-fig{grid-template-columns:minmax(0,1fr);}
+  .tech-fig{
+    margin:6px 0 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    background:#ece3d2;
+  }
+  .tech-fig{position:relative;cursor:zoom-in;}
+  .tech-fig img{width:100%;height:auto;display:block;}
+  .tech-fig::after{
+    content:"⤢ 点击放大";position:absolute;right:10px;bottom:10px;
+    padding:3px 9px;border-radius:2px;
+    background:rgba(30,20,14,.62);color:#f3e8d2;
+    font-family:var(--font-sans);font-size:10.5px;letter-spacing:.06em;
+    opacity:0;transition:opacity .2s;pointer-events:none;
+  }
+  .tech-fig:hover::after{opacity:1;}
+
+  /* ---------- 图片灯箱 ---------- */
+  .lb{
+    position:fixed;inset:0;z-index:120;
+    display:flex;align-items:center;justify-content:center;
+    padding:5vh 4vw;
+    background:rgba(22,15,11,.92);
+    opacity:0;pointer-events:none;transition:opacity .22s ease;
+  }
+  .lb.on{opacity:1;pointer-events:auto;}
+  .lb[hidden]{display:none;}
+  .lb img{
+    max-width:92vw;max-height:84vh;width:auto;height:auto;
+    border-radius:4px;box-shadow:0 24px 70px rgba(0,0,0,.6);
+    transform:scale(.97);transition:transform .22s ease;
+  }
+  .lb.on img{transform:scale(1);}
+  .lb-close{
+    position:absolute;top:22px;right:26px;
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    background:transparent;border:1px solid rgba(246,232,200,.35);border-radius:50%;
+    color:rgba(246,232,200,.85);font-size:14px;cursor:pointer;transition:.18s;
+  }
+  .lb-close:hover{background:rgba(246,232,200,.14);border-color:#f6e8c8;color:#fff;}
+  .lb-cap{
+    position:absolute;left:0;right:0;bottom:18px;text-align:center;
+    font-family:var(--font-kai);font-size:14px;letter-spacing:.1em;color:rgba(246,232,200,.62);
+  }
+  @media (max-width:760px){
+    .lb img{max-width:94vw;max-height:78vh;}
+    .lb-close{top:14px;right:14px;}
+  }
+  @media (max-width:1080px){
+    .tech-head{grid-template-columns:minmax(0,1fr) 288px;gap:26px;max-width:100%;}
+  }
+  @media (max-width:760px){
+    .tech-head{grid-template-columns:minmax(0,1fr);gap:0;}
+    .tech-fig{margin:14px 0 4px;}
+  }
+  .tech-part{border-top:1px solid var(--line);margin-top:28px;padding-top:20px;max-width:920px;}
+  .tech .flow,.tech .steps,.tech .tree-wrap,.tech .tree-panel{max-width:920px;}
+  .tech-part h4{
+    display:flex;align-items:baseline;gap:10px;margin-bottom:10px;
+    font-family:var(--font-kai);font-weight:400;font-size:20px;letter-spacing:.06em;color:var(--ink);
+  }
+  .tech-part h4 span{font-family:var(--font-sans);font-size:9.5px;letter-spacing:.18em;color:var(--ink-3);}
+  .tech-part p{max-width:920px;font-size:15px;line-height:2.1;color:var(--ink-2);}
+  .tech-inh{display:flex;flex-direction:column;margin-bottom:12px;}
+  .tech-inh .inh-item{padding:9px 0;border-bottom:1px dashed var(--line);}
+  .tech-inh .inh-item:last-child{border-bottom:0;padding-bottom:0;}
+  .tech-inh .inh-item:first-child{padding-top:0;}
+  .tech-inh .inh-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;}
+  .inh-bio{margin-top:5px;font-size:13px;line-height:1.9;color:var(--ink-3);max-width:780px;}
+  .tech-inh b{font-family:var(--font-kai);font-weight:400;font-size:18px;color:var(--ink);}
+  .tech-inh em{font-style:normal;font-family:var(--font-sans);font-size:11px;color:var(--ink-3);}
+  .hflow{
+    display:flex;align-items:flex-start;
+    overflow-x:auto;padding:8px 2px 16px;
+    scrollbar-width:thin;
+  }
+  .hflow::-webkit-scrollbar{height:7px;}
+  .hflow::-webkit-scrollbar-thumb{background:rgba(122,34,28,.16);border-radius:4px;}
+  .hnode{
+    flex:0 0 268px;position:relative;
+    padding:13px 15px 12px;margin-right:34px;
+    background:var(--card);border:1px solid var(--line);border-radius:4px;
+    transition:border-color .18s, box-shadow .18s;
+  }
+  .hnode:last-child{margin-right:0;}
+  .hnode::after{
+    content:"→";position:absolute;right:-28px;top:50%;
+    transform:translateY(-50%);color:var(--ink-3);font-size:13px;
+  }
+  .hnode:last-child::after{display:none;}
+  .hnode:hover{border-color:var(--line-2);}
+  .hnode.open{border-color:rgba(122,34,28,.45);box-shadow:0 8px 20px rgba(90,60,30,.1);}
+  .hnode .hy{
+    display:inline-block;
+    font-family:var(--font-sans);font-size:10px;letter-spacing:.1em;color:var(--tone);
+    padding:1px 6px;border:1px solid rgba(168,103,47,.35);border-radius:2px;
+  }
+  .hnode .hd{font-size:14.5px;line-height:2.05;color:var(--ink-2);}
+  @media (max-width:640px){
+    .hnode{flex:0 0 76vw;margin-right:26px;}
+  }
+  .hnode-head{
+    display:block;width:100%;position:relative;
+    background:none;border:0;cursor:pointer;text-align:left;padding:0 22px 0 0;
+  }
+  .hnode-head .ht{
+    display:block;margin-top:7px;
+    font-family:var(--font-kai);font-size:16px;letter-spacing:.03em;color:var(--ink);
+    line-height:1.45;transition:color .16s;
+  }
+  .hnode-head i{
+    position:absolute;right:0;top:0;
+    font-style:normal;font-size:15px;color:var(--ink-3);
+    transition:color .16s;
+  }
+  .hnode-head:hover .ht{color:var(--red);}
+  .hnode.open .hnode-head i{color:var(--red);}
+  .hnode.open .hnode-head .ht{color:var(--red);}
+  .hnode-body{margin-top:9px;padding-top:9px;border-top:1px dashed var(--line-2);}
+  .hnode-body p{font-size:13px;line-height:1.95;color:var(--ink-2);}
+  .hhook{
+    margin-top:9px;padding:9px 11px;
+    background:rgba(201,162,39,.06);border-left:2px solid rgba(201,162,39,.5);
+    font-size:13px;line-height:1.95;color:var(--ink-2);
+  }
+  .hhook b{
+    display:inline-block;margin-right:8px;padding:0 5px;
+    font-family:var(--font-sans);font-size:9px;letter-spacing:.1em;font-weight:400;
+    color:var(--gold-deep);border:1px solid rgba(157,119,29,.4);border-radius:2px;
+    vertical-align:1px;
+  }
+
+  .tech-heritage{
+    max-width:920px;font-size:14px;line-height:2;color:var(--ink-2);
+    padding:12px 16px;background:rgba(122,34,28,.04);border-left:2px solid rgba(122,34,28,.26);
+  }
+  .tech-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;font-family:var(--font-sans);font-size:11px;letter-spacing:.08em;color:var(--ink-3);}
+  .tech-meta span{padding:3px 9px;border:1px solid var(--line);}
+  .tech-sum{margin-top:16px;font-size:15.5px;line-height:2;color:var(--ink-2);max-width:820px;}
+  .chain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:24px 0 6px;}
+  .chain span{padding:5px 10px;background:var(--card);border:1px solid var(--line);font-size:12.5px;}
+  .chain i{color:var(--ink-3);font-style:normal;font-size:12px;}
+  .steps{margin-top:22px;border-top:1px solid var(--line);}
+  .step{border-bottom:1px solid var(--line);}
+  .steps{position:relative;}
+  .steps::before{
+    content:"";position:absolute;left:13px;top:26px;bottom:26px;width:1px;background:var(--line-2);
+  }
+  .step{position:relative;}
+  .step-btn{
+    width:100%;display:grid;grid-template-columns:26px minmax(0,1fr) auto 16px;
+    align-items:center;gap:12px;padding:15px 4px;background:none;border:0;cursor:pointer;text-align:left;
+  }
+  .step-no{
+    display:block;width:8px;height:8px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--tone);
+    position:relative;z-index:1;justify-self:center;
+  }
+  .step-btn:hover{background:rgba(201,162,39,.05);}
+
+  .step-name{font-family:var(--font-kai);font-size:18px;letter-spacing:.04em;}
+  .step-time{font-family:var(--font-sans);font-size:10.5px;color:var(--ink-3);}
+  .step-mark{color:var(--ink-3);font-size:14px;transition:transform .2s;}
+  .step.on .step-mark{transform:rotate(45deg);color:var(--red);}
+  .step.on .step-no{background:var(--tone);}
+  .step.on .step-name{color:var(--red);}
+  .step-body{padding:0 4px 16px 50px;font-size:13.5px;color:var(--ink-2);}
+  .step-body dl{display:grid;grid-template-columns:64px minmax(0,1fr);gap:6px 14px;padding-left:14px;border-left:2px solid rgba(201,162,39,.4);}
+  .step-body dt{font-family:var(--font-sans);font-size:10px;letter-spacing:.1em;color:var(--ink-3);padding-top:3px;}
+  .step-body dd{margin:0;}
+  .step-body .sub{margin:0;padding-left:14px;list-style:none;counter-reset:s;}
+  .step-body .sub li{position:relative;counter-increment:s;padding:2px 0 2px 20px;font-size:13px;line-height:1.85;}
+  .step-body .sub li::before{content:counter(s,cjk-ideographic);position:absolute;left:0;top:3px;font-size:10px;color:var(--gold-deep);}
+  .step-body .sub li b{font-weight:600;color:var(--ink);}
+  .d-极高{color:var(--red-bright);font-weight:600;}
+  .d-高{color:#9a5f22;}
+
+  footer{border-top:1px solid var(--line);padding:26px 0 36px;}
+  .foot-in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    font-family:var(--font-sans);font-size:10.5px;letter-spacing:.1em;color:var(--ink-3);}
+
+  @media (max-width:1080px){
+    .vols{grid-template-columns:repeat(2,minmax(0,1fr));gap:42px 30px;}
+    .banner{grid-template-columns:1fr;gap:24px;padding-bottom:34px;}
+    .banner-img{max-width:440px;}
+    .lab-info{grid-template-columns:1fr;}
+    .lab-stat{border-left:0;border-top:1px solid var(--line);}
+  }
+  @media (max-width:980px){
+    .subnav{display:flex;overflow-x:auto;border-top:1px solid var(--line);scrollbar-width:none;}
+    .subnav::-webkit-scrollbar{display:none;}
+    .subnav a{flex:0 0 auto;padding:10px 15px;font-family:var(--font-sans);font-size:11.5px;letter-spacing:.1em;color:var(--ink-2);border-right:1px solid var(--line);}
+    .subnav a.is-live{color:var(--red);background:rgba(122,34,28,.05);}
+    .topnav{display:none;}
+  }
+  @media (max-width:640px){
+    .shell{padding:0 20px;}
+    .topbar-in{padding:0 20px;}
+    .vols{grid-template-columns:1fr;gap:36px;}
+    .intro h1{font-size:38px;}
+    .banner-copy h1{font-size:36px;}
+    .vol-cap h2{font-size:32px;}
+    .feat-item{grid-template-columns:44px minmax(0,1fr);gap:14px;}
+    .feat-no{font-size:20px;}
+    .lab-tab{min-width:0;flex:1 1 50%;border-bottom:1px solid var(--line);}
+    .lab-tab:nth-child(2){border-right:0;}
+    .tree-panel{padding:18px 18px;}
+    .tree-panel p{font-size:13.5px;}
+  }
+
+  /* ===== 主站主导航（对齐 .app-header） ===== */
+  .ys-app-header{
+    position:sticky; top:0; z-index:100;
+    display:flex; align-items:center; gap:24px;
+    padding:10px 28px;
+    background:rgba(122,34,28,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(201,162,39,.5);
+    box-shadow:0 2px 14px rgba(60,20,12,.25);
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  .ys-brand{display:flex; align-items:center; gap:10px; flex:0 0 auto; cursor:pointer;}
+  .ys-seal{
+    display:grid; place-items:center;
+    width:44px; height:44px;
+    background:linear-gradient(150deg,#c9a227,#a07d16);
+    color:#fffdf4; font-size:16px; font-weight:700; letter-spacing:2px;
+    border-radius:6px;
+    box-shadow:inset 0 0 0 2px rgba(255,246,220,.55), 0 2px 8px rgba(60,20,12,.3);
+  }
+  .ys-brand-text h1{font-size:18px; color:#f5efe4; letter-spacing:2px; line-height:1.2; margin:0; font-weight:700;}
+  .ys-brand-text p{font-size:12px; color:rgba(245,239,228,.72); margin:2px 0 0; letter-spacing:1px;}
+  .ys-nav{display:flex; align-items:center; flex-wrap:wrap; flex:1; gap:2px;}
+  .ys-nav a{
+    padding:8px 12px; font-size:15px; letter-spacing:1px;
+    color:rgba(245,239,228,.88); border-radius:4px; text-decoration:none;
+    transition:all .2s ease; white-space:nowrap;
+  }
+  .ys-nav a:hover{color:#ffe9a8; background:rgba(255,255,255,.12);}
+  .ys-nav a.active{
+    color:#ffe9a8; font-weight:700;
+    background:rgba(255,244,214,.18);
+    box-shadow:inset 0 -2px 0 0 rgba(255,233,168,.65);
+  }
+  .ys-login{
+    flex:0 0 auto; padding:6px 14px;
+    background:#7a221c; color:#fff4dd;
+    border:1px solid #7a221c; border-radius:3px;
+    font-size:13px; text-decoration:none;
+  }
+  .ys-login:hover{background:#8f2f23;}
+  @media (max-width:1120px){
+    .ys-app-header{padding:10px 18px; gap:14px;}
+    .ys-nav{gap:0;}
+    .ys-nav a{padding:6px 9px; font-size:14px;}
+  }
+  /* 主站 .app-header 同款导航 */
+  .app-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:24px;padding:10px 28px;background:rgba(122,34,28,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,162,39,.5);box-shadow:0 2px 14px rgba(60,20,12,.25);}
+  .app-header .brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+  .app-header .brand-seal{width:44px;height:44px;display:grid;place-items:center;background:linear-gradient(150deg,#c9a227,#a07d16);color:#fffdf4;font-weight:700;border-radius:6px;box-shadow:inset 0 0 0 2px rgba(255,246,220,.55),0 2px 8px rgba(60,20,12,.3);letter-spacing:2px;}
+  .app-header .brand-text h1{margin:0;font-size:18px;letter-spacing:2px;color:#f5efe4;white-space:nowrap;}
+  .app-header .brand-text p{margin:0;font-size:12px;color:rgba(245,239,228,.72);}
+  .app-header .app-nav{display:flex;gap:2px;flex-wrap:wrap;flex:1;}
+  .app-header .app-nav a{padding:8px 12px;color:rgba(245,239,228,.88);text-decoration:none;font-size:15px;letter-spacing:1px;border-radius:4px;transition:all .2s;}
+  .app-header .app-nav a:hover{color:#ffe9a8;background:rgba(255,255,255,.12);transform:translateY(-1px);}
+  .app-header .app-nav a.router-link-active{color:#ffe9a8;font-weight:700;background:rgba(255,244,214,.18);box-shadow:inset 0 -2px 0 0 rgba(255,233,168,.65);}
+</style>
+</head>
+<body>
+
+<!-- 主站主导航（与首页 .app-header 完全一致） -->
+<header class="app-header">
+  <div class="brand" onclick="location.href='/'">
+    <span class="brand-seal">衣溯</span>
+    <div class="brand-text">
+      <h1>衣溯 · 华夏衣冠志</h1>
+      <p>华夏服饰溯源与复原平台</p>
+    </div>
+  </div>
+  <nav class="app-nav">
+    <a href="/">首页</a>
+    <a href="/archive">档案</a>
+    <a href="/fabric">面料</a>
+    <a href="/pattern">纹样</a>
+    <a href="/accessories/index.html">衣冠</a>
+    <a href="/museum?v=20261018#/museum">博物馆</a>
+    <a href="/tryon">虚拟试穿</a>
+    <a href="/timeline">时空图谱</a>
+    <a href="/aiqa">溯源问答</a>
+    <a href="/community">社区</a>
+    <a href="/heritage/index.html" class="router-link-active">传承</a>
+  </nav>
+  <a class="ys-login" id="loginArea" href="/user" style="color:#f5efe4;text-decoration:none;font-size:14px;border:1px solid rgba(245,239,228,.4);padding:6px 14px;border-radius:4px;">登录</a>
+</header>
+<script>
+(function(){
+  var t = localStorage.getItem('yisu_token');
+  var u = localStorage.getItem('yisu_username');
+  var el = document.getElementById('loginArea');
+  if (t && u) { el.textContent = u; el.href = '/user'; }
+})();
+</script>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#/"><span class="brand-seal">衣</span><b>衣溯</b><span>传统服饰 · 非遗技艺</span></a>
+    <nav class="topnav" id="topnav"></nav>
+  </div>
+  <div class="subnav" id="subnav"></div>
+</header>
+
+<main id="app"></main>
+
+<div class="lb" id="lb" hidden aria-hidden="true" role="dialog" aria-label="查看大图">
+  <button class="lb-close" type="button" aria-label="关闭">✕</button>
+  <img id="lbImg" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+
+<div class="dr-mask" id="drMask" hidden></div>
+<aside class="dr" id="dr" aria-hidden="true" aria-label="技艺详情">
+  <div class="dr-head">
+    <div class="k" id="drKicker"></div>
+    <h2 id="drTitle"></h2>
+    <div class="full" id="drFull"></div>
+    <div class="dr-tags" id="drTags"></div>
+    <button class="dr-close" id="drClose" type="button" aria-label="关闭">✕</button>
+  </div>
+  <div class="dr-body" id="drBody"></div>
+  <div class="dr-foot">
+    <span class="tip" id="drTip">点工序看动作、工具与注解</span>
+    <a id="drMore" href="#">打开完整档案 ↗</a>
+  </div>
+</aside>
+
+<footer>
+  <div class="shell foot-in">
+    <span>传统服饰非遗技艺 · 六卷 / 织造 · 印染 · 刺绣 · 成衣 · 特殊材料 · 配饰</span>
+    <span>工序与传承人信息据公开资料整理</span>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="sections.js"></script>
+<script src="figs.js"></script>
+<script>
+(function () {
+  var ITEMS = window.FY_ITEMS || [];
+  var SECS = window.FY_SECTIONS || [];
+  var ANIM = window.FY_ANIM || {};
+  var app = document.getElementById("app");
+
+  var NODE_W = 160, NODE_H = 72, COL_W = 186, ROW_H = 104, PAD = 20;
+
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function pad(n){ return ("0"+n).slice(-2); }
+  function itemsOf(sec){ return ITEMS.filter(function(i){ return i.sec===sec; }); }
+  function stepsOf(sec){ return itemsOf(sec).reduce(function(a,i){ return a+i.steps.length; },0); }
+  function secById(id){ return SECS.filter(function(s){ return s.id===id; })[0]; }
+  function byName(n){ return ITEMS.filter(function(i){ return i.n===n; })[0]; }
+
+  function renderNav(active){
+    var nav = SECS.map(function(s){
+      return '<a href="#/m/'+s.id+'"'+(active===s.id?' class="is-live"':'')+'>'+s.name+'</a>';
+    }).join("");
+    document.getElementById("topnav").innerHTML = nav;
+    var sub = document.getElementById("subnav");
+    if (sub) sub.innerHTML = '<a href="#/"'+(!active?' class="is-live"':'')+'>六卷</a>'+nav;
+  }
+
+  /* ---------- 总览 ---------- */
+  function renderHome(){
+    renderNav("");
+    document.title = "传统服饰非遗技艺 · 六卷";
+    var total = ITEMS.reduce(function(a,i){ return a+i.steps.length; },0);
+    var html = '';
+
+    html += '<section class="hero shell"><div class="hero-banner">'+
+      '<div class="hero-top">INTANGIBLE HERITAGE · 传承图谱　|　VOL. 01-06</div>'+
+      '<h2>传承</h2>'+
+      '<p class="hero-lead">手艺不是靠名录活着的，靠的是一双手教另一双手。花本编错一根线就整幅作废，晒莨场只剩四个人也照样开工，八十一岁还能收下最后一个徒弟。六卷图谱记下 '+ITEMS.length+' 项技艺的 '+total+' 道工序，也记下每一道背后是谁在做、还能传给谁。</p>'+
+      '<div class="hero-btns">'+
+        '<a class="btn-gold" href="#/m/weaving">从织造读起　→</a>'+
+        '<a class="btn-ghost" href="#/m/embroidery">直达刺绣　↗</a>'+
+      '</div>'+
+      '<div class="hero-seal">衣</div>'+
+      '<div class="hero-stats">'+
+        '<div><b>'+ITEMS.length+'</b><span>项技艺</span></div>'+
+        '<div><b>'+SECS.length+'</b><span>个板块</span></div>'+
+        '<div><b>'+total+'</b><span>道工序</span></div>'+
+        '<div><b>'+SECS.reduce(function(a,x){ return a+(x.tree?x.tree.length:0); },0)+'</b><span>个源流节点</span></div>'+
+      '</div>'+
+    '</div></section>';
+
+    html += '<section class="vols shell">';
+    SECS.forEach(function(s){
+      var its = itemsOf(s.id);
+      var results = s.results.map(function(r){
+        return '<div class="vr '+r.s+'"><i></i><div><b>'+esc(r.t)+'</b>'+
+          (r.s==="doing"?'<span class="vr-tag">进行中</span>':'')+
+          (r.d?'<em>'+esc(r.d)+'</em>':'')+'</div></div>';
+      }).join("");
+      html += '<a class="vol" href="#/m/'+s.id+'" style="--tone:'+s.tone+'">'+
+        '<div class="vol-art">'+
+          '<img src="'+s.img+'" alt="" style="object-position:'+s.pos+'" />'+
+          '<div class="veil"></div>'+
+          '<div class="vol-cap">'+
+            '<div class="meta"><span>VOL. '+s.no+'</span><i></i><span>'+s.en+'</span></div>'+
+            '<h2>'+s.name+'</h2>'+
+            '<p>'+esc(s.hook)+'</p>'+
+          '</div>'+
+        '</div>'+
+        '<div class="vol-body">'+
+          '<div class="vb-en">'+s.en+' · '+its.length+' 项技艺</div>'+
+          '<p class="vb-lead">'+esc(s.lead)+'</p>'+
+          '<div class="vb-stats">'+
+            '<div><b>'+its.length+'</b><span>项技艺</span></div>'+
+            '<div><b>'+stepsOf(s.id)+'</b><span>道工序</span></div>'+
+            (s.tree ? '<div><b>'+s.tree.length+'</b><span>个源流节点</span></div>' : '')+
+          '</div>'+
+          '<div class="vb-res"><h4>传承成果</h4>'+results+'</div>'+
+          '<span class="vb-more">进入本卷 <span>→</span></span>'+
+        '</div>'+
+      '</a>';
+    });
+    html += '</section>';
+
+    app.innerHTML = html;
+    window.scrollTo(0,0);
+  }
+
+  /* ---------- 板块页 ---------- */
+  function renderSection(id){
+    var s = secById(id);
+    if(!s){ renderHome(); return; }
+    renderNav(id);
+    document.title = s.name+" · 六卷 | 传统服饰非遗技艺";
+    var its = itemsOf(id);
+    var html = '';
+
+    html += '<div class="shell crumb"><a href="#/">六卷</a>　/　'+s.name+'</div>';
+
+    html += '<section class="shell banner" style="--tone:'+s.tone+'">'+
+      '<div class="banner-img"><img src="'+s.img+'" alt="" style="object-position:'+s.pos+'" /></div>'+
+      '<div class="banner-copy">'+
+        '<div class="kicker" style="color:'+s.tone+'">VOL. '+s.no+'　'+s.en+'</div>'+
+        '<h1>'+s.name+'</h1>'+
+        '<p class="banner-hook">'+esc(s.hook)+'</p>'+
+        (s.intro?'<p class="banner-intro">'+esc(s.intro)+'</p>':'')+
+        '<p class="banner-lead">'+esc(s.lead)+'</p>'+
+        '<div class="banner-stats">'+
+          '<div><b>'+its.length+'</b><span>项技艺</span></div>'+
+          '<div><b>'+stepsOf(id)+'</b><span>道工序</span></div>'+
+          (s.tree ? '<div><b>'+s.tree.length+'</b><span>个源流节点</span></div>' : '')+
+        '</div>'+
+      '</div>'+
+    '</section>';
+
+    var secNo = 0;
+    function nextNo(){ secNo++; return ("0"+secNo).slice(-2); }
+
+    /* 源流：树 */
+    var maxC = 0;
+    (s.tree||[]).forEach(function(n){ if(n.c>maxC) maxC=n.c; });
+    var tw = (maxC+1)*COL_W + PAD*2, th = 3*ROW_H + PAD*2;
+
+    if(s.tree && s.tree.length){
+    html += '<section class="sec shell" style="--tone:'+s.tone+'">'+
+      '<div class="sec-head"><span class="sec-no">'+nextNo()+'</span><h2>源流</h2><span>ORIGIN &amp; LINEAGE</span></div>'+
+      '<p class="sec-sub">点节点看它那一段；虚线框是从主线分出去的技术分支。</p>'+
+      '<div class="tree-wrap"><div class="tree" id="tree" style="width:'+tw+'px;height:'+th+'px">'+
+        '<svg class="links" width="'+tw+'" height="'+th+'">'+
+          s.tree.map(function(n){
+            if(n.p==null || n.p<0) return "";
+            var a = s.tree[n.p], b = n;
+            var x1 = PAD + a.c*COL_W + NODE_W, y1 = PAD + a.r*ROW_H + NODE_H/2;
+            var x2 = PAD + b.c*COL_W, y2 = PAD + b.r*ROW_H + NODE_H/2;
+            var mx = (x1+x2)/2;
+            return '<path class="'+(b.depth?'is-branch':'')+'" d="M'+x1+' '+y1+' C '+mx+' '+y1+', '+mx+' '+y2+', '+x2+' '+y2+'"/>';
+          }).join("")+
+        '</svg>'+
+        s.tree.map(function(n,i){
+          return '<button class="tnode'+(n.depth?' is-branch':'')+(i===0?' on':'')+'" type="button" data-i="'+i+'" style="left:'+(PAD+n.c*COL_W)+'px;top:'+(PAD+n.r*ROW_H)+'px;height:'+NODE_H+'px">'+
+            '<span class="ty">'+esc(n.y)+'</span>'+
+            '<span class="tt">'+esc(n.t)+'</span>'+
+          '</button>';
+        }).join("")+
+      '</div>'+
+      (function(){
+        var colY = {};
+        s.tree.forEach(function(n){ if(!colY[n.c] || n.r<colY[n.c].r) colY[n.c]=n; });
+        var ticks = Object.keys(colY).sort(function(a,b){return +a-+b;}).map(function(c){
+          var n = colY[c];
+          var x = PAD + (+c)*COL_W + NODE_W/2;
+          return '<div class="tick" style="left:'+x+'px">'+esc(n.y)+'</div>';
+        }).join("");
+        return '<div class="tree-axis" style="width:'+tw+'px">'+ticks+'</div>';
+      })()+
+      '</div>'+
+      '<div class="tree-panel" id="treePanel"></div>'+
+    '</section>';
+    }
+
+    /* 技法台 */
+    if(s.lab){
+      var L = s.lab;
+      html += '<section class="sec shell" style="--tone:'+s.tone+'">'+
+        '<div class="sec-head"><span class="sec-no">'+nextNo()+'</span><h2>'+L.title+'</h2><span>HOW IT WORKS</span></div>'+
+        '<p class="sec-sub">'+esc(L.sub)+'</p>'+
+        '<div class="lab">'+
+          '<div class="lab-bar">'+
+            '<button class="lb-item is-machine" type="button" data-n="__m__">'+esc(L.items[L.machineIndex].name)+'<span>常驻基准</span></button>'+
+            its.map(function(it){
+              return '<button class="lb-item" type="button" data-n="'+esc(it.n)+'">'+esc(it.n)+'</button>';
+            }).join("")+
+          '</div>'+
+          '<div class="lab-cmp" id="labCmp"></div>'+
+          '<div class="lab-verdict" id="labVerdict"></div>'+
+        '</div>'+
+      '</section>';
+    }
+
+    /* 特性 */
+    if(s.features){
+      var f = s.features;
+      html += '<section class="sec shell" style="--tone:'+s.tone+'">'+
+        '<div class="sec-head"><span class="sec-no">'+nextNo()+'</span><h2>'+f.title+'</h2><span>WHY IT MATTERS</span></div>'+
+        '<p class="sec-sub">'+esc(f.sub)+'</p>'+
+        '<div class="feat">'+
+          f.list.map(function(x){
+            return '<div class="feat-item">'+
+              '<div class="feat-no">'+x.no+'</div>'+
+              '<div><h3>'+esc(x.t)+'</h3><p>'+esc(x.d)+'</p>'+
+              '<div class="feat-why"><b>为什么</b>'+esc(x.why)+'</div></div>'+
+            '</div>';
+          }).join("")+
+        '</div>'+
+      '</section>';
+    }
+
+    /* 本卷技艺：列出该板块全部技艺 */
+    html += '<section class="sec shell" style="--tone:'+s.tone+'">'+
+      '<div class="sec-head"><span class="sec-no">'+nextNo()+'</span><h2>本卷技艺</h2><span>'+its.length+' ITEMS</span></div>'+
+      '<p class="sec-sub">这一卷里 '+its.length+' 项技艺，点开看它的完整工序、传承人、与为什么是非遗。</p>'+
+      '<div class="art-grid">'+
+        its.map(function(it){
+          var diff = it.peak==="极高"?"diff-3":(it.peak==="高"?"diff-2":"diff-1");
+          return '<a class="art-card" href="#/a/'+encodeURIComponent(it.n)+'" data-tech="'+esc(it.n)+'">'+
+            '<div class="art-cover">'+
+              (it.img ? '<img src="'+it.img+'" alt="'+esc(it.n)+'" loading="lazy">' : '')+
+            '</div>'+
+            '<div class="art-body">'+
+            '<div class="art-top"><b>'+esc(it.n)+'</b><em class="'+diff+'">'+esc(it.peak||"")+'</em></div>'+
+            '<p class="art-sum">'+esc(it.sum||"")+'</p>'+
+            '<div class="art-meta">'+
+              (it.her?'<span>'+esc(it.her)+'</span>':'')+
+              (it.inh?'<span>传 '+esc(it.inh)+'</span>':'')+
+              '<span>'+it.steps.length+' 道工序</span>'+
+            '</div>'+
+            '<span class="art-open">看详细 →</span>'+
+            '</div>'+
+          '</a>';
+        }).join("")+
+      '</div>'+
+    '</section>';
+
+    app.innerHTML = html;
+
+    if(s.tree && s.tree.length) bindTree(s);
+    if(s.lab) bindLab(s);
+    /* 卡片直接跳详细页（不再弹窗） */
+
+    window.scrollTo(0,0);
+  }
+
+  function bindTree(s){
+    var box = document.getElementById("tree");
+    var panel = document.getElementById("treePanel");
+    function idle(){
+      panel.innerHTML = '<div class="py">待点选</div>'+
+        '<h3 style="opacity:.45">点击上方节点</h3>'+
+        '<p style="opacity:.7">实线是一条主干源流，虚线框是在那个时期分出去的新技艺——点哪个节点，这里就只讲那一段。</p>';
+      Array.prototype.forEach.call(box.querySelectorAll(".tnode"), function(b){ b.classList.remove("on"); });
+    }
+    function show(i){
+      var n = s.tree[i];
+      panel.innerHTML = '<div class="py">'+esc(n.y)+'</div>'+
+        '<h3>'+esc(n.t)+(n.tag?'<em>'+esc(n.tag)+'</em>':'')+'</h3>'+
+        '<p>'+esc(n.d)+'</p>';
+      panel.style.animation = "none";
+      void panel.offsetWidth;
+      panel.style.animation = "";
+      Array.prototype.forEach.call(box.querySelectorAll(".tnode"), function(b,k){
+        b.classList.toggle("on", k===i);
+      });
+    }
+    Array.prototype.forEach.call(box.querySelectorAll(".tnode"), function(b){
+      b.addEventListener("click", function(){
+        show(+b.getAttribute("data-i"));
+        /* 点哪个节点，就让它在横向滚动区里居中可见 */
+        b.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      });
+    });
+    idle();
+  }
+
+  function bindLab(s){
+    var m = s.lab.items[s.lab.machineIndex];
+    var cmp = document.getElementById("labCmp");
+    var verdict = document.getElementById("labVerdict");
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(".lb-item"));
+    var selected = ["__m__"];   // 机器常驻，其余可多选
+    var openSteps = {};
+    var openRows = {};
+
+
+
+    function valOf(name, k){
+      if(name === "__m__") return m.cmp[k] || "—";
+      return ((s.lab.itemCmp && s.lab.itemCmp[name]) || [])[k] || "—";
+    }
+    function labelOf(name){
+      return name === "__m__" ? (m.name + "（机器）") : name;
+    }
+    function metaOf(name){
+      if(name === "__m__") return "机器基准 · 无传承人";
+      var it = byName(name);
+      if(!it) return "";
+      var parts = [];
+      if(it.her) parts.push(it.her);
+      parts.push(it.steps.length + " 道工序");
+      if(it.peak) parts.push("难度 " + it.peak);
+      if(it.inh) parts.push("传 " + it.inh);
+      return parts.join(" · ");
+    }
+
+    function renderVerdict(){
+      var techs = selected.filter(function(n){ return n !== "__m__"; });
+      var html = '<b>差别</b>';
+      if(!techs.length){
+        html += '<span class="vd-row">选一项技艺，看它和机器差在哪。</span>';
+      } else {
+        techs.forEach(function(name){
+          var v = (s.lab.itemVerdict && s.lab.itemVerdict[name]) || s.lab.verdict || "";
+          html += '<span class="vd-row"><em>'+esc(name)+'</em>'+esc(v)+'</span>';
+        });
+      }
+      verdict.innerHTML = html;
+    }
+
+    function render(){
+      tabs.forEach(function(b){ b.classList.toggle("on", selected.indexOf(b.getAttribute("data-n")) >= 0); });
+      var grid = "136px " + selected.map(function(){ return "minmax(240px,380px)"; }).join(" ");
+      var headStyle = 'style="grid-template-columns:' + grid + '"';
+      cmp.innerHTML =
+        '<div class="lc-head" ' + headStyle + '>'+
+          '<span>维度</span>'+
+          selected.map(function(n){
+            return '<span class="h-col'+(n === "__m__" ? " is-machine" : "")+'">'+
+              '<b>'+esc(labelOf(n))+'</b></span>';
+          }).join("")+
+        '</div>'+
+        s.lab.rows.map(function(r, k){
+          return '<div class="lc-row'+(openRows[k]?' open':'')+'" ' + headStyle + ' data-r="'+k+'">'+
+            '<span class="lc-k"><i class="lc-tg">'+(openRows[k]?'−':'+')+'</i>'+esc(r)+'</span>'+
+            selected.map(function(n){
+              var cls = (n === "__m__") ? "lc-a is-grey" : "lc-b";
+              var nt = (s.lab.notes && s.lab.notes[k]) || null;
+              var noteTxt = nt ? (n === "__m__" ? nt.m : nt.h) : "";
+              return '<span class="'+cls+'">'+esc(valOf(n, k))+
+                (noteTxt ? '<em class="cell-note"'+(openRows[k]?'':' hidden')+'>'+esc(noteTxt)+'</em>' : '')+
+              '</span>';
+            }).join("")+
+          '</div>';
+        }).join("");
+      bindRows();
+      renderVerdict();
+    }
+
+    function bindRows(){
+      Array.prototype.forEach.call(document.querySelectorAll(".lc-row"), function(row){
+        var k = +row.getAttribute("data-r");
+        row.addEventListener("click", function(){
+          openRows[k] = !openRows[k];
+          row.classList.toggle("open", openRows[k]);
+          var tg = row.querySelector(".lc-tg");
+          if(tg) tg.textContent = openRows[k] ? "−" : "+";
+          Array.prototype.forEach.call(row.querySelectorAll(".cell-note"), function(el){
+            el.hidden = !openRows[k];
+          });
+        });
+      });
+    }
+
+    tabs.forEach(function(b){
+      b.addEventListener("click", function(){
+        var n = b.getAttribute("data-n");
+        if(n === "__m__") return;
+        var pos = selected.indexOf(n);
+        if(pos >= 0) selected.splice(pos, 1);
+        else selected.push(n);
+        if(selected.indexOf(n) >= 0 && !(n in openSteps)) openSteps[n] = true;
+        render();
+      });
+    });
+
+    /* 默认：机器 + 第一项技艺 */
+    var first = tabs.filter(function(b){ return b.getAttribute("data-n") !== "__m__"; })[0];
+    if(first){
+      selected.push(first.getAttribute("data-n"));
+      openSteps[first.getAttribute("data-n")] = true;
+    }
+    render();
+  }
+
+  /* ---------- 本卷技艺两两对比 ---------- */
+  var cmpSelected = [];
+  function refreshCmpUI(){
+    Array.prototype.forEach.call(document.querySelectorAll(".art-card"), function(c){
+      c.classList.toggle("is-cmp", cmpSelected.indexOf(c.getAttribute("data-tech")) >= 0);
+    });
+    var bar = document.getElementById("cmpBar");
+    if(bar){
+      if(cmpSelected.length === 2){
+        bar.hidden = false;
+        document.getElementById("cmpBarNames").innerHTML =
+          '<b>'+esc(cmpSelected[0])+'</b>　vs　<b>'+esc(cmpSelected[1])+'</b>';
+      } else bar.hidden = true;
+    }
+  }
+  function toggleCmp(name){
+    var pos = cmpSelected.indexOf(name);
+    if(pos >= 0) cmpSelected.splice(pos, 1);
+    else {
+      if(cmpSelected.length < 2) cmpSelected.push(name);
+      else { cmpSelected.shift(); cmpSelected.push(name); }
+    }
+    refreshCmpUI();
+  }
+  function techCol(x){
+    return '<div class="cmp-col">'+
+      '<div class="cmp-col-name">'+esc(x.n)+'　<span style="font-size:10px;color:var(--ink-3);letter-spacing:.06em">'+x.steps.length+' 道</span></div>'+
+      x.steps.map(function(st,i){
+        return '<div class="dr-step">'+
+          '<button class="dr-step-btn" type="button">'+
+            '<span class="dr-step-no"></span>'+
+            '<span class="dr-step-name">'+esc(st.n)+'</span>'+
+            '<span class="dr-step-time">'+esc(st.h)+'</span>'+
+            '<span class="dr-step-mark">+</span>'+
+          '</button>'+
+          '<div class="dr-step-body" hidden>'+
+            '<dl>'+
+              '<dt>动作</dt><dd>'+esc(st.a)+'</dd>'+
+              (st.sub&&st.sub.length?'<dt>细分</dt><dd><ol class="sub">'+st.sub.map(function(u){
+                return '<li><b>'+esc(u.n)+'</b>'+(u.a?'　'+esc(u.a):'')+'</li>';
+              }).join("")+'</ol></dd>':'')+
+              '<dt>工具</dt><dd>'+esc(st.t)+'</dd>'+
+              '<dt>耗时</dt><dd>'+esc(st.h)+'</dd>'+
+              '<dt>难度</dt><dd class="d-'+esc(st.d)+'">'+esc(st.d)+'</dd>'+
+              '<dt>注解</dt><dd>'+esc(st.k)+'</dd>'+
+            '</dl>'+
+          '</div>'+
+        '</div>';
+      }).join("")+
+    '</div>';
+  }
+  function renderTechCompare(){
+    if(cmpSelected.length < 2) return;
+    var a = byName(cmpSelected[0]), b = byName(cmpSelected[1]);
+    if(!a || !b) return;
+    var tc = document.getElementById("techCmp");
+    if(!tc) return;
+    tc.innerHTML =
+      '<div class="tech-cmp-head"><b>'+esc(a.n)+'　vs　'+esc(b.n)+'</b><span>工序链对比 · 逐道展开</span></div>'+
+      '<div class="cmp-flow">'+techCol(a)+techCol(b)+'</div>';
+    Array.prototype.forEach.call(tc.querySelectorAll(".dr-step-btn"), function(bt){
+      bt.addEventListener("click", function(){
+        var box = bt.parentNode;
+        var on = box.classList.toggle("on");
+        box.querySelector(".dr-step-body").hidden = !on;
+      });
+    });
+    var lab = document.querySelector(".lab");
+    if(lab) lab.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+  (function bindCmpBar(){
+    var go = document.getElementById("cmpGo");
+    var clr = document.getElementById("cmpClear");
+    if(go) go.addEventListener("click", renderTechCompare);
+    if(clr) clr.addEventListener("click", function(){
+      cmpSelected = [];
+      refreshCmpUI();
+      var tc = document.getElementById("techCmp");
+      if(tc) tc.innerHTML = "";
+    });
+  })();
+
+  /* ---------- 技艺详情面板 ---------- */
+  var drOpen = false;
+  function openTech(name){
+    var p = byName(name);
+    if(!p) return;
+    var s = secById(p.sec);
+
+    document.getElementById("drKicker").textContent = (s?s.name:"") + " · " + (p.her||"");
+    document.getElementById("drTitle").textContent = p.n;
+    document.getElementById("drFull").textContent = (p.full && p.full!==p.n) ? p.full : "";
+    document.getElementById("drTags").innerHTML =
+      '<span>难度峰值 '+esc(p.peak||"—")+'</span>'+
+      '<span>'+p.steps.length+' 道工序</span>'+
+      (p.inh?'<span>传承人 '+esc(p.inh)+'</span>':'')+
+      (s?'<span>'+esc(s.name)+'</span>':'');
+
+    var html = '<p class="dr-sum">'+esc(p.sum||"")+'</p>';
+    if(p.bn||p.ir){
+      html += '<div class="dr-facts">'+
+        (p.bn?'<div><span>瓶颈</span><b>'+esc(p.bn)+'</b></div>':'')+
+        (p.ir?'<div><span>不可替代</span><b>'+esc(p.ir)+'</b></div>':'')+
+      '</div>';
+    }
+    /* 传承人：放在工序链之前 */
+    if((p.inheritor&&p.inheritor.length)||p.bio){
+      var inhHtml = '';
+      if(p.inheritor && p.inheritor.length){
+        inhHtml += '<div class="dr-inh">'+p.inheritor.map(function(x){
+          return '<div class="inh-item">'+
+            '<div class="inh-top"><b>'+esc(x.name)+'</b><em>'+esc(x.role||'')+'</em>'+
+              (x.baike ? '<a class="inh-link" href="'+x.baike+'" target="_blank" rel="noopener noreferrer">百科 ↗</a>' : '')+
+            '</div>'+
+            (x.bio ? '<p class="inh-bio">'+esc(x.bio)+'</p>' : '')+
+          '</div>';
+        }).join("")+'</div>';
+      }
+      if(p.bio) inhHtml += '<p>'+esc(p.bio)+'</p>';
+      html += '<div class="dr-part"><h4>传承人<span>INHERITOR</span></h4>'+inhHtml+'</div>';
+    }
+
+    html += '<div class="dr-sec-title"><b>工序链</b><span>'+p.steps.length+' STEPS</span></div>'+
+      '<div class="dr-flow">'+p.steps.map(function(x,i){
+        return (i?'<i>→</i>':'')+'<span>'+esc(x.n)+'</span>';
+      }).join("")+'</div>';
+
+    html += '<div class="dr-sec-title"><b>逐道拆开</b><span>DETAIL</span></div>'+
+      '<div id="drSteps">'+p.steps.map(function(x,i){
+        return '<div class="dr-step">'+
+          '<button class="dr-step-btn" type="button">'+
+            '<span class="dr-step-no"></span>'+
+            '<span class="dr-step-name">'+esc(x.n)+'</span>'+
+            '<span class="dr-step-time">'+esc(x.h)+'</span>'+
+            '<span class="dr-step-mark">+</span>'+
+          '</button>'+
+          '<div class="dr-step-body" hidden>'+
+            '<dl>'+
+              '<dt>动作</dt><dd>'+esc(x.a)+'</dd>'+
+              (x.sub&&x.sub.length?'<dt>细分</dt><dd><ol class="sub">'+x.sub.map(function(u){
+                return '<li><b>'+esc(u.n)+'</b>'+(u.a?'　'+esc(u.a):'')+'</li>';
+              }).join("")+'</ol></dd>':'')+
+              '<dt>工具</dt><dd>'+esc(x.t)+'</dd>'+
+              '<dt>耗时</dt><dd>'+esc(x.h)+'</dd>'+
+              '<dt>难度</dt><dd class="d-'+esc(x.d)+'">'+esc(x.d)+'</dd>'+
+              '<dt>注解</dt><dd>'+esc(x.k)+'</dd>'+
+            '</dl>'+
+          '</div>'+
+        '</div>';
+      }).join("")+'</div>';
+
+    /* —— 详细档案（10/23 版全字段）—— */
+    function part(title, en, body, isBox){
+      return '<div class="dr-part"><h4>'+title+'<span>'+en+'</span></h4>'+
+        (isBox ? '<p class="dr-heritage">'+body+'</p>' : '<p>'+body+'</p>')+'</div>';
+    }
+    if(p.feature) html += part('技艺特征','TECHNIQUE',esc(p.feature));
+    if(p.history) html += part('历史脉络','HISTORY',esc(p.history));
+    if(p.meaning) html += part('文化内涵与传承','CULTURE',esc(p.meaning));
+    if(p.herFull) html += part('非遗信息','HERITAGE',esc(p.herFull),true);
+
+    document.getElementById("drBody").innerHTML = html;
+    document.getElementById("drMore").setAttribute("href", "#/a/"+encodeURIComponent(p.n));
+    document.getElementById("drBody").scrollTop = 0;
+
+    Array.prototype.forEach.call(document.querySelectorAll("#drSteps .dr-step-btn"), function(b){
+      b.addEventListener("click", function(){
+        var box = b.parentNode;
+        var on = box.classList.toggle("on");
+        box.querySelector(".dr-step-body").hidden = !on;
+      });
+    });
+
+    document.querySelector(".dr-foot").style.display = "";
+    document.getElementById("drMask").hidden = false;
+    requestAnimationFrame(function(){
+      document.getElementById("drMask").classList.add("on");
+      document.getElementById("dr").classList.add("on");
+    });
+    document.getElementById("dr").setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+    drOpen = true;
+    document.getElementById("drBody").scrollTop = 0;
+  }
+  function closeTech(){
+    if(!drOpen) return;
+    document.getElementById("drMask").classList.remove("on");
+    document.getElementById("dr").classList.remove("on");
+    document.getElementById("dr").setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+    drOpen = false;
+    setTimeout(function(){ if(!drOpen) document.getElementById("drMask").hidden = true; }, 300);
+  }
+  (function bindDrawer(){
+    var mask = document.getElementById("drMask");
+    var close = document.getElementById("drClose");
+    if(mask) mask.addEventListener("click", closeTech);
+    if(close) close.addEventListener("click", closeTech);
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && drOpen) closeTech();
+    });
+    var more = document.getElementById("drMore");
+    if(more) more.addEventListener("click", function(){ closeTech(); });
+  })();
+
+  /* ---------- 图片灯箱 ---------- */
+  (function bindLightbox(){
+    var lb = document.getElementById("lb");
+    var lbImg = document.getElementById("lbImg");
+    var cap = document.getElementById("lbCap");
+    if(!lb || !lbImg) return;
+    function openImg(src, alt){
+      lbImg.src = src;
+      lbImg.alt = alt || "";
+      cap.textContent = alt || "";
+      lb.hidden = false;
+      requestAnimationFrame(function(){ lb.classList.add("on"); });
+      lb.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeImg(){
+      lb.classList.remove("on");
+      lb.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+      setTimeout(function(){
+        if(!lb.classList.contains("on")){ lb.hidden = true; lbImg.src = ""; }
+      }, 230);
+    }
+    document.addEventListener("click", function(e){
+      var fig = e.target.closest ? e.target.closest(".tech-fig img") : null;
+      if(fig){ e.preventDefault(); openImg(fig.getAttribute("src"), fig.getAttribute("alt")); return; }
+      if(e.target === lb || e.target === lbImg || (e.target.classList && e.target.classList.contains("lb-close"))) closeImg();
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && lb.classList.contains("on")) closeImg();
+    });
+  })();
+
+  /* ---------- 技艺页 ---------- */
+  function renderTech(name){
+    var p = byName(name);
+    if(!p){ location.hash = "#/"; return; }
+    var s = secById(p.sec);
+    renderNav(p.sec);
+    document.title = p.n+" · "+(s?s.name:"")+" | 传统服饰非遗技艺";
+    var html = '';
+
+    html += '<div class="shell crumb"><a href="#/">六卷</a>　/　<a href="#/m/'+p.sec+'">'+(s?s.name:"")+'</a>　/　'+esc(p.n)+'</div>';
+    var inhPart = '';
+    if((p.inheritor&&p.inheritor.length)||p.bio){
+      var ih = '';
+      if(p.inheritor && p.inheritor.length){
+        ih += '<div class="tech-inh">'+p.inheritor.map(function(x){
+          return '<div class="inh-item">'+
+            '<div class="inh-top"><b>'+esc(x.name)+'</b><em>'+esc(x.role||'')+'</em>'+
+              (x.baike ? '<a class="inh-link" href="'+x.baike+'" target="_blank" rel="noopener noreferrer">百科 ↗</a>' : '')+
+            '</div>'+
+            (x.bio ? '<p class="inh-bio">'+esc(x.bio)+'</p>' : '')+
+          '</div>';
+        }).join("")+'</div>';
+      }
+      if(p.bio) ih += '<p>'+esc(p.bio)+'</p>';
+      inhPart = '<div class="tech-part"><h4>传承人<span>INHERITOR</span></h4>'+ih+'</div>';
+    }
+    var extra = '';
+    var tp = function(title, en, body, box){
+      return '<div class="tech-part"><h4>'+title+'<span>'+en+'</span></h4>'+
+        (box ? '<p class="tech-heritage">'+body+'</p>' : '<p>'+body+'</p>')+'</div>';
+    };
+    if(p.feature) extra += tp('技艺特征','TECHNIQUE',esc(p.feature));
+    if(p.histNodes && p.histNodes.length){
+      var HN_W = 156, HN_COL = 186, HN_PAD = 10, HN_H = 82;
+      var hnW = p.histNodes.length * HN_COL + HN_PAD * 2;
+      var hnH = HN_H + HN_PAD * 2;
+      var hnLinks = p.histNodes.map(function(nd, i){
+        if(i === 0) return "";
+        var x1 = HN_PAD + (i - 1) * HN_COL + HN_W;
+        var x2 = HN_PAD + i * HN_COL;
+        var y = HN_PAD + HN_H / 2;
+        return '<path d="M'+x1+' '+y+' L'+x2+' '+y+'"/>';
+      }).join("");
+      var hnNodes = p.histNodes.map(function(nd, i){
+        return '<button class="tnode'+(i === 0 ? ' on' : '')+'" type="button" data-h="'+i+'" '+
+          'style="left:'+(HN_PAD + i * HN_COL)+'px;top:'+HN_PAD+'px;height:'+HN_H+'px">'+
+          '<span class="ty">'+esc(nd.y)+'</span>'+
+          '<span class="tt">'+esc(nd.t||"")+'</span>'+
+        '</button>';
+      }).join("");
+      extra += '<div class="tech-part"><h4>历史脉络<span>HISTORY</span></h4>'+
+        '<div class="tree-wrap"><div class="tree" id="histTree" style="width:'+hnW+'px;height:'+hnH+'px">'+
+          '<svg class="links" width="'+hnW+'" height="'+hnH+'">'+hnLinks+'</svg>'+
+          hnNodes+
+        '</div></div>'+
+        '<div class="tree-panel" id="histPanel"></div>'+
+      '</div>';
+    } else if(p.history){
+      var HN = /(先秦|春秋|战国|秦|汉|三国|晋|南北朝|隋|唐|五代|宋|辽|金|元|明|清|民国|近代|当代|新中国|19\d{2}年代?|20\d{2}年)/;
+      var raw = p.history.split(/[。；;]/).map(function(t){ return t.trim(); }).filter(Boolean);
+      var segs = [];
+      raw.forEach(function(t){
+        if(t.length < 10 && segs.length) segs[segs.length-1] += "；" + t;
+        else segs.push(t);
+      });
+      var flow2 = '<div class="hflow">'+segs.map(function(txt){
+        var m = txt.match(HN);
+        return '<div class="hnode">'+
+          (m ? '<span class="hy">'+esc(m[1])+'</span>' : '')+
+          '<p class="hd">'+esc(txt)+'</p>'+
+        '</div>';
+      }).join("")+'</div>';
+      extra += '<div class="tech-part"><h4>历史脉络<span>HISTORY</span></h4>'+flow2+'</div>';
+    }
+    if(p.meaning) extra += tp('文化内涵与传承','CULTURE',esc(p.meaning));
+    if(p.herFull) extra += tp('非遗信息','HERITAGE',esc(p.herFull),true);
+
+    html += '<section class="shell tech" style="--tone:'+(s?s.tone:"#a8672f")+'">'+
+      '<div class="tech-head'+(p.img?'':' no-fig')+'">'+
+        '<div class="tech-head-main">'+
+          '<h1>'+esc(p.n)+'</h1>'+
+          (p.full && p.full!==p.n ? '<div class="tech-full">'+esc(p.full)+'</div>' : '')+
+          '<div class="tech-meta">'+
+            '<span>'+esc(p.her)+'</span>'+
+            '<span>'+p.steps.length+' 道工序</span>'+
+            '<span>难度峰值 '+esc(p.peak)+'</span>'+
+            (p.inh?'<span>传承人 '+esc(p.inh)+'</span>':'')+
+          '</div>'+
+          '<p class="tech-sum">'+esc(p.sum)+'</p>'+
+          ((p.bn||p.ir)?'<div class="tech-meta" style="margin-top:12px;">'+
+            (p.bn?'<span>瓶颈 · '+esc(p.bn)+'</span>':'')+
+            (p.ir?'<span>不可替代 · '+esc(p.ir)+'</span>':'')+'</div>':'')+
+        '</div>'+
+        (p.img ? '<figure class="tech-fig"><img src="'+p.img+'" alt="'+esc(p.n)+'"></figure>' : '')+
+      '</div>'+
+      (typeof inhPart==="string" ? inhPart : "") +
+      '<div class="flow" id="flow">'+
+        p.steps.map(function(x,i){
+          return (i?'<span class="flow-arrow">→</span>':'')+
+            '<button class="flow-node" type="button" data-i="'+i+'">'+
+              '<span class="flow-label">'+esc(x.n)+'</span>'+
+            '</button>';
+        }).join("")+
+      '</div>'+
+      '<div class="steps" id="stepsBox">'+
+        p.steps.map(function(x,i){
+          return '<div class="step">'+
+            '<button class="step-btn" type="button">'+
+              '<span class="step-no"></span>'+
+              '<span class="step-name">'+esc(x.n)+'</span>'+
+              '<span class="step-time">'+esc(x.h)+'</span>'+
+              '<span class="step-mark">+</span>'+
+            '</button>'+
+            '<div class="step-body" hidden>'+
+              '<dl>'+
+                '<dt>动作</dt><dd>'+esc(x.a)+'</dd>'+
+                (x.sub&&x.sub.length?'<dt>细分</dt><dd><ol class="sub">'+x.sub.map(function(u){
+                  return '<li><b>'+esc(u.n)+'</b>'+(u.a?'　'+esc(u.a):'')+'</li>';
+                }).join("")+'</ol></dd>':'')+
+                '<dt>工具</dt><dd>'+esc(x.t)+'</dd>'+
+                '<dt>耗时</dt><dd>'+esc(x.h)+'</dd>'+
+                '<dt>难度</dt><dd class="d-'+esc(x.d)+'">'+esc(x.d)+'</dd>'+
+                '<dt>注解</dt><dd>'+esc(x.k)+'</dd>'+
+              '</dl>'+
+            '</div>'+
+          '</div>';
+        }).join("")+
+      '</div>'+
+      extra +
+      '</section>';
+
+    app.innerHTML = html;
+    var flowNodes = app.querySelectorAll(".flow-node");
+    var stepEls = app.querySelectorAll(".step");
+    function toggleStep(i, scroll){
+      var el = stepEls[i];
+      if(!el) return;
+      var on = el.classList.toggle("on");
+      el.querySelector(".step-body").hidden = !on;
+      Array.prototype.forEach.call(flowNodes, function(b,k){
+        if(k === i) b.classList.toggle("on", on);
+      });
+      if(on && scroll) el.scrollIntoView({behavior:"smooth", block:"nearest"});
+    }
+    Array.prototype.forEach.call(flowNodes, function(b){
+      b.addEventListener("click", function(){ toggleStep(+b.getAttribute("data-i"), true); });
+    });
+    Array.prototype.forEach.call(app.querySelectorAll(".step-btn"), function(b){
+      b.addEventListener("click", function(){
+        toggleStep(Array.prototype.indexOf.call(stepEls, b.parentNode), false);
+      });
+    });
+    var histTree = document.getElementById("histTree");
+    if(histTree && p.histNodes){
+      var histPanel = document.getElementById("histPanel");
+      var histBtns = histTree.querySelectorAll(".tnode");
+      var showHist = function(i){
+        var nd = p.histNodes[i];
+        histPanel.innerHTML = '<div class="py">'+esc(nd.y)+'</div>'+
+          '<h3>'+esc(nd.t||"")+'</h3>'+
+          '<p>'+esc(nd.d)+'</p>'+
+          (nd.h ? '<div class="hhook"><b>脉络钩子</b>'+esc(nd.h)+'</div>' : '');
+        histPanel.style.animation = "none";
+        void histPanel.offsetWidth;
+        histPanel.style.animation = "";
+        Array.prototype.forEach.call(histBtns, function(b, k){
+          b.classList.toggle("on", k === i);
+        });
+      };
+      Array.prototype.forEach.call(histBtns, function(b){
+        b.addEventListener("click", function(){
+          showHist(+b.getAttribute("data-h"));
+          b.scrollIntoView({behavior:"smooth", block:"nearest", inline:"center"});
+        });
+      });
+      showHist(0);
+    }
+    window.scrollTo(0,0);
+  }
+
+  function route(){
+    var h = location.hash || "#/";
+    if(h.indexOf("#/m/")===0){ renderSection(h.slice(4)); return; }
+    if(h.indexOf("#/a/")===0){ renderTech(decodeURIComponent(h.slice(4))); return; }
+    renderHome();
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+
+<!-- 浮动返回按钮：浏览器上一步 -->
+<style>
+.ys-back-fab{
+  position:fixed; left:24px; bottom:24px; z-index:120;
+  display:flex; align-items:center; gap:6px;
+  padding:9px 16px;
+  background:rgba(122,34,28,.92); color:#f5efe4;
+  border:1px solid rgba(201,162,39,.5); border-radius:999px;
+  font-size:14px; letter-spacing:1px; cursor:pointer;
+  box-shadow:0 4px 16px rgba(60,20,12,.28);
+  backdrop-filter:blur(6px);
+  transition:all .2s ease; font-family:inherit;
+}
+.ys-back-fab:hover{background:#7a221c; transform:translateY(-2px);}
+.ys-back-fab .a{font-size:16px; line-height:1;}
+</style>
+<button class="ys-back-fab" onclick="history.back()" title="返回上一步">
+  <span class="a">←</span><span>返回</span>
+</button>
+</body>
+</html>

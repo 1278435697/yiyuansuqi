@@ -1,0 +1,23 @@
+=== index.html head ===
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>衣溯 · 华夏衣冠志 — 华夏服饰溯源与复原平台</title>
+    <script type="module" crossorigin src="/assets/index-DQgMLrqq.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B25SizOM.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
+=== tryon chunks on server ===
+tryon-BuL_vdNA.js
+TryonLayout-BWKEqkpK.css
+TryonLayout-CVaHsjse.js
+TryOnView-BF6himXU.css
+TryOnView-BRSprdNo.js
+=== index chunk mtime/size ===
+-rw-r--r-- 1 root root 1035579 2026-10-18_20:51 /www/wwwroot/yisu/frontend/dist/assets/index-Bb6yjXMn.js
+-rw-r--r-- 1 root root 1132914 2026-10-18_20:51 /www/wwwroot/yisu/frontend/dist/assets/index-DQgMLrqq.js

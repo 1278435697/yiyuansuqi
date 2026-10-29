@@ -1,0 +1,14 @@
+2026-10-17 23:20:42,086 | INFO    | rid=- | app.services.segmentation | 分割 Provider vitongpu 跳过: 未找到 gcpait_vitongpu_2k.onnx（可运行 scripts/download_weights.py --asset vitongpu）
+2026-10-17 23:20:42,171 | INFO    | rid=- | app.services.segmentation | 分割 Provider u2net 跳过: 未找到 u2net.onnx / u2netp.onnx 权重，可运行 scripts/download_weights.py --asset u2net
+2026-10-17 23:20:43,700 | INFO    | rid=- | app.services.segmentation.mediapipe | MediaPipe SelfieSegmentation(solutions) 就绪（内置模型，无需下载）
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1792250443.709033   11420 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+2026-10-17 23:20:43,750 | INFO    | rid=- | app.services.segmentation | 人像分割采用 Provider=mediapipe_selfie
+2026-10-17 23:20:43,764 | INFO    | rid=- | app.services.pose.mediapipe | MediaPipe Pose(solutions) 就绪（无分割掩码输出）
+W0000 00:00:1792250443.916043   32344 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1792250443.961960   45076 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1792250443.988969   45060 landmark_projection_calculator.cc:186] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+2026-10-17 23:20:43,988 | INFO    | rid=- | app.services.pose | 姿态 Provider=mediapipe_pose
+2026-10-17 23:20:53,089 | INFO    | rid=- | app.services.vton | 试穿后端=tps 完成
+2026-10-17 23:20:55,073 | INFO    | rid=- | app.services.pipeline | 试穿完成 task=localcheck_quju-shenyi backend=tps 耗时={'segmentation': 1.667, 'pose': 0.239, 'inference': 9.099, 'postprocess': 0.194, 'save': 1.781, 'total': 12.98} warnings=7

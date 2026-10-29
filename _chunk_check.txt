@@ -1,0 +1,8 @@
+=== curl TryonLayout head ===
+code=404 size=146 time=0.001425s
+=== curl tryon shared ===
+code=404 size=146 time=0.000644s
+=== TryonLayout content head ===
+import{d as x,o as v,b as m,c as d,e as f,h as e,w as t,j as a,a2 as _,f as L,t as i,g as V,F as w,r as N,G as R,N as B,u as o,_ as C}from"./index-DQgMLrqq.js";import{u as T}from"./app-IltAN4UR.js";import"./guards-BV8YXCo0.js";const F={class:"tryon-layout"},S={class:"layout-bar"},$={class:"tabs"},j=x({__name:"TryonLayout",setup(z){const r=R(),n=T(),y=[{name:"tryon",label:"一键试穿"},{name:"tryon-gallery",label:"服饰素材库"},{name:"tryon-history",label:"试穿记录"}],p=B(()=>{const l=n
+=== tryon shared content head ===
+import{g,a as o,b as a,c as i,e as f,r as m,f as h,h as c}from"./guards-BV8YXCo0.js";const l=12e4;function p(e){if(e===null||typeof e!="object")return null;const t=e;try{return{garment_id:i(t.garment_id,"trace.garment_id"),name:i(t.name,"trace.name"),dynasty:a(t.dynasty,"trace.dynasty")||"未知",category:a(t.category,"trace.category"),source_text:a(t.source_text,"trace.source_text"),references:o(t.references??[],"trace.references").map(n=>String(n))}}catch(n){return console.warn("[tryon] 溯源

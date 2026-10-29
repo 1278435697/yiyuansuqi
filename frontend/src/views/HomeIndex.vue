@@ -2,51 +2,19 @@
   <div class="home-page">
     <!-- Hero 大横幅 -->
     <section class="hero-banner" :class="{ 'anim-ready': heroAnim }">
-      <img class="hero-bg" src="/images/relics/relic_geo_mashan_jinpao.jpg" alt="" @error="heroImgFail = true" />
+      <video class="hero-bg" src="/videos/hero-bg.mp4" autoplay muted loop playsinline preload="auto" poster="/images/relics/relic_geo_mashan_jinpao.jpg"></video>
       <div class="hero-mask"></div>
+      <div class="hero-frame"></div>
+      <span class="hero-orn orn-left">华 夏 衣 冠 · 以 物 证 史</span>
+      <span class="hero-orn orn-right">垂 裳 而 治 · 以 技 传 薪</span>
       <div class="hero-content">
-        <p class="hero-kicker">衣溯 AI · 华夏服饰溯源与复原平台</p>
+        <p class="hero-kicker">衣冠有史 · 华服可溯</p>
+        <p class="hero-kicker-en">YISU · CHRONICLE OF CHINESE COSTUME</p>
         <RevealTitle v-if="heroAnim" text="衣冠上国 · 华夏有衣" tag="h2" cls="hero-title" :delay="0.25" :step="0.12" />
-        <p class="hero-sub">AI 驱动的历代服饰数字化溯源 · 复原 · 传承</p>
+        <div class="hero-rule"></div>
+        <p class="hero-foot">新石器 · 先秦 · 秦汉 · 魏晋 · 隋唐 · 宋元 · 明清 — 传世复原</p>
       </div>
-    </section>
-
-    <!-- 档案精粹 · 卡片墙 -->
-    <section v-if="links.length" class="feature-sec">
-      <div class="feat-head">
-        <span class="gold-line"></span>
-        <h2 class="ys-title feat-title">档案精粹</h2>
-        <span class="gold-line"></span>
-      </div>
-      <div class="feat-grid">
-        <a v-for="c in links.slice(0, 4)" :key="c.id" class="feat-card" @click="$router.push(`/archive/${c.id}`)">
-          <div class="feat-thumb">
-            <img v-if="c.image_url && !heroImgFail" :src="c.image_url" :alt="c.name" loading="lazy" @error="hideImg($event)" />
-            <span v-else class="feat-seal">{{ (c.dynasty || '华').slice(0, 1) }}</span>
-          </div>
-          <b>{{ c.name }}</b>
-          <span class="feat-meta">{{ c.dynasty }} · {{ c.category }}</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- 纹样精粹 · 卡片墙 -->
-    <section v-if="patterns.length" class="feature-sec">
-      <div class="feat-head">
-        <span class="gold-line"></span>
-        <h2 class="ys-title feat-title">纹样精粹</h2>
-        <span class="gold-line"></span>
-      </div>
-      <div class="feat-grid">
-        <a v-for="p in patterns" :key="p.id" class="feat-card" @click="$router.push('/pattern')">
-          <div class="feat-thumb">
-            <img v-if="p.image_url" :src="p.image_url" :alt="p.name" loading="lazy" @error="hideImg($event)" />
-            <span v-else class="feat-seal">{{ p.name.slice(0, 1) }}</span>
-          </div>
-          <b>{{ p.name }}</b>
-          <span class="feat-meta">{{ p.category }}</span>
-        </a>
-      </div>
+      <div class="hero-scroll">⌄</div>
     </section>
 
     <!-- 今日焦点 -->
@@ -185,7 +153,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { ElMessage } from "element-plus";
 import * as echarts from "echarts";
 import { useRouter } from "vue-router";
-import { fetchNews, fetchHotTags, fetchTrendKeywords, fetchCostumeLinks, fetchWebSearch, fetchPatternItems } from "@/api/modules";
+import { fetchNews, fetchHotTags, fetchTrendKeywords, fetchCostumeLinks, fetchWebSearch } from "@/api/modules";
 import RevealTitle from "@/components/RevealTitle.vue";
 import request from "@/api/request";
 
@@ -195,7 +163,6 @@ const news = ref<any[]>([]);
 const focusNews = ref<any[]>([]);
 const hotTags = ref<any[]>([]);
 const links = ref<any[]>([]);
-const patterns = ref<any[]>([]);
 const dynastyOptions = ref([{ name: "秦汉" }, { name: "隋唐" }, { name: "宋" }, { name: "明" }, { name: "清" }]);
 const dynasty = ref("");
 const keyword = ref("");
@@ -246,10 +213,6 @@ async function loadNews() {
 async function loadSide() {
   hotTags.value = (await fetchHotTags() as any).tags || [];
   links.value = (await fetchCostumeLinks() as any).items || [];
-  try {
-    const pr: any = await fetchPatternItems({});
-    patterns.value = (pr.items || []).filter((p: any) => p.image_url).slice(0, 6);
-  } catch { /* 纹样精粹加载失败不阻塞 */ }
   const kd = await fetchTrendKeywords() as any;  await nextTick();
   if (trendEl.value) {
     trendChart?.dispose();
@@ -314,12 +277,15 @@ onBeforeUnmount(() => trendChart?.dispose());
 /* Hero 大横幅 */
 .hero-banner {
   position: relative;
-  height: 360px;
-  border-radius: 14px;
+  height: 100vh;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border-radius: 0;
   overflow: hidden;
-  margin-bottom: 26px;
-  border: 1px solid var(--ys-line);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  margin-top: -24px;
+  margin-bottom: 32px;
+  border: none;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
 }
 .hero-bg {
   position: absolute;
@@ -327,12 +293,46 @@ onBeforeUnmount(() => trendChart?.dispose());
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.02);
 }
 .hero-mask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(18, 12, 6, 0.62) 0%, rgba(18, 12, 6, 0.18) 52%, rgba(32, 25, 18, 0.94) 100%);
+  background: linear-gradient(180deg, rgba(12, 7, 3, 0.74) 0%, rgba(18, 12, 6, 0.28) 48%, rgba(30, 22, 14, 0.9) 100%);
 }
+/* 内嵌金框（参赛级门面细节） */
+.hero-frame {
+  position: absolute;
+  inset: 10px;
+  z-index: 3;
+  pointer-events: none;
+  border: 1px solid rgba(201, 162, 39, 0.5);
+  border-radius: 10px;
+}
+.hero-frame::before,
+.hero-frame::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(233, 200, 106, 0.85);
+}
+.hero-frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
+.hero-frame::after { bottom: -1px; right: -1px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
+/* 左右竖排装饰字 */
+.hero-orn {
+  position: absolute;
+  z-index: 3;
+  writing-mode: vertical-rl;
+  letter-spacing: 10px;
+  font-size: 12px;
+  color: rgba(246, 231, 191, 0.62);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  user-select: none;
+}
+.orn-left { left: 30px; top: 50%; transform: translateY(-50%); }
+.orn-right { right: 30px; top: 50%; transform: translateY(-50%); }
 /* 开场金色扫光（等待开场动画结束后播放） */
 .hero-banner::after {
   content: "";
@@ -363,26 +363,72 @@ onBeforeUnmount(() => trendChart?.dispose());
   padding: 0 24px;
 }
 .hero-kicker {
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   color: var(--ys-gold);
   font-size: 14px;
   letter-spacing: 6px;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
 }
+.hero-kicker-en {
+  margin: 0 0 16px;
+  color: rgba(201, 162, 39, 0.9);
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+.hero-kicker::before,
+.hero-kicker::after {
+  content: "";
+  width: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.85));
+}
+.hero-kicker::after { background: linear-gradient(270deg, transparent, rgba(201, 162, 39, 0.85)); }
 .hero-sub {
   margin: 0;
-  color: rgba(74, 44, 23, 0.85);
+  color: rgba(247, 236, 216, 0.92);
   font-size: 16px;
   letter-spacing: 4px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+}
+/* 副标题下的金色分隔 + 朝代时间链 */
+.hero-rule {
+  width: 220px;
+  height: 1px;
+  margin: 16px 0 10px;
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.8), transparent);
+}
+.hero-foot {
+  margin: 0;
+  color: rgba(245, 239, 228, 0.68);
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+/* 底部滚动提示（静态，克制） */
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: 16px;
+  color: rgba(246, 231, 191, 0.7);
+  pointer-events: none;
 }
 /* Hero 入场：kicker → 标题逐字 → 副标题，错峰渐显 */
 .hero-title {
   margin: 0 0 12px;
-  color: #f7ecd8;
-  font-size: 46px;
-  letter-spacing: 14px;
+  color: #f6e7bf;
+  font-size: 52px;
+  letter-spacing: 16px;
   font-weight: 700;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  text-shadow:
+    0 1px 0 rgba(122, 34, 28, 0.85),
+    0 3px 0 rgba(90, 24, 18, 0.5),
+    0 7px 20px rgba(0, 0, 0, 0.65);
 }
 .hero-kicker, .hero-sub { opacity: 0; }
 .hero-banner.anim-ready .hero-kicker { animation: heroUp 0.7s cubic-bezier(0.22, 0.9, 0.3, 1.2) 0.05s forwards; }
@@ -393,7 +439,6 @@ onBeforeUnmount(() => trendChart?.dispose());
 }
 
 /* 档案精粹 · 卡片墙 */
-.feature-sec { margin-bottom: 26px; }
 .feat-head {
   display: flex;
   align-items: center;
@@ -402,10 +447,16 @@ onBeforeUnmount(() => trendChart?.dispose());
 }
 .gold-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(212, 169, 79, 0.5), transparent); }
 .feat-title { margin: 0; }
+/* 首页标题自带两侧 gold-line，关闭 ys-title 内部延伸线 */
+.feat-title::after { display: none; }
 .feat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+}
+/* 纹样精粹 6 卡：3 列 × 2 排对齐 */
+.feat-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
 }
 .feat-card {
   display: flex;
@@ -416,12 +467,12 @@ onBeforeUnmount(() => trendChart?.dispose());
   border: 1px solid var(--ys-line);
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   color: var(--ys-ink);
 }
-.feat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45); }
+.feat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(90, 60, 30, 0.2); }
 .feat-thumb {
-  height: 120px;
+  height: 128px;
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -429,7 +480,8 @@ onBeforeUnmount(() => trendChart?.dispose());
   justify-content: center;
   background: linear-gradient(150deg, #f7f0e2, #efe6d6);
 }
-.feat-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.feat-thumb img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; }
+.feat-card:hover .feat-thumb img { transform: scale(1.05); }
 .feat-seal {
   width: 56px;
   height: 56px;
@@ -442,8 +494,11 @@ onBeforeUnmount(() => trendChart?.dispose());
   border-radius: 6px;
   box-shadow: inset 0 0 0 2px rgba(255, 228, 190, 0.35);
 }
-.feat-card b { font-size: 15px; }
-.feat-meta { color: var(--ys-ink-3); font-size: 12px; }
+.feat-card b { font-size: 16px; letter-spacing: 1px; }
+.feat-meta { color: var(--ys-ink-3); font-size: 12px; letter-spacing: 1px; }
+
+/* 精粹区与 Hero 间距节奏 */
+.feature-sec { margin-bottom: 32px; }
 
 .focus-banner {
   display: flex;
@@ -483,8 +538,8 @@ onBeforeUnmount(() => trendChart?.dispose());
 .web-item:hover { color: var(--ys-red-deep); }
 .web-item span { color: var(--ys-ink-3); font-size: 12px; flex-shrink: 0; }
 .news-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; align-items: stretch; }
-.news-card { cursor: pointer; transition: transform 0.15s; overflow: hidden; }
-.news-card:hover { transform: translateY(-2px); }
+.news-card { cursor: pointer; transition: transform 0.22s ease, box-shadow 0.22s ease; overflow: hidden; }
+.news-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(90, 60, 30, 0.18); }
 .news-cover { width: 100%; height: 130px; object-fit: cover; display: block; }
 .news-body { padding: 0 16px 14px; }
 .news-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ys-ink-3); }
@@ -512,8 +567,9 @@ onBeforeUnmount(() => trendChart?.dispose());
 @media (max-width: 900px) {
   .home-layout { grid-template-columns: 1fr; }
   .focus-banner { flex-direction: column; }
-  .hero-banner { height: 300px; }
+  .hero-banner { height: 100vh; margin: -24px -16px 32px; }
   .hero-title { font-size: 34px; letter-spacing: 8px; }
+  .hero-orn { display: none; }
 }
 @media (max-width: 560px) {
   .feat-grid { grid-template-columns: 1fr; }

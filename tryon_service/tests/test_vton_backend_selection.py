@@ -7,6 +7,7 @@ import pytest
 
 from app.errors import TryOnFailedError
 from app.services import vton
+from app.services.vton import aidge as aidge_mod
 from app.services.vton import hrviton as hrviton_mod
 from app.services.vton import mock as mock_mod
 from app.services.vton import tps as tps_mod
@@ -19,10 +20,22 @@ def _hrviton_state(monkeypatch, ok: bool, reason: str | None) -> None:
     )
 
 
+def _cloud_state(monkeypatch, ok: bool, reason: str | None) -> None:
+    monkeypatch.setattr(
+        aidge_mod.AidgeBackend, "available", lambda self: (ok, None if ok else reason)
+    )
+
+
 @pytest.fixture
 def no_hrviton(monkeypatch):
     """模拟本机最常见的情况：无 torch / 无 CUDA / 无权重。"""
     _hrviton_state(monkeypatch, False, "torch_cuda_unavailable")
+
+
+@pytest.fixture(autouse=True)
+def no_cloud(monkeypatch):
+    """测试环境没有 AK/SK，云端后端必须自己报不可用，否则每条 auto 用例都会去打真接口。"""
+    _cloud_state(monkeypatch, False, "missing_credentials")
 
 
 def test_mock_is_always_available():
@@ -31,18 +44,34 @@ def test_mock_is_always_available():
     assert reason is None
 
 
+def test_auto_prefers_cloud_when_it_is_usable(monkeypatch):
+    _cloud_state(monkeypatch, True, None)
+    backend, reason = vton.resolve("auto")
+    assert backend.name == "aidge"
+    assert reason is None
+
+
 def test_auto_skips_hrviton_when_weights_or_cuda_missing(no_hrviton):
     backend, reason = vton.resolve("auto")
     assert backend.name in {"tps", "mock"}
-    assert reason is not None and reason.startswith("hrviton_unavailable:")
-    assert "torch_cuda_unavailable" in reason
+    assert reason is not None and reason.startswith("aidge_unavailable:")
 
 
-def test_auto_returns_no_reason_when_hrviton_ready(monkeypatch):
+def test_auto_reports_both_cloud_and_hrviton_gaps(monkeypatch):
+    _cloud_state(monkeypatch, False, "missing_public_base_url")
+    _hrviton_state(monkeypatch, False, "torch_cuda_unavailable")
+    monkeypatch.setattr(tps_mod.TPSBackend, "available", lambda self: (True, None))
+    backend, reason = vton.resolve("auto")
+    assert backend.name == "tps"
+    assert "aidge_unavailable:missing_public_base_url" in reason
+
+
+def test_auto_uses_hrviton_but_still_reports_cloud_gap(monkeypatch):
+    """hrviton 就绪也 ≠ 无降级：排在它前面的云端不可用时，原因必须照样带出来。"""
     _hrviton_state(monkeypatch, True, None)
     backend, reason = vton.resolve("auto")
     assert backend.name == "hrviton"
-    assert reason is None
+    assert reason == "aidge_unavailable:missing_credentials"
 
 
 def test_explicit_request_falls_back_with_visible_reason(no_hrviton):
@@ -55,9 +84,10 @@ def test_explicit_request_falls_back_with_visible_reason(no_hrviton):
 
 def test_status_reports_every_backend(no_hrviton):
     info = vton.status()
-    assert set(info) >= {"hrviton", "tps", "mock", "resolved_auto"}
+    assert set(info) >= {"aidge", "hrviton", "tps", "mock", "resolved_auto"}
     assert info["mock"]["available"] is True
     assert info["hrviton"]["available"] is False
+    assert info["aidge"]["available"] is False
     assert info["resolved_auto"]["backend"] in {"tps", "mock"}
 
 

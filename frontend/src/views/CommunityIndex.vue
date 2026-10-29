@@ -4,9 +4,12 @@
 
     <!-- 版块导航 -->
     <div class="board-tabs anim-rise" style="animation-delay: .5s">
-      <span v-for="b in boards" :key="b.id" class="board-tab" :class="{ active: boardId === b.id }"
+      <span v-for="b in boards" :key="b.id" class="board-tab" :class="{ active: !pendingOnly && boardId === b.id }"
             @click="switchBoard(b.id)">
         {{ b.name }}<i>{{ b.post_count }}</i>
+      </span>
+      <span v-if="isAdmin" class="board-tab" :class="{ active: offlineOnly }" @click="togglePending">
+        已下架<i style="background:#c0392b">藏</i>
       </span>
     </div>
 
@@ -42,6 +45,12 @@
             <div class="post-foot">
               <span class="author">{{ p.author }}</span>
               <span class="time">{{ p.create_time?.slice(0, 10) }}</span>
+              <span v-if="offlineOnly && isAdmin" class="audit-btns">
+                <b class="approve" @click.stop="onOnline(p.id)">✓ 恢复</b>
+              </span>
+              <span v-if="!offlineOnly && isAdmin && p.author_id !== userStore.userId" class="audit-btns">
+                <b class="reject" @click.stop="onOffline(p.id)">↓ 下架</b>
+              </span>
               <span v-if="isMyPost(p)" class="del-post" @click.stop="confirmDelete(p)">删除</span>
               <span class="interact">
                 <b class="like" :class="{ liked: p.liked }" @click.stop="quickLike(p)">赞 {{ p.like_count }}</b>
@@ -148,14 +157,29 @@
     </div>
 
     <!-- 发帖弹窗 -->
-    <el-dialog v-model="postVisible" title="发布新帖" width="640px" destroy-on-close>
+    <el-dialog v-model="postVisible" title="发布新帖" width="680px" destroy-on-close>
       <div class="editor-head" style="display: flex; gap: 10px; margin-bottom: 10px">
-        <el-input v-model="newPost.title" placeholder="帖子标题" size="large" style="flex: 1" />
-        <el-select v-model="newPost.board_id" size="small" style="width: 170px" placeholder="自动分类（按内容）" clearable>
+        <el-input v-model="newPost.title" placeholder="帖子标题（建议 10-30 字）" size="large" maxlength="60" show-word-limit style="flex: 1" />
+        <el-select v-model="newPost.board_id" size="small" style="width: 170px" placeholder="选择版块" clearable>
           <el-option v-for="b in boards" :key="b.id" :label="b.name" :value="b.id" />
         </el-select>
       </div>
-      <el-input v-model="newPost.content" type="textarea" :rows="4" placeholder="内容（支持 Markdown：**加粗**、`代码`、- 列表）" />
+      <!-- Markdown 快捷工具栏 -->
+      <div class="md-toolbar">
+        <button type="button" class="md-btn" title="加粗" @click="mdWrap('**','**')"><b>B</b></button>
+        <button type="button" class="md-btn" title="斜体" @click="mdWrap('*','*')"><i>I</i></button>
+        <button type="button" class="md-btn" title="引用" @click="mdLine('> ')">❝</button>
+        <button type="button" class="md-btn" title="无序列表" @click="mdLine('- ')">•</button>
+        <button type="button" class="md-btn" title="有序列表" @click="mdLine('1. ')">1.</button>
+        <button type="button" class="md-btn" title="分隔线" @click="mdInsert('\n---\n')">―</button>
+        <span class="md-tip">支持 Markdown</span>
+      </div>
+      <el-input ref="contentInput" v-model="newPost.content" type="textarea" :rows="7"
+                placeholder="分享你的服饰复原/考据作品，或提出讨论问题…&#10;支持 Markdown：**加粗**、`代码`、- 列表、&gt; 引用；可直接 Ctrl+V 粘贴截图"
+                @paste="onEditorPaste" />
+      <div class="editor-meta">
+        <span class="char-count">{{ newPost.content.length }} 字</span>
+      </div>
       <div class="editor-img" v-if="newPost.image_url" style="margin-top: 10px">
         <div class="img-preview">
           <img :src="newPost.image_url" alt="配图预览" />
@@ -163,25 +187,25 @@
         </div>
       </div>
       <div class="editor-mid" style="display: flex; gap: 10px; margin-top: 10px; align-items: center">
-        <el-input v-model="newPost.dynasty_tags" placeholder="朝代/主题标签（逗号分隔，可选）" size="small" style="max-width: 300px" />
+        <el-input v-model="newPost.dynasty_tags" placeholder="朝代/主题标签（逗号分隔，如：唐,襦裙）" size="small" style="max-width: 300px" />
         <input ref="postImgInput" type="file" accept="image/*" style="display: none" @change="onPostImage" />
         <el-button size="small" @click="postImgInput?.click()" :loading="imgUploading">📷 添加配图</el-button>
       </div>
       <template #footer>
         <span class="note" style="float: left; color: var(--ys-ink-3); font-size: 12px">分享服饰复原/考据作品 · 讨论请标注史料出处</span>
         <el-button size="small" @click="postVisible = false">取消</el-button>
-        <el-button size="small" type="primary" @click="doCreatePost">发布</el-button>
+        <el-button size="small" type="primary" :loading="posting" @click="doCreatePost">发布</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import MarkdownIt from "markdown-it";
-import { fetchBoards, fetchPosts, fetchPostDetail, createPost, createReply, deletePost, toggleLike, toggleCollect, repost, fetchMyInteractions, uploadImage } from "@/api/modules";
+import { fetchBoards, fetchPosts, fetchPostDetail, createPost, createReply, deletePost, toggleLike, toggleCollect, repost, fetchMyInteractions, uploadImage, onlinePost, offlinePost } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
 import { useUserStore } from "@/store/user";
 
@@ -196,10 +220,14 @@ const posts = ref<any[]>([]);
 const total = ref(0);
 const loading = ref(false);
 const keyword = ref("");
+const offlineOnly = ref(false);  // 管理员看已下架帖子
+const isAdmin = computed(() => userStore.role === "admin" || userStore.role === "superadmin");
 const newPost = ref({ board_id: 0, title: "", content: "", dynasty_tags: "", image_url: "" });
 const postVisible = ref(false);
 const postImgInput = ref<HTMLInputElement | null>(null);
 const imgUploading = ref(false);
+const posting = ref(false);
+const contentInput = ref<any>(null);
 const detailVisible = ref(false);
 const postDetail = ref<any>(null);
 const replyText = ref("");
@@ -352,7 +380,9 @@ async function loadBoards() {
 async function loadPosts() {
   loading.value = true;
   try {
-    const data: any = await fetchPosts({ board_id: boardId.value, page: 1, page_size: 50, keyword: keyword.value || undefined });
+    const params: Record<string, any> = { board_id: boardId.value, page: 1, page_size: 50, keyword: keyword.value || undefined };
+    if (isAdmin.value && offlineOnly.value) params.status = "rejected";
+    const data: any = await fetchPosts(params);
     posts.value = data.items;
     total.value = data.total || 0;
     applyInter();
@@ -361,19 +391,81 @@ async function loadPosts() {
 
 function switchBoard(id: number) {
   boardId.value = id;
+  offlineOnly.value = false;
   keyword.value = "";
   loadPosts();
+}
+function togglePending() {
+  offlineOnly.value = !offlineOnly.value;
+  boardId.value = null;
+  keyword.value = "";
+  loadPosts();
+}
+
+/* ---- Markdown 工具栏 ---- */
+function mdWrap(before: string, after: string) {
+  const el = contentInput.value?.textarea || contentInput.value?.$el?.querySelector("textarea");
+  if (!el) { newPost.value.content += before + after; return; }
+  const s = el.selectionStart, e = el.selectionEnd;
+  const sel = newPost.value.content.slice(s, e) || "文字";
+  newPost.value.content = newPost.value.content.slice(0, s) + before + sel + after + newPost.value.content.slice(e);
+  nextTick(() => { el.focus(); el.selectionStart = s + before.length; el.selectionEnd = s + before.length + sel.length; });
+}
+function mdLine(prefix: string) {
+  const el = contentInput.value?.textarea || contentInput.value?.$el?.querySelector("textarea");
+  if (!el) { newPost.value.content += "\n" + prefix; return; }
+  const s = el.selectionStart;
+  // 在光标所在行开头加前缀
+  const lineStart = newPost.value.content.lastIndexOf("\n", s - 1) + 1;
+  newPost.value.content = newPost.value.content.slice(0, lineStart) + prefix + newPost.value.content.slice(lineStart);
+  nextTick(() => { el.focus(); el.selectionStart = el.selectionEnd = s + prefix.length; });
+}
+function mdInsert(text: string) {
+  newPost.value.content += text;
+}
+
+/* 编辑器内粘贴图片 */
+async function onEditorPaste(e: ClipboardEvent) {
+  const item = [...(e.clipboardData?.items || [])].find((it) => it.type.startsWith("image/"));
+  if (!item) return;
+  const f = item.getAsFile();
+  if (!f) return;
+  e.preventDefault();
+  if (f.size > 8 * 1024 * 1024) { ElMessage.warning("图片过大，请选择 8MB 以内"); return; }
+  imgUploading.value = true;
+  try {
+    const dataUrl = await compressImage(f, 900, 0.82);
+    const url = await uploadImage(dataUrlToFile(dataUrl, "post.jpg"));
+    newPost.value.image_url = url;
+    ElMessage.success("已粘贴图片");
+  } catch { ElMessage.error("图片上传失败"); }
+  finally { imgUploading.value = false; }
 }
 
 async function doCreatePost() {
   if (!userStore.token) return ElMessage.warning("请先登录");
   if (!newPost.value.title.trim()) return ElMessage.warning("请输入标题");
   if (!newPost.value.content.trim()) return ElMessage.warning("请输入内容");
-  await createPost({ ...newPost.value });
-  ElMessage.success("发布成功");
-  newPost.value = { board_id: 0, title: "", content: "", dynasty_tags: "", image_url: "" };
-  postVisible.value = false;
-  loadBoards();
+  posting.value = true;
+  try {
+    const res: any = await createPost({ ...newPost.value });
+    ElMessage.success("发布成功");
+    newPost.value = { board_id: 0, title: "", content: "", dynasty_tags: "", image_url: "" };
+    postVisible.value = false;
+    loadBoards();
+    loadPosts();
+  } finally { posting.value = false; }
+}
+
+/* ---- 管理员下架/恢复 ---- */
+async function onOnline(id: number) {
+  await onlinePost(id);
+  ElMessage.success("已恢复");
+  loadPosts();
+}
+async function onOffline(id: number) {
+  await offlinePost(id);
+  ElMessage.success("已下架");
   loadPosts();
 }
 
@@ -575,6 +667,23 @@ function routerReplace(id: number) {
 .reply-to { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--ys-ink-3); margin-top: 6px; }
 .reply-to a { color: var(--ys-red-deep); cursor: pointer; }
 .repost-target { font-size: 14px; color: var(--ys-ink-2); margin-bottom: 10px; }
+
+/* Markdown 工具栏 */
+.md-toolbar { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+.md-btn {
+  width: 30px; height: 30px; border: 1px solid var(--ys-line); background: #fbf6ec;
+  border-radius: 6px; cursor: pointer; font-size: 13px; color: var(--ys-ink-2);
+  display: flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.md-btn:hover { background: #f3e6c8; border-color: var(--ys-gold); color: var(--ys-red-deep); }
+.md-tip { margin-left: auto; font-size: 11px; color: var(--ys-ink-3); }
+.editor-meta { text-align: right; font-size: 11px; color: var(--ys-ink-3); margin-top: 4px; }
+
+.audit-btns b { cursor: pointer; margin-right: 10px; font-size: 13px; }
+.audit-btns .approve { color: #2e7d32; }
+.audit-btns .approve:hover { text-decoration: underline; }
+.audit-btns .reject { color: #c0392b; }
+.audit-btns .reject:hover { text-decoration: underline; }
 
 /* 悬浮发帖小球 */
 .fab-post {

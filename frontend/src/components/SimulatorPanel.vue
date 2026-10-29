@@ -302,9 +302,9 @@ onBeforeUnmount(() => trendSim?.dispose());
 .figure-stage { position: relative; width: 240px; height: 340px; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 24px rgba(122, 60, 30, 0.18); transition: filter .12s ease; background: #f7f1e4; z-index: 1; }
 .figure-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .feature-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.figure-badge { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: var(--ys-red); color: #fff; font-size: 11px; padding: 2px 10px; border-radius: 12px; white-space: nowrap; box-shadow: 0 2px 8px rgba(169, 50, 38, 0.35); z-index: 2; }
+.figure-badge { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: var(--ys-red); color: #fff; font-size: var(--ys-fs-micro); padding: 2px 10px; border-radius: 12px; white-space: nowrap; box-shadow: 0 2px 8px rgba(169, 50, 38, 0.35); z-index: 2; }
 .figure-fallback { width: 200px; height: 300px; display: grid; place-items: center; border: 1px dashed var(--ys-line); border-radius: 8px; color: var(--ys-ink-3); font-size: 13px; }
-.figure-note { font-size: 11px; color: var(--ys-ink-3); margin-top: 6px; }
+.figure-note { font-size: var(--ys-fs-micro); color: var(--ys-ink-3); margin-top: 6px; }
 
 .metrics { text-align: left; margin-top: 8px; }
 .metric-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 4px 0; }
@@ -328,7 +328,7 @@ onBeforeUnmount(() => trendSim?.dispose());
 .chip i { font-style: normal; color: var(--ys-ink-3); margin-right: 3px; }
 
 .trend-box { width: 100%; }
-.trend-note { font-size: 11px; color: var(--ys-ink-3); margin-top: 6px; }
+.trend-note { font-size: var(--ys-fs-micro); color: var(--ys-ink-3); margin-top: 6px; }
 
 @media (max-width: 1100px) {
   .sim-body { grid-template-columns: 1fr; }

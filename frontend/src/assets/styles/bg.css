@@ -28,7 +28,7 @@
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: rgba(255, 253, 248, 0.55);
+  background: rgba(255, 253, 248, 0.62);
   pointer-events: none;
 }
 
@@ -54,6 +54,5 @@
   }
 }
 
-body {
-  overflow-x: hidden;
-}
+/* 这里原来写着 body { overflow-x: hidden } —— 它不修溢出，只是把溢出藏起来，
+   并且让「整页能不能横滚」这个指标失真。删掉，让问题如实暴露。 */

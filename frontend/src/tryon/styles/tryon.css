@@ -61,14 +61,8 @@
   line-height: 1.7;
 }
 
-.yisu-empty {
-  border: 1px dashed var(--yisu-rice-deep);
-  border-radius: var(--yisu-radius);
-  padding: 28px 16px;
-  text-align: center;
-  color: var(--yisu-ink-soft);
-  background: var(--yisu-rice);
-}
+/* .yisu-empty 的观感统一由 theme.css 的地基规则负责（「空」字印章 + 引导语 + 动作位）。
+   这里原来又画了一套虚线框 + 米色底，会把全局规则覆盖成第二种空态，删掉。 */
 
 .yisu-grid {
   display: grid;

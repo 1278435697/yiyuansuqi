@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+<g stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="200" cy="192" r="126" fill="none" stroke="#7d4f2e" stroke-opacity=".22" stroke-dasharray="2 8"/><path d="M78 330H322" stroke="#7d4f2e" stroke-opacity=".3"/>
+        <g stroke="#7d4f2e" fill="none">
+          <ellipse cx="200" cy="200" rx="92" ry="44"/>
+          <ellipse cx="200" cy="216" rx="84" ry="40" opacity=".55"/>
+          <path d="M166 226c0 18 14 32 34 32s34-14 34-32" opacity=".55"/>
+          <path d="M154 236v24M200 246v28M246 236v24" stroke="#7a221c"/>
+          <path d="M146 258l8 14 8-14M192 272l8 14 8-14M238 258l8 14 8-14" fill="#7a221c" fill-opacity=".18" stroke="#7a221c"/>
+        </g></g>
+<text x="200" y="224" text-anchor="middle" font-family="KaiTi, STKaiti, SimSun, serif" font-size="112" fill="#7a221c" fill-opacity=".24">镯</text>
+<text x="200" y="364" text-anchor="middle" font-family="Georgia, serif" font-size="10" letter-spacing="4" fill="#7d4f2e" fill-opacity=".55">足饰 / SCHEMATIC</text>
+</svg>

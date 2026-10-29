@@ -1,31 +1,48 @@
 <template>
-  <div class="fabric-page">
+  <div class="fabric-page acc-scope">
     <!-- ==================== 列表模式 ==================== -->
     <template v-if="!route.params.id">
     <!-- 头部 -->
-    <PageHero title="衣溯AI · 历代服装面料" kicker="FABRIC · 一部织造史" sub="从上古葛麻到明清织金——每一块面料，都是一部华夏织造史" seal="织" />
+    <PageHero grand
+      title="面料"
+      eyebrow-en="FABRIC · 织造图谱"
+      eyebrow-index="VOL. 织·01–31"
+      kicker="一部织造史"
+      sub="从上古葛麻到明清织金——每一块面料，都是一部华夏织造史；经纬之间，见王朝工艺之变。"
+      seal="织"
+      vertical="葛麻 · 丝绸 · 绫罗 · 织锦 · 缂丝 · 妆花"
+      primary-label="浏览本卷" primary-href="#catalog"
+      secondary-label="看出土地图" secondary-href="/geomap"
+      :stats="[
+        { n: '31', l: '面料品类' },
+        { n: '09', l: '织造大类' },
+        { n: '16', l: '本期名锦' },
+        { n: '08', l: '阅读板块' },
+      ]" />
 
-    <!-- 筛选栏 -->
-    <div class="filter-bar anim-rise" style="animation-delay: .5s">
-      <div class="filter-left">
-        <el-radio-group v-model="category" @change="load">
-          <el-radio-button value="">全部</el-radio-button>
-          <el-radio-button v-for="c in categories" :key="c" :value="c">{{ c }}</el-radio-button>
-        </el-radio-group>
-      </div>
-      <div class="filter-right">
+    <!-- 工具条：区块标题在左、搜索与创建在右（控件不变，只换皮） -->
+    <div class="acc-toolbar">
+      <AccSectionHead no="织" kicker="面料名录 · 九类" title="面料目录" :sub="`共 ${total} 种`" />
+      <div class="acc-toolbar-tools">
         <el-input v-model="keyword" placeholder="搜索面料（如：罗、锦、缂丝）" clearable size="small"
                   style="width: 210px" @keyup.enter="load" />
         <el-button size="small" type="primary" plain :loading="webLoading" @click="doWebSearch">全网搜索</el-button>
         <el-button size="small" type="danger" plain @click="openCreate">＋ 创建面料</el-button>
-        <span class="count-tip">共 {{ total }} 种面料</span>
       </div>
     </div>
 
+    <!-- 类别筛选条 -->
+    <div class="acc-filter-row">
+      <el-radio-group v-model="category" @change="load">
+        <el-radio-button value="">全部</el-radio-button>
+        <el-radio-button v-for="c in categories" :key="c" :value="c">{{ c }}</el-radio-button>
+      </el-radio-group>
+    </div>
+
     <!-- 用户作品：其他用户创建的面料（自社区迁移） -->
-    <div class="user-works ys-card">
+    <div class="user-works acc-aside-card">
       <div class="uw-head">
-        <h3 class="ys-title">用户作品 · 面料</h3>
+        <AccSectionHead title="用户作品 · 面料" size="sm" />
         <div class="uw-tools">
           <el-input v-model="uwKeyword" placeholder="搜索用户面料…" size="small" clearable style="width: 180px"
                     @keyup.enter="loadUserWorks" @clear="loadUserWorks" />
@@ -33,7 +50,7 @@
         </div>
       </div>
       <div class="uw-grid">
-        <div v-for="f in userFabrics" :key="f.id" class="uw-card" @click="openDetail(f)">
+        <div v-for="f in userFabrics" :key="f.id" class="uw-card" role="link" tabindex="0" @click="openDetail(f)" @keydown.enter="openDetail(f)">
           <img v-if="f.image_url" :src="f.image_url" :alt="f.name" loading="lazy" />
           <div v-else class="uw-thumb">暂无实物图</div>
           <div class="uw-info">
@@ -46,7 +63,7 @@
       </div>
     </div>
 
-    <!-- 创建面料弹窗 -->
+    <!-- 创建面料弹窗（信息收集与详情页正文一致：基础信息 → 面料简介 → 工艺史料 → 制作流程 → 史料出处 → 诗文 → 图片） -->
     <el-dialog v-model="createVisible" title="自主创建面料档案" width="560px" destroy-on-close>
       <el-form :model="createForm" label-width="84px" size="small">
         <el-form-item label="面料名称" required>
@@ -66,15 +83,27 @@
         <el-form-item label="织造技艺">
           <el-input v-model="createForm.technique" placeholder="如：绞经组织" />
         </el-form-item>
-        <el-form-item label="简介">
+        <el-form-item label="面料简介">
           <el-input v-model="createForm.description" type="textarea" :rows="3"
-                    placeholder="原料、工艺、文物实例、史料依据等" />
+                    placeholder="原料、工艺、文物实例、史料依据等，如：以大麻茎皮纤维织成，先秦平民最主要的衣料……" />
         </el-form-item>
-        <el-form-item label="图片链接">
-          <el-input v-model="createForm.image_url" placeholder="选填：直接粘贴图片 URL，留空则显示占位" />
+        <el-form-item label="工艺史料">
+          <el-input v-model="createForm.historyNote" type="textarea" :rows="3"
+                    placeholder="史证引文与出土实物，如：史证：《诗经》「东门之池，可以沤麻」，马王堆一号汉墓出土细麻布残片。" />
+        </el-form-item>
+        <el-form-item label="制作流程">
+          <el-input v-model="createForm.stepsText" type="textarea" :rows="4"
+                    placeholder="每行一个步骤，格式：步骤|说明&#10;如：种麻收刈|大田种植大麻，适时收割成熟麻秆" />
         </el-form-item>
         <el-form-item label="史料出处">
           <el-input v-model="createForm.source_ref" placeholder="如：故宫博物院藏" />
+        </el-form-item>
+        <el-form-item label="诗文·古文">
+          <el-input v-model="createForm.poemsText" type="textarea" :rows="3"
+                    placeholder="每行一条，格式：出处|引文&#10;如：《诗经·陈风·东门之池》|东门之池，可以沤麻，彼美淑姬，可与晤歌。" />
+        </el-form-item>
+        <el-form-item label="图片链接">
+          <el-input v-model="createForm.image_url" placeholder="选填：直接粘贴图片 URL，留空则显示占位" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -101,32 +130,19 @@
       </div>
     </el-dialog>
 
-    <!-- 面料卡片网格 -->
-    <div v-loading="loading" class="fabric-grid">
-      <div v-for="f in filteredList" :key="f.id" class="fabric-card" @click="openSplit(f)">
-        <div class="card-img">
-          <img v-if="f.image_url" :src="f.image_url" :alt="f.name" loading="lazy" @error="onImgError" />
-          <div v-else class="img-placeholder">暂无图</div>
-          <span class="dynasty-badge">{{ f.dynasty_peak }}</span>
-          <span v-if="f.created_by" class="user-badge">用户创建</span>
-        </div>
-        <div class="card-body">
-          <div class="f-head">
-            <h3>{{ f.name }}</h3>
-            <el-button v-if="f.created_by || f.source_ref === '用户创建'" size="small" text type="danger" class="del-btn" @click.stop="removeFabric(f)">删除</el-button>
-          </div>
-          <div class="tags">
-            <span class="tag cat">{{ f.category }}</span>
-            <span class="tag">{{ f.raw_material }}</span>
-            <span v-if="f.technique" class="tag tech">{{ f.technique }}</span>
-          </div>
-          <p class="desc">{{ f.description }}</p>
-          <div class="card-foot">
-            <span class="source">📜 {{ f.source_ref }}</span>
-            <span class="more">查看详情 ›</span>
-          </div>
-        </div>
-      </div>
+    <!-- 面料卡片网格：衣冠卡片解剖，图片区定高 + contain 不裁原图 -->
+    <div v-loading="loading" class="acc-grid">
+      <AccCard v-for="(f, i) in filteredList" :key="f.id" :index="i" :title="f.name"
+               :image="f.image_url" :alt="f.name" :meta="f.dynasty_peak" :summary="f.description"
+               :no="`${pad(i + 1)} / ${total}`" :volume="f.category" :code="f.code"
+               :tags="[f.category, f.raw_material, f.technique].filter(Boolean)"
+               :badge="f.created_by || f.source_ref === '用户创建' ? '用户创建' : ''"
+               :tone="toneOf(f.category)" link-text="阅面料" @open="openSplit(f)">
+        <template #actions>
+          <el-button v-if="f.created_by || f.source_ref === '用户创建'" size="small" text type="danger" class="del-btn"
+                     @click.stop="removeFabric(f)">删除</el-button>
+        </template>
+      </AccCard>
       <el-empty v-if="!loading && filteredList.length === 0" description="未找到匹配的面料" />
     </div>
 
@@ -140,61 +156,63 @@
     />
     </template>
 
-    <!-- ==================== 详情模式（与档案详情一致） ==================== -->
+    <!-- ==================== 详情模式（衣冠卷面排版） ==================== -->
     <template v-else>
       <div class="detail-layout">
-        <section class="ys-card detail-main">
+        <section class="acc-panel detail-main">
           <div class="detail-head">
             <el-button size="small" @click="$router.push('/fabric')">返回列表</el-button>
-            <h2>{{ detail?.name }} <span class="dynasty">{{ detail?.dynasty_peak }} · {{ detail?.category }}</span></h2>
             <el-button v-if="detail?.created_by || detail?.source_ref === '用户创建'" size="small" type="danger" plain
                        style="margin-left: auto" @click="removeFabric(detail)">删除面料</el-button>
           </div>
 
-          <el-descriptions :column="2" border size="small" style="margin: 14px 0">
-            <el-descriptions-item label="类别">{{ detail?.category || "待考" }}</el-descriptions-item>
-            <el-descriptions-item label="盛行朝代">{{ detail?.dynasty_peak || "待考" }}</el-descriptions-item>
-            <el-descriptions-item label="原料">{{ detail?.raw_material || "待考" }}</el-descriptions-item>
-            <el-descriptions-item label="织造技艺">{{ detail?.technique || "待考" }}</el-descriptions-item>
-            <el-descriptions-item label="史料出处">{{ detail?.source_ref || "待考" }}</el-descriptions-item>
-            <el-descriptions-item label="工艺资料">
-              <template v-if="detail?.craft">{{ detail.craft.name || "已收录" }}</template>
-              <template v-else>待考</template>
-            </el-descriptions-item>
-          </el-descriptions>
+          <!-- 眉标 + 大标题 + 属性行 -->
+          <div class="acc-eyebrow">
+            <span class="acc-eyebrow-line"></span>
+            <span>传统服饰面料</span>
+            <span v-if="detail?.code" class="acc-eyebrow-index">名录编号 {{ detail.code }}</span>
+          </div>
+          <h2 class="acc-detail-title" :class="{ 'is-long': titleLong }">{{ detail?.name }}</h2>
+          <div class="acc-detail-meta">
+            <span>{{ detail?.category || "类别待考" }}</span>
+            <span class="dot"></span>
+            <span>{{ detail?.dynasty_peak || "盛行朝代待考" }}</span>
+            <span class="dot"></span>
+            <span>{{ detail?.raw_material || "原料待考" }}</span>
+          </div>
 
           <!-- 面料实物图 -->
-          <template v-if="detail?.image_url">
-            <h3 class="ys-title">面料实物图</h3>
+          <div v-if="has('面料实物图')" class="section">
+            <AccSecHead :no="secNo('面料实物图')" title="面料实物图" sub="实物 / 传世图像" />
             <div class="relic-gallery">
               <div class="relic-card">
-                <img :src="detail.image_url" :alt="`${detail?.name}实物`" loading="lazy"
+                <img :src="detail.image_url" :alt="`${detail?.name}实物`" loading="lazy" data-lb-native
                      @click="relicLightbox = detail.image_url" @error="onImgError" />
                 <p class="relic-source">▲ {{ detail?.name }} · 实物 / 传世图像</p>
               </div>
             </div>
-          </template>
+          </div>
 
-          <!-- 工艺示意图 -->
-          <template v-if="detail?.craft?.images && (detail.craft.images.overview || detail.craft.images.detail)">
-            <h3 class="ys-title">工艺示意</h3>
+          <!-- 工艺示意 -->
+          <div v-if="has('工艺示意')" class="section">
+            <AccSecHead :no="secNo('工艺示意')" title="工艺示意" sub="完整流程与细节特写" />
             <div class="craft-imgs">
               <div v-if="detail.craft.images.overview" class="craft-img-block">
                 <div class="ci-title">完整流程</div>
-                <img :src="detail.craft.images.overview" :alt="detail.name + '工艺流程'" class="craft-img"
+                <img :src="detail.craft.images.overview" :alt="detail.name + '工艺流程'" class="craft-img" data-lb-native
                      @click="relicLightbox = detail.craft.images.overview" @error="onImgError" />
               </div>
               <div v-if="detail.craft.images.detail" class="craft-img-block">
                 <div class="ci-title">细节特写</div>
-                <img :src="detail.craft.images.detail" :alt="detail.name + '工艺细节'" class="craft-img"
+                <img :src="detail.craft.images.detail" :alt="detail.name + '工艺细节'" class="craft-img" data-lb-native
                      @click="relicLightbox = detail.craft.images.detail" @error="onImgError" />
               </div>
             </div>
-          </template>
+          </div>
 
           <!-- 史料详析 -->
-          <h3 class="ys-title">史料详析</h3>
-          <div class="detail-sections">
+          <div v-if="has('史料详析')" class="section">
+            <AccSecHead :no="secNo('史料详析')" title="史料详析" sub="简介与工艺史料" />
             <div class="detail-sec">
               <h4 class="sec-title">面料简介</h4>
               <p class="sec-body">{{ detail?.description || "（暂无简介）" }}</p>
@@ -206,41 +224,56 @@
           </div>
 
           <!-- 制作流程 -->
-          <template v-if="fabricSteps.length">
-            <h3 class="ys-title">制作流程</h3>
-            <div class="detail-sections">
-              <div v-for="s in fabricSteps" :key="s.num" class="detail-sec">
-                <h4 class="sec-title">{{ s.num_cn ? s.num_cn + " · " : "" }}{{ s.label || s.title }}</h4>
-                <p class="sec-body">{{ s.desc || s.title }}</p>
-              </div>
+          <div v-if="has('制作流程')" class="section">
+            <AccSecHead :no="secNo('制作流程')" title="制作流程" sub="工序逐条" />
+            <div v-for="s in fabricSteps" :key="s.num" class="detail-sec">
+              <h4 class="sec-title">{{ s.num_cn ? s.num_cn + " · " : "" }}{{ s.label || s.title }}</h4>
+              <p class="sec-body">{{ s.desc || s.title }}</p>
             </div>
-          </template>
+          </div>
 
           <!-- 知识图谱关联 -->
-          <h3 class="ys-title">知识图谱关联</h3>
-          <div class="graph-nodes">
-            <span class="graph-node"><i>类别</i>{{ detail?.category }}</span>
-            <span class="graph-node"><i>原料</i>{{ detail?.raw_material }}</span>
-            <span class="graph-node"><i>织造技艺</i>{{ detail?.technique }}</span>
-            <span class="graph-node"><i>盛行朝代</i>{{ detail?.dynasty_peak }}</span>
-            <span class="graph-node"><i>史料出处</i>{{ detail?.source_ref }}</span>
+          <div v-if="has('知识图谱关联')" class="section">
+            <AccSecHead :no="secNo('知识图谱关联')" title="知识图谱关联" sub="名录字段速览" />
+            <div class="graph-nodes">
+              <span class="graph-node"><i>类别</i>{{ detail?.category }}</span>
+              <span class="graph-node"><i>原料</i>{{ detail?.raw_material }}</span>
+              <span class="graph-node"><i>织造技艺</i>{{ detail?.technique }}</span>
+              <span class="graph-node"><i>盛行朝代</i>{{ detail?.dynasty_peak }}</span>
+              <span class="graph-node"><i>史料出处</i>{{ detail?.source_ref }}</span>
+            </div>
           </div>
         </section>
 
-        <aside class="detail-side">
-          <div class="ys-card chat-card">
-            <h3 class="ys-title">诗文 · 古文</h3>
+        <aside class="detail-side acc-sticky">
+          <div class="acc-aside-card">
+            <AccSectionHead title="基础信息" size="sm" />
+            <el-descriptions :column="1" border size="small">
+              <el-descriptions-item label="类别">{{ detail?.category || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="盛行朝代">{{ detail?.dynasty_peak || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="原料">{{ detail?.raw_material || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="织造技艺">{{ detail?.technique || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="史料出处">{{ detail?.source_ref || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="名录编号">{{ detail?.code || "待考" }}</el-descriptions-item>
+              <el-descriptions-item label="工艺资料">
+                <template v-if="detail?.craft">{{ detail.craft.name || "已收录" }}</template>
+                <template v-else>待考</template>
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
+          <div class="acc-aside-card">
+            <AccSectionHead title="诗文 · 古文" size="sm" />
             <div v-if="detail?.poems?.length" class="detail-poems">
               <div v-for="(p, i) in detail.poems" :key="i" class="poem-item">
                 <span v-if="p.src" class="poem-src">{{ p.src }}</span>
                 <p>{{ p.text }}</p>
-                <a :href="p.url" target="_blank" rel="noopener" class="poem-link">检索 ↗</a>
+                <a v-if="p.url" :href="p.url" target="_blank" rel="noopener" class="poem-link">检索 ↗</a>
               </div>
             </div>
             <p v-else class="body-text">暂无诗文收录</p>
           </div>
-          <div class="ys-card chat-card" style="margin-top: 14px">
-            <h3 class="ys-title">工艺简介</h3>
+          <div class="acc-aside-card">
+            <AccSectionHead title="工艺简介" size="sm" />
             <p class="body-text">{{ detail?.craft?.history_note || detail?.description || "资料整理中。" }}</p>
           </div>
         </aside>
@@ -257,6 +290,10 @@ import { useRoute, useRouter } from "vue-router";
 import { fetchFabrics, fetchFabricWebSearch, createFabric, deleteFabric } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
 import SplitReveal from "@/components/SplitReveal.vue";
+import AccCard from "@/components/acc/AccCard.vue";
+import AccSectionHead from "@/components/acc/AccSectionHead.vue";
+import AccSecHead from "@/components/acc/AccSecHead.vue";
+import { pad, toneOf } from "@/components/acc/accMeta";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 const route = useRoute();
@@ -283,6 +320,7 @@ const createLoading = ref(false);
 const createForm = ref({
   name: "", category: "", raw_material: "", dynasty_peak: "",
   technique: "", description: "", image_url: "", source_ref: "",
+  historyNote: "", stepsText: "", poemsText: "",
 });
 /* 用户作品：其他用户创建的面料（自社区迁移） */
 const uwKeyword = ref("");
@@ -419,7 +457,7 @@ function openCreate() {
     router.push("/login");
     return;
   }
-  createForm.value = { name: "", category: "", raw_material: "", dynasty_peak: "", technique: "", description: "", image_url: "", source_ref: "" };
+  createForm.value = { name: "", category: "", raw_material: "", dynasty_peak: "", technique: "", description: "", historyNote: "", stepsText: "", source_ref: "", poemsText: "", image_url: "" };
   createVisible.value = true;
 }
 
@@ -429,11 +467,25 @@ async function submitCreate() {
   if (!f.category) { ElMessage.warning("请选择类别"); return; }
   createLoading.value = true;
   try {
-    const res: any = await createFabric(f);
+    // 制作流程：每行 "步骤|说明"
+    const steps = f.stepsText.split("\n").map((s: string) => s.trim()).filter(Boolean)
+      .map((line: string, i: number) => {
+        const m = line.split(/[|｜]/);
+        return { num_cn: "①②③④⑤⑥⑦⑧⑨⑩"[i] || `${i + 1}`, label: (m[0] || "").trim(), desc: (m.slice(1).join("|") || "").trim() };
+      }).filter((s: any) => s.label);
+    // 诗文：每行 "出处|引文"
+    const poems = f.poemsText.split("\n").map((s: string) => s.trim()).filter(Boolean)
+      .map((line: string) => {
+        const m = line.split(/[|｜]/);
+        return { src: (m[0] || "").trim(), text: (m.slice(1).join("|") || "").trim(), url: "" };
+      }).filter((p: any) => p.src && p.text);
+    const craft = { name: "", history_note: f.historyNote || "", steps, images: {} };
+    const res: any = await createFabric({ ...f, craft, poems });
     if (res && res.error) { ElMessage.error(res.error); return; }
     createVisible.value = false;
     ElMessage.success(`面料「${res.name}」已创建`);
     await load();
+    loadUserWorks();
   } catch (e: any) {
     ElMessage.error(e?.response?.data?.detail || "创建失败，请确认已登录");
   } finally {
@@ -473,6 +525,25 @@ const fabricSteps = computed<any[]>(() => {
   return [];
 });
 
+/* 详情分节：条件区块隐藏时节号仍连续 */
+const detailSections = computed<string[]>(() => {
+  const d = detail.value;
+  const out: string[] = [];
+  if (d?.image_url) out.push("面料实物图");
+  if (d?.craft?.images && (d.craft.images.overview || d.craft.images.detail)) out.push("工艺示意");
+  out.push("史料详析");
+  if (fabricSteps.value.length) out.push("制作流程");
+  out.push("知识图谱关联");
+  return out;
+});
+function has(k: string) {
+  return detailSections.value.includes(k);
+}
+function secNo(k: string) {
+  return pad(detailSections.value.indexOf(k) + 1);
+}
+const titleLong = computed(() => (detail.value?.name || "").length > 6);
+
 /* 详情模式：路由 /fabric/:id → 从已加载列表取数据（未加载则先拉取） */
 async function loadDetail() {
   const id = route.params.id;
@@ -486,10 +557,9 @@ watch(() => route.params.id, () => { if (route.params.id) loadDetail(); });
 </script>
 
 <style scoped>
+/* 容器宽度与调色由 acc-scope.css 统一接管，这里只补本页独有的版式 */
 .fabric-page {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
+  padding: 20px 0 40px;
 }
 .page-hero {
   text-align: center;
@@ -505,332 +575,6 @@ watch(() => route.params.id, () => { if (route.params.id) loadDetail(); });
   color: #8a6d5a;
   font-size: 14px;
   letter-spacing: 1px;
-}
-.filter-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 14px 0 18px;
-}
-.filter-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.count-tip {
-  font-size: 13px;
-  color: #8a6d5a;
-}
-.fabric-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  min-height: 200px;
-}
-.fabric-card {
-  background: #fffdf8;
-  border: 1px solid #eadfd0;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.fabric-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 22px rgba(124, 45, 18, 0.12);
-}
-.card-img {
-  position: relative;
-  height: 160px;
-  background: #f6efe4;
-  overflow: hidden;
-}
-.card-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s;
-}
-.fabric-card:hover .card-img img {
-  transform: scale(1.05);
-}
-.img-placeholder {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #b7a58f;
-  font-size: 13px;
-}
-.dynasty-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(126, 36, 24, 0.85);
-  color: #fff;
-  font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 10px;
-}
-.user-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: rgba(36, 96, 126, 0.85);
-  color: #fff;
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 10px;
-}
-.card-body {
-  padding: 12px 14px 14px;
-}
-.f-head { display: flex; justify-content: space-between; align-items: baseline; }
-.f-head h3 {
-  font-size: 18px;
-  color: #4a2c17;
-  margin-bottom: 8px;
-}
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
-}
-.tag {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 8px;
-  background: #f3e9db;
-  color: #7c5b3e;
-}
-.tag.cat {
-  background: #fde8e4;
-  color: #a03422;
-}
-.tag.tech {
-  background: #e6eef5;
-  color: #2c5a7c;
-}
-.desc {
-  font-size: 13px;
-  color: #6b5440;
-  line-height: 1.6;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: 62px;
-}
-.card-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  font-size: 12px;
-}
-.source {
-  color: #a08b74;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 65%;
-}
-.more {
-  color: #a03422;
-  white-space: nowrap;
-}
-/* 详情弹窗 */
-.detail-wrap {
-  text-align: left;
-}
-.detail-img {
-  width: 100%;
-  max-height: 320px;
-  object-fit: contain;
-  background: #f6efe4;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  cursor: zoom-in;
-}
-.detail-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.detail-wrap h3 {
-  font-size: 20px;
-  color: #4a2c17;
-  margin-bottom: 8px;
-}
-.detail-desc {
-  font-size: 14px;
-  color: #5a4432;
-  line-height: 1.8;
-}
-/* 面料工艺素材 */
-.detail-craft {
-  margin-top: 14px;
-  background: #faf5ea;
-  border: 1px solid #eadfd0;
-  border-radius: 12px;
-  padding: 12px 14px;
-}
-.craft-steps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-.craft-step {
-  flex: 1 1 200px;
-  min-width: 170px;
-  background: linear-gradient(135deg, rgba(225, 185, 143, 0.16), rgba(225, 185, 143, 0.08));
-  border: 1px solid rgba(185, 138, 47, 0.35);
-  border-radius: 10px;
-  padding: 10px 12px;
-  display: flex;
-  gap: 8px;
-}
-.cs-num {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #c9976a;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.cs-body { min-width: 0; }
-.cs-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #4a2c17;
-}
-.cs-label em {
-  font-style: normal;
-  color: #a03422;
-  font-weight: 400;
-  font-size: 12px;
-}
-.cs-body p {
-  margin: 3px 0 0;
-  font-size: 12px;
-  color: #6b5440;
-  line-height: 1.6;
-}
-.craft-imgs {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.ci-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #7c2d12;
-  margin-bottom: 6px;
-  letter-spacing: 1px;
-}
-.craft-img {
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid #eadfd0;
-  background: #fffdf8;
-}
-.craft-note {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #8a6d5a;
-  line-height: 1.7;
-  border-top: 1px dashed #e3d5c2;
-  padding-top: 10px;
-}
-.detail-process {
-  margin-top: 14px;
-  background: #f6efe4;
-  border-radius: 8px;
-  padding: 10px 12px;
-}
-.dp-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #7c2d12;
-  margin-bottom: 6px;
-  letter-spacing: 1px;
-}
-.dp-raw { margin: 0 0 4px; font-size: 13px; color: #7c5b3e; }
-.dp-flow { margin: 0; font-size: 13px; color: #5a4432; line-height: 1.8; }
-.dp-step {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 8px 10px;
-  background: #fffdf8;
-  border: 1px solid #eadfd0;
-  border-radius: 8px;
-}
-.dp-step-title {
-  flex: none;
-  min-width: 130px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #a03422;
-}
-.dp-step-desc {
-  font-size: 12.5px;
-  color: #5a4432;
-  line-height: 1.7;
-}
-.detail-poems {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.poem-item {
-  border-left: 3px solid #b98a2f;
-  background: rgba(185, 138, 47, 0.08);
-  border-radius: 0 8px 8px 0;
-  padding: 8px 12px;
-  position: relative;
-}
-.poem-src {
-  display: inline-block;
-  font-size: 11px;
-  color: #8a5a12;
-  background: rgba(185, 138, 47, 0.16);
-  border-radius: 4px;
-  padding: 1px 6px;
-  margin-bottom: 4px;
-}
-.poem-item p { margin: 0; font-size: 13px; color: #5a4432; line-height: 1.75; padding-right: 44px; }
-.poem-link {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  font-size: 12px;
-  color: #a03422;
-  text-decoration: none;
-  border: 1px solid rgba(160, 52, 34, 0.4);
-  border-radius: 10px;
-  padding: 1px 8px;
-}
-.poem-link:hover { background: rgba(160, 52, 34, 0.1); }
-.detail-source {
-  margin-top: 14px;
-  font-size: 13px;
-  color: #8a6d5a;
-  background: #f6efe4;
-  border-radius: 8px;
-  padding: 8px 12px;
 }
 /* 全网搜索弹窗 */
 .web-search-bar {
@@ -880,50 +624,52 @@ watch(() => route.params.id, () => { if (route.params.id) loadDetail(); });
 }
 
 /* 用户作品：其他用户创建的面料 */
-.user-works { margin-bottom: 14px; }
-.uw-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; }
-.uw-head .ys-title { margin: 0; }
+.user-works { margin: 0 0 26px; }
+.uw-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
 .uw-tools { display: flex; align-items: center; gap: 8px; }
 .uw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; }
-.uw-card { border: 1px solid var(--ys-line); border-radius: 8px; overflow: hidden; cursor: pointer; background: #fffdf8; transition: box-shadow .2s; }
-.uw-card:hover { box-shadow: 0 4px 14px rgba(122, 58, 32, .12); }
-.uw-card img { width: 100%; height: 96px; object-fit: cover; display: block; background: #f4ecdf; }
-.uw-thumb { width: 100%; height: 96px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #8a7a60; background: #f6efe4; }
+.uw-card { border: 1px solid var(--acc-line, #e6dcc8); border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--acc-card-solid, #fffdf8); transition: box-shadow .2s, border-color .2s; }
+.uw-card:hover { box-shadow: 0 6px 18px rgba(90, 60, 30, .14); border-color: rgba(201, 162, 39, .5); }
+.uw-card:focus-visible { outline: 2px solid var(--acc-gold, #c9a227); outline-offset: 2px; }
+.uw-card img { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: contain; display: block; background: #f4ead9; }
+.uw-thumb { width: 100%; aspect-ratio: 3 / 2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--acc-ink-3, #94836d); background: #f4ead9; }
 .uw-info { padding: 8px 10px; }
-.uw-info h4 { margin: 0 0 3px; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.uw-info p { margin: 1px 0; font-size: 12px; color: var(--ys-ink-3); }
+.uw-info h4 { margin: 0 0 3px; font-size: 14px; color: var(--acc-ink, #3a2f24); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uw-info p { margin: 1px 0; font-size: 12px; color: var(--acc-ink-3, #94836d); }
 .uw-info .uw-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
 .uw-empty-box { grid-column: 1 / -1; padding: 22px 0; }
 
-/* ============ 详情模式（与档案详情一致） ============ */
-.detail-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+/* ============ 详情模式（衣冠卷面：主栏 + 右栏） ============ */
+.detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 44px; align-items: start; }
 .detail-main { min-width: 0; }
-.detail-head { display: flex; align-items: center; gap: 14px; }
-.detail-head h2 { margin: 0; font-size: 22px; }
-.detail-head .dynasty { font-size: 13px; color: var(--ys-ink-3); font-weight: 400; margin-left: 6px; }
-.body-text { color: var(--ys-ink-2); line-height: 1.8; }
+.detail-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+.body-text { margin: 10px 0 0; color: var(--acc-ink-2, #5c4c3a); font-size: 13.5px; line-height: 1.85; }
+.detail-side { display: flex; flex-direction: column; min-width: 0; }
 .graph-nodes { display: flex; flex-wrap: wrap; gap: 8px; }
-.graph-node { border: 1px solid var(--ys-line); background: #fffdf8; border-radius: 6px; padding: 4px 10px; font-size: 13px; }
-.graph-node i { font-style: normal; color: var(--ys-red-deep); margin-right: 4px; }
-.relic-gallery { margin: 10px 0 18px; }
+.graph-node { border: 1px solid var(--acc-line, #e6dcc8); background: var(--acc-card-solid, #fffdf8); border-radius: 6px; padding: 4px 10px; font-size: 13px; color: var(--acc-ink-2, #5c4c3a); }
+.graph-node i { font-style: normal; color: var(--acc-red, #7a221c); margin-right: 6px; }
+.section { margin-top: 30px; }
+.relic-gallery { margin-top: 12px; }
 .relic-card { display: inline-block; max-width: 420px; }
-.relic-card img { width: 100%; max-height: 340px; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 20px rgba(122, 60, 30, 0.18); cursor: zoom-in; background: #fffdf6; }
-.relic-source { font-size: 12px; color: var(--ys-ink-3); margin-top: 6px; line-height: 1.6; }
-.detail-sections { margin: 10px 0 16px; display: flex; flex-direction: column; gap: 12px; }
-.detail-sec { border-left: 3px solid var(--ys-red); background: rgba(169, 50, 38, 0.04); border-radius: 0 8px 8px 0; padding: 10px 14px; }
-.sec-title { margin: 0 0 6px; font-size: 14px; color: var(--ys-red-deep); }
-.sec-body { margin: 0; color: var(--ys-ink-2); line-height: 1.8; font-size: 13.5px; }
-.craft-imgs { margin: 10px 0 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.craft-img-block { border: 1px solid var(--ys-line); border-radius: 8px; overflow: hidden; background: #fffdf8; }
-.ci-title { font-size: 12.5px; color: var(--ys-red-deep); padding: 6px 10px; border-bottom: 1px dashed var(--ys-line); }
-.craft-img { width: 100%; max-height: 300px; object-fit: contain; display: block; background: #fffdf6; cursor: zoom-in; }
-.detail-poems { display: flex; flex-direction: column; gap: 10px; }
-.poem-item { border-left: 2px solid var(--ys-red); padding: 6px 10px; background: rgba(169, 50, 38, 0.04); border-radius: 0 6px 6px 0; }
-.poem-src { font-size: 11.5px; color: var(--ys-red-deep); }
-.poem-item p { margin: 3px 0; font-size: 12.5px; line-height: 1.7; color: var(--ys-ink-2); }
-.poem-link { font-size: 12px; color: #7c2d12; text-decoration: none; }
-.chat-card { padding: 16px; }
-.detail-side { display: flex; flex-direction: column; gap: 0; }
+.relic-card img { width: 100%; max-height: 340px; object-fit: contain; border-radius: 8px; border: 1px solid var(--acc-line, #e6dcc8); box-shadow: 0 8px 20px rgba(90, 60, 30, 0.14); cursor: zoom-in; background: var(--acc-card-solid, #fffdf8); }
+.relic-source { font-size: 12px; color: var(--acc-ink-3, #94836d); margin-top: 6px; line-height: 1.6; letter-spacing: 1px; }
+.detail-sec { border-left: 3px solid var(--acc-gold, #c9a227); background: rgba(201, 162, 39, 0.06); border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 10px; }
+.sec-title { margin: 0 0 6px; font-size: 14px; color: var(--acc-red, #7a221c); letter-spacing: 1px; }
+.sec-body { margin: 0; color: var(--acc-ink-2, #5c4c3a); line-height: 1.85; font-size: 13.5px; }
+.craft-imgs { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.craft-img-block { border: 1px solid var(--acc-line, #e6dcc8); border-radius: 8px; overflow: hidden; background: var(--acc-card-solid, #fffdf8); }
+.ci-title { font-size: 12.5px; color: var(--acc-red, #7a221c); padding: 6px 10px; border-bottom: 1px dashed var(--acc-line, #e6dcc8); letter-spacing: 1px; }
+.craft-img { width: 100%; max-height: 300px; object-fit: contain; display: block; background: var(--acc-card-solid, #fffdf8); cursor: zoom-in; }
+.detail-poems { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+.poem-item { border-left: 2px solid var(--acc-red, #7a221c); padding: 6px 10px; background: rgba(122, 34, 28, 0.04); border-radius: 0 6px 6px 0; }
+.poem-src { font-size: 11.5px; color: var(--acc-red, #7a221c); }
+.poem-item p { margin: 3px 0; font-size: 12.5px; line-height: 1.7; color: var(--acc-ink-2, #5c4c3a); }
+.poem-link { font-size: 12px; color: var(--acc-red, #7a221c); text-decoration: none; }
+
+@media (max-width: 1023px) {
+  .detail-layout { gap: 24px; }
+}
+
 @media (max-width: 900px) {
   .detail-layout { grid-template-columns: 1fr; }
 }

@@ -1,0 +1,36 @@
+=== dist 顶层 ===
+assets
+images
+index.html
+museum
+museum_bak_20261018_134757
+museum_bak_20261018_brandfix
+museum_bak_20261019_174215
+museum_bak_20261019_174615
+museum_bak_20261019_174709
+museum_bak_20261019_174750
+museum_bak_20261019_175104
+museum_bak_20261019_213442
+museum_bak_20261020_110424
+museum_bak_20261020_190743
+museum-entry.js
+videos
+=== dist/museum 存在？ ===
+assets
+index.html
+=== museum/index.html 引用 ===
+src="./assets/index-BqJJw04H.js"
+=== museum/assets 文件 ===
+assets.manifest.json
+exhibits
+exhibits-Cb5qGZIp.js
+fabrics
+gallery
+index-BkQVKgL5.css
+index-BqJJw04H.js
+MuseumView-aROHavN7.js
+MuseumView-feyVYxtT.css
+patterns
+TryonPlaceholder-Bp1Rhoms.js
+TryonPlaceholder-BpZwNlAo.css
+=== 返回补丁搜索 ===

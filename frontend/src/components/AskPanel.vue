@@ -76,7 +76,7 @@ watch(
     } else {
       messages.value.push({
         role: 'ai',
-        text: '我是衣溯 AI 服饰导览，可以问我历代汉服的形制、纹样与工艺。',
+        text: '我是衣溯 · 华夏衣冠志的服饰导览，可以问我历代汉服的形制、纹样与工艺。',
         source: '展厅导览',
       });
     }
@@ -88,7 +88,7 @@ watch(
   <div v-if="open" class="ask-mask" @click.self="emit('close')">
     <div class="ask-panel">
       <div class="head">
-        <div class="t">问 AI · 服饰史料问答</div>
+        <div class="t">问 · 服饰史料问答</div>
         <button class="close" @click="emit('close')">×</button>
       </div>
 

@@ -1,0 +1,42 @@
+=== museum_bak_20261020_110424 assets ===
+assets.manifest.json
+exhibits
+exhibits-Bk4sdjUV.js
+fabrics
+gallery
+index-BvfjXDjR.js
+index-C3V5wcMs.css
+MuseumView-Cq-xfr9M.css
+MuseumView-DLt3Gkex.js
+patterns
+TryonPlaceholder-BpZwNlAo.css
+TryonPlaceholder-BxQ59oZ4.js
+--- index.html ---
+src="./assets/index-BvfjXDjR.js"
+--- 返回补丁 count ---
+0
+--- 衣溯AI count ---
+1
+--- 华夏衣冠志 count ---
+0
+=== museum_bak_20261019_213442 assets ===
+assets.manifest.json
+exhibits
+exhibits-Bk4sdjUV.js
+fabrics
+gallery
+index-C3V5wcMs.css
+index-CmnpzvQz.js
+MuseumView-B8k9iQIC.css
+MuseumView-D6JdeiQe.js
+patterns
+TryonPlaceholder-_8gpS6yd.js
+TryonPlaceholder-BpZwNlAo.css
+--- index.html ---
+src="./assets/index-CmnpzvQz.js"
+--- 返回补丁 count ---
+0
+--- 衣溯AI count ---
+1
+--- 华夏衣冠志 count ---
+0

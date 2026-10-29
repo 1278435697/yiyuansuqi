@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 
+import numpy as np
 import pytest
 
 from app.errors import GarmentNotFoundError
@@ -157,3 +158,34 @@ def test_load_asset_from_generated_index(sample_garment_ids, settings):
 
     with pytest.raises(GarmentNotFoundError):
         load_asset("definitely-not-a-garment")
+
+
+def test_load_asset_picks_up_flat_presentation(sample_garment_ids, settings):
+    """`{id}_flat.png` 是云端试穿专用的平铺呈现图，只影响 cloud_cloth，不动素材本体。"""
+    from PIL import Image
+
+    gid = sample_garment_ids[0]
+    flat = settings.garments_dir / f"{gid}_flat.png"
+    assert load_asset(gid).cloud_cloth is None, "没有平铺图时不该凭空冒出云端输入"
+
+    arr = np.full((64, 48, 3), 123, dtype=np.uint8)
+    Image.fromarray(arr).save(flat)
+    try:
+        asset = load_asset(gid)
+        assert asset.cloud_cloth is not None
+        assert asset.cloud_cloth.shape[:2] == (64, 48)
+        assert int(asset.cloud_cloth.mean()) > 100
+        assert asset.image.shape[:2] != (64, 48), "素材图本体被平铺图覆盖了"
+    finally:
+        flat.unlink()
+
+
+def test_broken_flat_presentation_does_not_break_the_tryon(sample_garment_ids, settings):
+    """呈现图是可选增强：文件坏了要回退素材图，不能把整次试穿拖垮。"""
+    gid = sample_garment_ids[0]
+    flat = settings.garments_dir / f"{gid}_flat.png"
+    flat.write_bytes(b"not an image")
+    try:
+        assert load_asset(gid).cloud_cloth is None
+    finally:
+        flat.unlink()

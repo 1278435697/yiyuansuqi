@@ -34,8 +34,27 @@ class Settings(BaseSettings):
     logs_dir: Path = BACKEND_ROOT / "logs"
 
     # ---------- 推理后端 ----------
-    vton_backend: str = Field(default="auto", description="auto | hrviton | tps | mock")
+    vton_backend: str = Field(default="auto", description="auto | aidge | hrviton | tps | mock")
     force_cpu: bool = False
+
+    # ---------- 云端试衣：阿里云 Aidge 虚拟试穿 ----------
+    # AK/SK 只从环境变量（YISU_AIDGE_ACCESS_KEY_ID / _SECRET）或 systemd EnvironmentFile 注入，
+    # 不写进 .env 以外的任何文件；缺任一凭据时后端自检直接判不可用，流水线降级到本地引擎。
+    aidge_access_key_id: str = ""
+    aidge_access_key_secret: str = ""
+    aidge_endpoint: str = "aidge.cn-beijing.aliyuncs.com"
+    aidge_resolution: str = Field(default="1K", description="1K | 2K，必填档位；2K 更贵")
+    aidge_timeout_seconds: int = Field(default=120, ge=10, le=600)
+    # 留空 = 按素材 category 推导（robe/dress→dresses、top→tops、skirt→bottoms）。
+    # 实测 Auto 会把汉服大袖袍当成现代上衣，所以默认不交给它判断。
+    aidge_cloth_type: str = ""
+
+    # ---------- 出箱（交给云端厂商的一次性图片 URL）----------
+    public_base_url: str = Field(
+        default="",
+        description="厂商能回访到的本服务地址，如 http://47.93.14.11；留空则云端后端不可用",
+    )
+    outbox_ttl_seconds: int = Field(default=600, ge=30, le=3600)
 
     # ---------- 可选权重（均为具体文件/目录路径，缺省仅做约定，不存在则自动降级）----------
     vitongpu_onnx: Path | None = Field(default=None, description="gcpait_vitongpu_2k.onnx 路径")
@@ -149,14 +168,27 @@ class Settings(BaseSettings):
     @classmethod
     def _normalize_backend(cls, value: str) -> str:
         v = value.strip().lower()
-        if v not in {"auto", "hrviton", "tps", "mock"}:
+        if v not in {"auto", "aidge", "hrviton", "tps", "mock"}:
             raise ValueError(f"未知的 vton_backend: {value}")
+        return v
+
+    @field_validator("aidge_resolution", mode="after")
+    @classmethod
+    def _normalize_resolution(cls, value: str) -> str:
+        v = value.strip().upper()
+        if v not in {"1K", "2K"}:
+            raise ValueError(f"未知的 aidge_resolution: {value}（只支持 1K / 2K）")
         return v
 
     # ---------- 派生目录 ----------
     @property
     def garments_dir(self) -> Path:
         return self.data_dir / "garments"
+
+    @property
+    def outbox_dir(self) -> Path:
+        """交给云端厂商的临时出件目录：短 TTL、调用结束即删，不属于任何静态挂载。"""
+        return self.data_dir / "outbox"
 
     @property
     def uploads_dir(self) -> Path:
@@ -206,6 +238,7 @@ class Settings(BaseSettings):
             self.uploads_dir,
             self.results_dir,
             self.cache_dir,
+            self.outbox_dir,
             self.person_sources_dir,
         ):
             path.mkdir(parents=True, exist_ok=True)

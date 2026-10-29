@@ -1,0 +1,3 @@
+HTTP 200
+image_note: [图片识别暂不可用] 404 Client Error: Not Found for url: https://ark.cn-beijing.volces.com/api/v3/chat/completions
+answer: 你未提供该服饰的具体图像、实物特征等信息，仅依据现有可参考史料无法确定这是什么服饰，请补充该服饰的相关细节（如形制特征、所属朝代、出土/传世背景等）后再提问。

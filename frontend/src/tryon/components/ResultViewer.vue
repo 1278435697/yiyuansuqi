@@ -5,6 +5,7 @@ import TraceCard from '@/tryon/components/TraceCard.vue'
 import type { TryOnResult } from '@/tryon/types'
 import { buildSnapshotName, downloadRemoteImage, snapshotImage } from '@/tryon/utils/snapshot'
 import { describeError } from '@/tryon/api/client'
+import { backendBadge } from '@/tryon/utils/backend'
 
 const props = defineProps<{ result: TryOnResult | null; personPreview: string | null }>()
 
@@ -32,12 +33,11 @@ const intermediates = computed<{ key: string; label: string; url: string | null;
   },
 ])
 
+const isCloudResult = computed<boolean>(() => props.result?.backend_used === 'aidge')
+
 const backendTag = computed(() => {
-  const backend = props.result?.backend_used ?? ''
-  if (backend === 'hrviton') return { type: 'success' as const, text: 'HR-VITON 高精度' }
-  if (backend === 'tps') return { type: 'primary' as const, text: 'TPS 几何兜底（CPU）' }
-  if (backend === 'mock') return { type: 'warning' as const, text: 'Mock 贴图（仅联调）' }
-  return { type: 'info' as const, text: backend || '未产出' }
+  const badge = backendBadge(props.result?.backend_used)
+  return { type: badge.tagType, text: badge.label }
 })
 
 async function downloadResult(): Promise<void> {
@@ -60,7 +60,7 @@ async function takeSnapshot(): Promise<void> {
       `tryon_${props.result?.trace_card?.name ?? props.result?.task_id ?? 'result'}`,
     )
     await snapshotImage(url, name, {
-      title: `衣溯AI · ${props.result?.trace_card?.name ?? '虚拟试穿效果'}`,
+      title: `衣溯 · 华夏衣冠志 · ${props.result?.trace_card?.name ?? '虚拟试穿效果'}`,
       subtitle: props.result?.trace_card ? `${props.result.trace_card.dynasty} / ${props.result.trace_card.category}` : undefined,
       taskId: props.result?.task_id ?? undefined,
       backend: props.result?.backend_used ?? undefined,
@@ -113,7 +113,7 @@ async function takeSnapshot(): Promise<void> {
       {{ props.result ? '本次试穿未产出结果图，请检查告警或更换更清晰的正身照片。' : '上传真人照片并选择服饰后，点击「一键试穿」生成效果图。' }}
     </div>
 
-    <el-collapse v-if="props.result" class="pipeline">
+    <el-collapse v-if="props.result && !isCloudResult" class="pipeline">
       <el-collapse-item title="管线中间图（答辩展示：几何变形 → 渲染 → 合成）" name="pipe">
         <div class="pipe-grid">
           <div v-for="item in intermediates" :key="item.key" class="pipe-item">
@@ -125,6 +125,10 @@ async function takeSnapshot(): Promise<void> {
         </div>
       </el-collapse-item>
     </el-collapse>
+
+    <p v-if="isCloudResult" class="yisu-hint">
+      本次由 Aidge 云端引擎出图，云端只返回最终效果图，不提供人像分割 / 姿态 / 服饰形变的中间图。
+    </p>
 
     <TraceCard v-if="props.result" :card="props.result.trace_card" />
   </div>

@@ -1,0 +1,21 @@
+﻿import paramiko, io, sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+cli = paramiko.SSHClient()
+cli.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+cli.connect('47.93.14.11', port=22, username='root', password='Han050607@', timeout=25)
+def run(c, t=60):
+    i,o,e = cli.exec_command(c, timeout=t)
+    return (o.read().decode('utf-8','replace') + e.read().decode('utf-8','replace')).strip()
+out = []
+out.append("=== museum_bak_20261020_190743 assets ===")
+out.append(run("ls /www/wwwroot/yisu/frontend/dist/museum_bak_20261020_190743/assets 2>&1"))
+out.append("=== 备份内返回补丁 ===")
+out.append(run("grep -c 'onClick:e=>' /www/wwwroot/yisu/frontend/dist/museum_bak_20261020_190743/assets/index-*.js 2>/dev/null"))
+out.append("=== 备份 index.html 引用 ===")
+out.append(run("grep -o 'src=\"[^\"]*\"' /www/wwwroot/yisu/frontend/dist/museum_bak_20261020_190743/index.html 2>&1"))
+out.append("=== 品牌检查（衣溯AI 出现次数）===")
+out.append(run("grep -c '衣溯AI' /www/wwwroot/yisu/frontend/dist/museum_bak_20261020_190743/assets/index-*.js 2>/dev/null"))
+out.append("=== /tmp 备份是否还在 ===")
+out.append(run("ls -l /tmp/index-DOlOnALt.v2.js.bak_backbtn 2>&1"))
+cli.close()
+open(r"D:\yisu-ai-platform\_bak_audit.txt","w",encoding="utf-8").write("\n".join(out))
