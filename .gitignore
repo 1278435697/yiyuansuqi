@@ -46,3 +46,9 @@ tryon_service/data/private/
 tryon_service/data/outbox/
 tryon_service/weights/
 
+# ===== 设计临时文件（大图不进 git）=====
+.tmp_design/
+bg_candidates/
+*.psd
+*.sketch
+
