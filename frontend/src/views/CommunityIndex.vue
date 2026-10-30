@@ -709,7 +709,7 @@ function routerReplace(id: number) {
 .fab-post {
   position: fixed;
   right: 30px;
-  bottom: 34px;
+  bottom: 120px;
   z-index: 60;
   width: 64px;
   height: 64px;
@@ -729,6 +729,6 @@ function routerReplace(id: number) {
 .fab-text { font-size: 12px; letter-spacing: 2px; margin-top: 2px; }
 @media (max-width: 900px) {
   .community-layout { grid-template-columns: 1fr; }
-  .fab-post { right: 18px; bottom: 22px; width: 56px; height: 56px; }
+  .fab-post { right: 18px; bottom: 110px; width: 56px; height: 56px; }
 }
 </style>

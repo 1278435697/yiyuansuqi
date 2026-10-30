@@ -12,8 +12,14 @@ const activeStep = computed<number>(() => {
   return index >= 0 && index < store.steps.length ? index : -1
 })
 
-const warnings = computed<string[]>(() => store.result?.warnings ?? [])
-const fromCache = computed<boolean>(() => warnings.value.includes('result_from_cache'))
+const BENIGN = new Set([
+  'segmentation_vitongpu_unavailable',
+  'segmentation_u2net_unavailable',
+  'segmentation_fallback_to_mediapipe_selfie',
+  'postprocess_skipped_no_warp_mask',
+])
+const warnings = computed<string[]>(() => (store.result?.warnings ?? []).filter((w) => !BENIGN.has(w)))
+const fromCache = computed<boolean>(() => (store.result?.warnings ?? []).includes('result_from_cache'))
 
 const progressHint = computed<string>(() => {
   if (store.busy) return store.isCloud ? '云端换装推理中（通常 3–10 秒）' : '推理中（CPU 兜底路径通常 1–5 秒，HD 模式更久）'

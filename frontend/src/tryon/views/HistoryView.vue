@@ -20,6 +20,17 @@ const previewList = computed<string[]>(() =>
   records.value.filter((item) => item.result_url).map((item) => item.result_url),
 )
 
+// Aidge 云端正常降级提示，不影响最终效果，不展示给用户
+const BENIGN_WARNINGS = new Set([
+  'segmentation_vitongpu_unavailable',
+  'segmentation_u2net_unavailable',
+  'segmentation_fallback_to_mediapipe_selfie',
+  'postprocess_skipped_no_warp_mask',
+])
+function visibleWarnings(w: string[]): string[] {
+  return w.filter((x) => !BENIGN_WARNINGS.has(x))
+}
+
 async function load(): Promise<void> {
   loading.value = true
   error.value = null
@@ -134,8 +145,8 @@ onMounted(load)
               <span class="time">{{ record.created_at }}</span>
             </div>
             <p class="task">{{ record.task_id }}</p>
-            <div v-if="record.warnings.length" class="warnings">
-              <div v-for="(w, i) in record.warnings" :key="i" class="warning-item">⚠ {{ w }}</div>
+            <div v-if="visibleWarnings(record.warnings).length" class="warnings">
+              <div v-for="(w, i) in visibleWarnings(record.warnings)" :key="i" class="warning-item">⚠ {{ w }}</div>
             </div>
             <div class="record-actions">
               <el-button size="small" @click="download(record)">下载</el-button>
