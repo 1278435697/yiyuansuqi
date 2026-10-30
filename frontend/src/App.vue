@@ -94,23 +94,10 @@ const goBack = () => {
 const isBare = computed(() => Boolean(route.meta.bareLayout));
 
 const showPreloader = ref(false);
-const PRELOADER_SEEN_KEY = "yisu-preloader-seen";
 
 onMounted(() => {
-  // 开场动画只在「第一次进入首页」时播：整页加载 + 落在首页 + 本机没播过，三者都满足才播
-  // 用 location 而不是 route.path：main.js 没有 await router.isReady()，挂载瞬间路由还停在初始 "/"
-  try {
-    const nav = performance.getEntriesByType("navigation")[0] as any;
-    const navType = nav ? nav.type : "";
-    const atHome = window.location.pathname === "/" || window.location.pathname === "/index.html";
-    if (navType === "navigate" && atHome && !localStorage.getItem(PRELOADER_SEEN_KEY)) {
-      localStorage.setItem(PRELOADER_SEEN_KEY, "1");
-      showPreloader.value = true;
-      (window as any).__preloaderActive = true;
-    }
-  } catch (e) {
-    // 环境不支持时降级为不播，避免阻塞页面
-  }
+  // 直接进入首页，不播开场动画
+  window.dispatchEvent(new CustomEvent("preloader-done"));
 });
 
 function onPreloaderDone() {

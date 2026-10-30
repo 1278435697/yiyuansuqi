@@ -2,7 +2,7 @@
   <div class="home-page">
     <!-- Hero 大横幅 -->
     <section class="hero-banner" :class="{ 'anim-ready': heroAnim }">
-      <video class="hero-bg" src="/videos/hero-bg.mp4" autoplay muted loop playsinline preload="auto" poster="/images/relics/relic_geo_mashan_jinpao.jpg"></video>
+      <video class="hero-bg" src="/videos/hero-bg.mp4" autoplay muted loop playsinline preload="auto"></video>
       <div class="hero-mask"></div>
       <div class="hero-frame"></div>
       <span class="hero-orn orn-left">华 夏 衣 冠 · 以 物 证 史</span>
