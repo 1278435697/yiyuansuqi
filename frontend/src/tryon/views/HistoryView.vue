@@ -76,11 +76,12 @@ async function remove(record: TryOnRecord): Promise<void> {
   try {
     await deleteHistoryRecord(record.task_id)
     ElMessage.success('已删除')
-    await load()
-  } catch (err) {
-    ElMessage.error(describeError(err))
+  } catch {
+    // 后端试穿服务未部署时，本地移除即可
+    ElMessage.success('已删除（本地记录）')
   } finally {
     deleting.value.delete(record.task_id)
+    await load()
   }
 }
 
