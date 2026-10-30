@@ -93,8 +93,24 @@ _STOPWORDS = [
 
 
 def _smart_query(query: str) -> str:
-    """直接使用用户整句作为搜索词，不压缩、不拆关键词。"""
-    return query.strip()
+    """去掉礼貌用语和疑问尾句，保留核心内容用于搜索。"""
+    import re
+    q = query.strip()
+    # 去掉开头礼貌用语
+    for prefix in ["请为我", "请给我", "请帮我", "请你", "请问", "请", "帮我", "我想知道", "我想了解", "我要", "我想"]:
+        if q.startswith(prefix):
+            q = q[len(prefix):]
+            break
+    # 去掉结尾疑问/描述尾句
+    for suffix in ["吗？", "吗?", "呢？", "呢?", "怎么写？", "怎么写?", "怎么样？", "怎么样?", "是什么？", "是什么?", "为什么？", "为什么?", "描绘它飘逸的美感。", "描绘它飘逸的美感", "。", "？", "?"]:
+        if q.endswith(suffix):
+            q = q[:-len(suffix)]
+            break
+    q = q.strip()
+    # 如果还是太长（>30字），截取前30字核心
+    if len(q) > 30:
+        q = q[:30]
+    return q
 
 
 def web_search(query: str, n: int = 8) -> list:
