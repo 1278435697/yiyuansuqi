@@ -4,11 +4,11 @@
     <!-- 对话面板 -->
     <transition name="af-pop">
       <div v-if="open" class="af-panel" :class="panelClass" :style="panelStyle"
-           role="dialog" aria-label="衣溯 · 华夏衣冠志 助手">
+           role="dialog" aria-label="衣源溯起 助手">
         <div class="af-head">
           <span class="af-head-seal">问</span>
           <div class="af-head-text">
-            <b>衣溯 · 华夏衣冠志</b>
+            <b>衣源溯起</b>
             <i>溯源 · 复原 · 传承</i>
           </div>
           <button class="af-close" title="收起" aria-label="收起助手面板" @click="open = false">×</button>
@@ -17,7 +17,7 @@
         <!-- 消息区（无对话时先给引导 + 快捷问题，同一块滚动区，不留空白带） -->
         <div ref="listEl" class="af-msgs">
           <div v-if="!msgs.length" class="af-welcome">
-            <p class="af-hello">你好，我是<b>衣溯</b>。服饰形制、纹样源流、出土实证，都可以问我。</p>
+            <p class="af-hello">你好，我是<b>衣源溯起</b>。服饰形制、纹样源流、出土实证，都可以问我。</p>
             <p class="af-quick-tip">可以从这里开始问，或直接<b>粘贴截图</b>让我看图识服饰：</p>
             <div class="af-chips">
               <button v-for="q in quickQs" :key="q" class="af-chip" @click="ask(q)">{{ q }}</button>
@@ -59,11 +59,11 @@
 
     <!-- 悬浮球：按住可拖，单击开合 -->
     <button ref="ballEl" class="af-ball" :class="{ active: open, dragging, 'tip-right': onLeft }"
-            title="衣溯 · 华夏衣冠志 助手（可拖动）" :aria-expanded="open ? 'true' : 'false'"
-            aria-label="衣溯助手，可拖动，回车展开对话"
+            title="衣源溯起 助手（可拖动）" :aria-expanded="open ? 'true' : 'false'"
+            aria-label="衣源溯起助手，可拖动，回车展开对话"
             @pointerdown="onPointerDown" @click="onBallClick">
       <span class="af-ball-seal">问</span>
-      <span class="af-ball-tip">衣溯 · 华夏衣冠志 助手</span>
+      <span class="af-ball-tip">衣源溯起 助手</span>
     </button>
   </div>
 </template>

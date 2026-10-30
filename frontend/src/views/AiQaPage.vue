@@ -13,7 +13,7 @@
           </div>
           <div ref="chatBox" class="chat-box">
             <div v-if="!chatMsgs.length" class="chat-welcome">
-              <p>向衣溯 · 华夏衣冠志提问任何与华夏服饰相关的问题，例如：</p>
+              <p>向衣源溯起提问任何与华夏服饰相关的问题，例如：</p>
               <p class="welcome-examples">「马面裙和百褶裙有什么区别？」「唐代女子日常穿什么？」「香云纱是什么面料？」</p>
             </div>
             <template v-for="(m, i) in chatMsgs" :key="i">

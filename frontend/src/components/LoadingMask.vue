@@ -8,7 +8,7 @@ defineProps({
 <template>
   <transition name="fade">
     <div v-if="visible" class="loading">
-      <div class="seal">衣溯</div>
+      <div class="seal">衣源溯起</div>
       <div class="ring" />
       <div class="text">{{ text }}</div>
       <div class="sub">Three.js + WebXR · 无需头显，浏览器直接逛展</div>

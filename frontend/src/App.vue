@@ -4,9 +4,9 @@
     <div class="app-bg"></div>
     <header v-if="!isBare" class="app-header">
       <div class="brand" @click="$router.push('/')">
-        <span class="brand-seal">衣溯</span>
+        <img src="/logo.png" class="brand-logo" alt="衣源溯起" />
         <div class="brand-text">
-          <h1>衣溯 · 华夏衣冠志</h1>
+          <h1>衣源溯起</h1>
           <p>华夏服饰溯源与复原平台</p>
         </div>
       </div>
@@ -51,7 +51,7 @@
     </main>
 
     <footer v-if="!isBare" class="app-footer">
-      衣溯 · 华夏衣冠志 — 衣冠有史，华服可溯
+      衣源溯起 — 衣冠有史，华服可溯
       <span class="footer-sub">让每一件华夏服饰有史可查、亲手可复 · AI Web 网页开发挑战赛作品</span>
     </footer>
 

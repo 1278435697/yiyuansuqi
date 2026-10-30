@@ -22,7 +22,7 @@
 
     <!-- 顶部小字标题 -->
     <div class="pl-top-title">
-      <span class="tt-cn">衣溯 · 华夏衣冠志</span>
+      <span class="tt-cn">衣源溯起</span>
       <span class="tt-en">YISU · CHRONICLE OF CHINESE COSTUME</span>
     </div>
 
@@ -49,7 +49,7 @@
         <!-- 中心：加载中显示 logo 印章；完成后圆环变按钮 -->
         <div class="pl-center">
           <template v-if="!canEnter">
-            <span class="pl-seal">衣溯</span>
+            <span class="pl-seal">衣源溯起</span>
             <span class="pl-pct">{{ pct }}<i>%</i></span>
           </template>
           <template v-else>

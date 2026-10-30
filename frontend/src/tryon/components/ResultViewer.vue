@@ -60,7 +60,7 @@ async function takeSnapshot(): Promise<void> {
       `tryon_${props.result?.trace_card?.name ?? props.result?.task_id ?? 'result'}`,
     )
     await snapshotImage(url, name, {
-      title: `衣溯 · 华夏衣冠志 · ${props.result?.trace_card?.name ?? '虚拟试穿效果'}`,
+      title: `衣源溯起 · ${props.result?.trace_card?.name ?? '虚拟试穿效果'}`,
       subtitle: props.result?.trace_card ? `${props.result.trace_card.dynasty} / ${props.result.trace_card.category}` : undefined,
       taskId: props.result?.task_id ?? undefined,
       backend: props.result?.backend_used ?? undefined,

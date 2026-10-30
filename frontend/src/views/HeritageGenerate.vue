@@ -102,7 +102,7 @@
           </div>
           <div v-if="cardResult" class="card-preview">
             <div class="card-art" :class="{ modern: cardResult.card.theme === '现代简约' }">
-              <span class="card-brand">衣溯 · 华夏衣冠志</span>
+              <span class="card-brand">衣源溯起</span>
               <h3>{{ cardResult.card.title }}</h3>
               <p>{{ cardResult.card.text }}</p>
               <div class="card-meta">
@@ -178,7 +178,7 @@ function downloadCard() {
   ctx.fillText(`—— ${cardResult.value.card.username}`, 540, 1150);
   ctx.fillText(cardResult.value.card.watermark, 540, 1210);
   const a = document.createElement("a");
-  a.download = "衣溯·华夏衣冠志分享卡片.png";
+  a.download = "衣源溯起分享卡片.png";
   a.href = el.toDataURL("image/png");
   a.click();
 }

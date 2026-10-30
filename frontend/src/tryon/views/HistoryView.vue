@@ -52,7 +52,7 @@ async function download(record: TryOnRecord): Promise<void> {
 async function snapshot(record: TryOnRecord): Promise<void> {
   try {
     await snapshotImage(record.result_url, buildSnapshotName(8, `history_${record.garment_name ?? record.task_id}`), {
-      title: `衣溯 · 华夏衣冠志 · 历史试穿记录`,
+      title: `衣源溯起 · 历史试穿记录`,
       subtitle: record.garment_name ?? undefined,
       taskId: record.task_id,
       backend: record.backend_used,

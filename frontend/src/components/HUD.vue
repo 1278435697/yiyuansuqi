@@ -21,7 +21,7 @@ const qualityText = () => label(props.quality);
     <!-- 左上：操作说明与状态 -->
     <div class="panel tl">
       <div class="title-row">
-        <div class="museum-title">华夏衣冠志 · 数字博物馆</div>
+        <div class="museum-title">衣源溯起 · 数字博物馆</div>
         <router-link to="/" class="back-link">返回主站</router-link>
       </div>
       <ul class="keys">
