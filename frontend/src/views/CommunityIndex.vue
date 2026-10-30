@@ -9,7 +9,7 @@
         {{ b.name }}<i>{{ b.post_count }}</i>
       </span>
       <span v-if="isAdmin" class="board-tab" :class="{ active: offlineOnly }" @click="togglePending">
-        已下架<i style="background:#c0392b">藏</i>
+        申请上架<i style="background:#c0392b">{{ pendingCount }}</i>
       </span>
     </div>
 
@@ -46,9 +46,12 @@
               <span class="author">{{ p.author }}</span>
               <span class="time">{{ p.create_time?.slice(0, 10) }}</span>
               <span v-if="offlineOnly && isAdmin" class="audit-btns">
-                <b class="approve" @click.stop="onOnline(p.id)">✓ 恢复</b>
+                <b class="approve" @click.stop="onOnline(p.id)">✓ 通过上架</b>
+                <b class="reject" @click.stop="onReject(p.id)">✗ 拒绝</b>
               </span>
-              <span v-if="!offlineOnly && isAdmin && p.author_id !== userStore.userId" class="audit-btns">
+              <span v-if="!offlineOnly && isAdmin" class="audit-btns">
+                <b v-if="p.is_pinned" class="pin-btn" @click.stop="onUnpin(p.id)">取消置顶</b>
+                <b v-else class="pin-btn" @click.stop="onPin(p.id)">📌 置顶</b>
                 <b class="reject" @click.stop="onOffline(p.id)">↓ 下架</b>
               </span>
               <span v-if="isMyPost(p)" class="del-post" @click.stop="confirmDelete(p)">删除</span>
@@ -205,7 +208,7 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import MarkdownIt from "markdown-it";
-import { fetchBoards, fetchPosts, fetchPostDetail, createPost, createReply, deletePost, toggleLike, toggleCollect, repost, fetchMyInteractions, uploadImage, onlinePost, offlinePost } from "@/api/modules";
+import { fetchBoards, fetchPosts, fetchPostDetail, createPost, createReply, deletePost, toggleLike, toggleCollect, repost, fetchMyInteractions, uploadImage, onlinePost, offlinePost, pinPost, unpinPost } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
 import { useUserStore } from "@/store/user";
 
@@ -381,7 +384,7 @@ async function loadPosts() {
   loading.value = true;
   try {
     const params: Record<string, any> = { board_id: boardId.value, page: 1, page_size: 50, keyword: keyword.value || undefined };
-    if (isAdmin.value && offlineOnly.value) params.status = "rejected";
+    if (isAdmin.value && offlineOnly.value) params.status = "pending";
     const data: any = await fetchPosts(params);
     posts.value = data.items;
     total.value = data.total || 0;
@@ -466,6 +469,21 @@ async function onOnline(id: number) {
 async function onOffline(id: number) {
   await offlinePost(id);
   ElMessage.success("已下架");
+  loadPosts();
+}
+async function onPin(id: number) {
+  await pinPost(id);
+  ElMessage.success("已置顶");
+  loadPosts();
+}
+async function onUnpin(id: number) {
+  await unpinPost(id);
+  ElMessage.success("已取消置顶");
+  loadPosts();
+}
+async function onReject(id: number) {
+  await offlinePost(id);
+  ElMessage.success("已拒绝申请");
   loadPosts();
 }
 
@@ -684,6 +702,8 @@ function routerReplace(id: number) {
 .audit-btns .approve:hover { text-decoration: underline; }
 .audit-btns .reject { color: #c0392b; }
 .audit-btns .reject:hover { text-decoration: underline; }
+.audit-btns .pin-btn { color: #c9a227; cursor: pointer; margin-right: 8px; }
+.audit-btns .pin-btn:hover { text-decoration: underline; }
 
 /* 悬浮发帖小球 */
 .fab-post {

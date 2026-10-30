@@ -144,7 +144,7 @@
               <div v-for="u in adminUsers" :key="u.id" class="log-item admin-user">
                 <b>{{ u.username }}</b><span class="email">{{ u.email }}</span>
                 <span class="role-badge">{{ u.role === "superadmin" ? "总管" : u.role === "admin" ? "管理员" : "普通用户" }}</span>
-                <el-button size="small" v-if="u.role !== 'superadmin'" @click="toggleRole(u)">{{ u.role === "admin" ? "降为普通" : "设为管理员" }}</el-button>
+                <el-button size="small" v-if="u.role !== 'superadmin' && userStore.role === 'superadmin'" @click="toggleRole(u)">{{ u.role === "admin" ? "降为普通" : "设为管理员" }}</el-button>
               </div>
             </div>
             <div class="ys-card">

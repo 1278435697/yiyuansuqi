@@ -93,6 +93,9 @@ export const repost = (postId: number, comment?: string) =>
   request.post(`/community/posts/${postId}/repost`, { comment });
 export const onlinePost = (postId: number) => request.post(`/community/posts/${postId}/online`);
 export const offlinePost = (postId: number) => request.post(`/community/posts/${postId}/offline`);
+export const pinPost = (postId: number) => request.post(`/community/posts/${postId}/pin`);
+export const unpinPost = (postId: number) => request.post(`/community/posts/${postId}/unpin`);
+export const applyOnline = (postId: number) => request.post(`/community/posts/${postId}/apply-online`);
 
 /* ---------- 纹样资料库 ---------- */
 export const fetchPatternCategories = () => request.get("/pattern-library/categories");

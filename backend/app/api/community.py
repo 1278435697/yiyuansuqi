@@ -190,6 +190,50 @@ def online_post(post_id: int, db: Session = Depends(get_db),
     return {"id": p.id, "status": "approved"}
 
 
+@router.post("/posts/{post_id}/pin")
+def pin_post(post_id: int, db: Session = Depends(get_db),
+             user: Users = Depends(get_current_user)):
+    """管理员置顶帖子。"""
+    if getattr(user, "role", "") not in ("admin", "superadmin"):
+        raise HTTPException(403, "需要管理员权限")
+    p = db.get(ForumPosts, post_id)
+    if not p:
+        raise HTTPException(404, "帖子不存在")
+    p.is_pinned = True
+    db.commit()
+    return {"id": p.id, "is_pinned": True}
+
+
+@router.post("/posts/{post_id}/unpin")
+def unpin_post(post_id: int, db: Session = Depends(get_db),
+               user: Users = Depends(get_current_user)):
+    """管理员取消置顶。"""
+    if getattr(user, "role", "") not in ("admin", "superadmin"):
+        raise HTTPException(403, "需要管理员权限")
+    p = db.get(ForumPosts, post_id)
+    if not p:
+        raise HTTPException(404, "帖子不存在")
+    p.is_pinned = False
+    db.commit()
+    return {"id": p.id, "is_pinned": False}
+
+
+@router.post("/posts/{post_id}/apply-online")
+def apply_online(post_id: int, db: Session = Depends(get_db),
+                 user: Users = Depends(get_current_user)):
+    """作者申请重新上架被下架的帖子（进入待审核状态）。"""
+    p = db.get(ForumPosts, post_id)
+    if not p:
+        raise HTTPException(404, "帖子不存在")
+    if p.user_id != user.id and getattr(user, "role", "") not in ("admin", "superadmin"):
+        raise HTTPException(403, "只能申请自己的帖子")
+    if p.status != "rejected":
+        raise HTTPException(400, "仅被下架的帖子可申请重新上架")
+    p.status = "pending"
+    db.commit()
+    return {"id": p.id, "status": "pending", "message": "申请已提交，请等待管理员审核"}
+
+
 @router.delete("/posts/{post_id}")
 def delete_post(post_id: int, db: Session = Depends(get_db),
                 user: Users = Depends(get_current_user)):

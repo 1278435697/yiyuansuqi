@@ -210,9 +210,9 @@ def admin_set_role(user_id: int, role: str,
     # 保护：superadmin 不能被降级或改角色
     if u.role == "superadmin":
         raise HTTPException(403, "总管账号受保护，不可修改")
-    # 只有 superadmin 才能提升 admin；普通 admin 只能管理普通用户
-    if role == "admin" and u.role != "admin" and admin.role != "superadmin":
-        raise HTTPException(403, "只有总管才能任命管理员")
+    # 只有 superadmin 才能升降级任何用户
+    if admin.role != "superadmin":
+        raise HTTPException(403, "只有总管才能任命/降级管理员")
     u.role = "admin" if role == "admin" else "user"
     db.commit()
     return {"id": u.id, "role": u.role}
