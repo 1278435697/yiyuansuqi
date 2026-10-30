@@ -8,7 +8,6 @@
       <span class="hero-orn orn-left">华 夏 衣 冠 · 以 物 证 史</span>
       <span class="hero-orn orn-right">垂 裳 而 治 · 以 技 传 薪</span>
       <div class="hero-content">
-        <img src="/logo.png" class="hero-logo" alt="衣源溯起" />
         <p class="hero-kicker">衣冠有史 · 华服可溯</p>
         <p class="hero-kicker-en">YISU · CHRONICLE OF CHINESE COSTUME</p>
         <RevealTitle v-if="heroAnim" text="衣冠上国 · 华夏有衣" tag="h2" cls="hero-title" :delay="0.25" :step="0.12" />
@@ -362,18 +361,6 @@ onBeforeUnmount(() => trendChart?.dispose());
   justify-content: center;
   text-align: center;
   padding: 0 24px;
-}
-.hero-logo {
-  width: 96px;
-  height: 96px;
-  border-radius: 16px;
-  object-fit: cover;
-  box-shadow: 0 4px 24px rgba(60, 20, 12, 0.5), 0 0 0 3px rgba(245, 239, 228, 0.2);
-  margin-bottom: 20px;
-  opacity: 0;
-}
-.hero-banner.anim-ready .hero-logo {
-  animation: heroUp 0.7s cubic-bezier(0.22, 0.9, 0.3, 1.2) 0.05s forwards;
 }
 .hero-kicker {
   margin: 0 0 10px;
