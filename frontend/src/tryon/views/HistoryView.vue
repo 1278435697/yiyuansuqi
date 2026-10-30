@@ -134,13 +134,9 @@ onMounted(load)
               <span class="time">{{ record.created_at }}</span>
             </div>
             <p class="task">{{ record.task_id }}</p>
-            <el-tooltip
-              v-if="record.warnings.length"
-              placement="top"
-              :content="record.warnings.join(' / ')"
-            >
-              <el-tag size="small" type="warning">{{ record.warnings.length }} 条告警</el-tag>
-            </el-tooltip>
+            <div v-if="record.warnings.length" class="warnings">
+              <div v-for="(w, i) in record.warnings" :key="i" class="warning-item">⚠ {{ w }}</div>
+            </div>
             <div class="record-actions">
               <el-button size="small" @click="download(record)">下载</el-button>
               <el-button size="small" @click="snapshot(record)">截图</el-button>
@@ -244,6 +240,20 @@ onMounted(load)
   font-size: var(--ys-fs-micro);
   color: var(--yisu-ink-soft);
   word-break: break-all;
+}
+
+.warnings {
+  margin: 6px 0 0;
+  padding: 6px 10px;
+  background: #fff8e6;
+  border-left: 3px solid #e6a23c;
+  border-radius: 4px;
+}
+
+.warning-item {
+  font-size: 12px;
+  color: #b88230;
+  line-height: 1.6;
 }
 
 .record-actions {
