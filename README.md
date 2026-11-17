@@ -305,10 +305,14 @@ git log --oneline --date=short --pretty="%ad %h %s"
 
 ## 团队
 
-**衣源溯起项目组**
+**队名**：衣源溯起
 
-- 项目定位：传智杯 AI Web 应用挑战赛参赛作品
-- 主题：华夏服饰文化数字化溯源与复原
+- 参赛赛事：传智杯 AI Web 应用挑战赛
+- 参赛院校：吕梁学院 数学与人工智能系（2024 级）
+- 项目定位：华夏服饰文化数字化溯源与复原平台
+- 技术方向：前端 Vue 3 + Vite，后端 FastAPI + MySQL，三维 Three.js，AI 视觉 MediaPipe + 云端虚拟试穿
+- 代码仓库：https://github.com/1278435697/yiyuansuqi
+- 团队成员：待补充姓名与分工
 
 ## 仓库体积与素材说明
 
