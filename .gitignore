@@ -60,6 +60,7 @@ _i*/
 frontend/dist.tar.gz
 *.bak
 *.bak_*
+*.bak.*
 *.tar.gz
 
 # ===== 大体积站点素材（约 500MB，单独走服务器/网盘，不进 git）=====

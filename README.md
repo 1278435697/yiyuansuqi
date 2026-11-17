@@ -310,6 +310,22 @@ git log --oneline --date=short --pretty="%ad %h %s"
 - 项目定位：传智杯 AI Web 应用挑战赛参赛作品
 - 主题：华夏服饰文化数字化溯源与复原
 
+## 仓库体积与素材说明
+
+仓库只收录源码、配置、文档与轻量素材。以下大体积素材受 GitHub 单文件 100 MB 与仓库体积限制，已由 `.gitignore` 排除，线上由服务器目录直接提供：
+
+| 目录 | 体积 | 说明 | 是否入库 |
+|---|---|---|---|
+| `frontend/public/mus3d` | 296 MB | 三维展馆模型与贴图 | 否 |
+| `frontend/public/pattern-assets` | 116 MB | 纹样原图 | 否 |
+| `frontend/public/acc-assets` | 59 MB | 衣冠图谱素材 | 否 |
+| `frontend/public/mus-app` | 39 MB | 博物馆子站静态资源 | 否 |
+| `frontend/dist` | 574 MB | 构建产物 | 否，`npm run build` 可重建 |
+| `frontend/dist.tar.gz` | 142 MB | 构建备份 | 否 |
+| `tryon_service/weights` | 近空 | ONNX 权重，缺失时自动降级到下一级 Provider | 否 |
+
+克隆后 `frontend/src` 能正常构建，但纹样库、三维展馆、衣冠图谱的图片需要补齐素材才会显示完整；素材可从线上站点（`http://47.93.14.11`）取，或使用单独的完整包（`衣源溯起_完整源码与素材_20261117.zip`，61,179 文件 / 2.49 GB）。
+
 ## 说明
 
 本项目仅用于学习交流与比赛展示，不用于商业用途。仓库不含任何真实密钥，`.env` 需按 `.env.example` 自行配置。
