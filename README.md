@@ -324,7 +324,27 @@ git log --oneline --date=short --pretty="%ad %h %s"
 | `frontend/dist.tar.gz` | 142 MB | 构建备份 | 否 |
 | `tryon_service/weights` | 近空 | ONNX 权重，缺失时自动降级到下一级 Provider | 否 |
 
-克隆后 `frontend/src` 能正常构建，但纹样库、三维展馆、衣冠图谱的图片需要补齐素材才会显示完整；素材可从线上站点（`http://47.93.14.11`）取，或使用单独的完整包（`衣源溯起_完整源码与素材_20261117.zip`，61,179 文件 / 2.49 GB）。
+### 素材下载（GitHub Release）
+
+素材统一放在 Release [`v1.0-assets`](https://github.com/1278435697/yiyuansuqi/releases/tag/v1.0-assets)，克隆后按下列位置解压即可完整运行：
+
+| 文件 | 解压到 | 体积 | 内容 |
+|---|---|---|---|
+| `yisu-mus3d.zip` | `frontend/public/mus3d` | 296 MB | 三维展馆模型与贴图 |
+| `yisu-pattern-assets.zip` | `frontend/public/pattern-assets` | 116 MB | 纹样原图 |
+| `yisu-acc-musapp.zip` | `frontend/public/acc-assets`、`frontend/public/mus-app` | 98 MB | 衣冠图谱素材、博物馆子站资源 |
+
+```bash
+cd frontend/public
+curl -LO https://github.com/1278435697/yiyuansuqi/releases/download/v1.0-assets/yisu-mus3d.zip
+curl -LO https://github.com/1278435697/yiyuansuqi/releases/download/v1.0-assets/yisu-pattern-assets.zip
+curl -LO https://github.com/1278435697/yiyuansuqi/releases/download/v1.0-assets/yisu-acc-musapp.zip
+unzip -o yisu-mus3d.zip -d .            # 解出 mus3d/
+unzip -o yisu-pattern-assets.zip -d .   # 解出 pattern-assets/
+unzip -o yisu-acc-musapp.zip -d .       # 解出 acc-assets/ 与 mus-app/
+```
+
+`frontend/dist` 不需要下载，`npm run build` 会重建。
 
 ## 说明
 
