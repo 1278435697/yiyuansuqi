@@ -181,6 +181,70 @@ node index.mjs
 
 `MODEL3D_PROVIDER` 可选 `tripo` / `hunyuan` / `hitem3d` / `off`；`off` 时不调用任何付费 3D 接口。
 
+## 环境配置与依赖清单
+
+三个服务各有一份变量模板，复制为 `.env` 后填写即可；仓库内不含任何真实密钥。
+
+| 服务 | 模板 | 复制为 | 启动端口 |
+|---|---|---|---|
+| 主站后端 | `backend/.env.example` | `backend/.env` | 8765 |
+| 试穿旧版 | `tryon_service/.env.example` | `tryon_service/.env` | 8010 |
+| 试穿新版 | `fitview-server/.env.example` | `fitview-server/.env` | 8787 |
+
+### backend/.env
+
+| 变量 | 用途 | 必填 |
+|---|---|---|
+| `MYSQL_HOST` `MYSQL_PORT` `MYSQL_USER` `MYSQL_PASSWORD` `MYSQL_DB` | 主数据库 | 是 |
+| `LLM_BASE_URL` `LLM_API_KEY` `LLM_MODEL` | 火山方舟豆包大模型（问答） | 是 |
+| `JWT_SECRET` | 登录令牌签名 | 是 |
+| `REDIS_URL` | 缓存（缺省走内存） | 否 |
+| `CHROMA_PERSIST_DIR` `CHROMA_COLLECTION` | 纹样向量库 | 否 |
+| `EMBED_API_KEY` | 向量化接口 | 否 |
+| `SD_API_URL` `VIDEO_GEN_API_URL` `VIDEO_GEN_API_KEY` | 生图/生视频扩展 | 否 |
+
+### tryon_service/.env
+
+| 变量 | 用途 | 必填 |
+|---|---|---|
+| `YISU_VTON_BACKEND` | `auto` / `aidge` / `hrviton` / `tps` / `mock` | 是（auto 即自动降级） |
+| `YISU_AIDGE_ACCESS_KEY_ID` `YISU_AIDGE_ACCESS_KEY_SECRET` | 阿里云 Aidge 试衣凭据 | 用云端时必填 |
+| `YISU_PUBLIC_BASE_URL` | 厂商能回访到的本服务地址 | 用云端时必填 |
+| `YISU_AIDGE_RESOLUTION` `YISU_AIDGE_TIMEOUT_SECONDS` `YISU_OUTBOX_TTL_SECONDS` | 出图档位、超时、一次性图片有效期 | 否 |
+| `YISU_DATABASE_URL` | 留空复用 `backend/data/yisu_prod.db`；生产填 MySQL | 否 |
+| `YISU_VITONGPU_ONNX` `YISU_U2NET_ONNX` `YISU_HRVITON_CKPT_DIR` | 本地模型权重路径，缺文件自动降级 | 否 |
+| `YISU_ASSET_URL_PREFIX` `YISU_RESULTS_URL_PREFIX` `YISU_RESULTS_ROOT` | 素材/结果图对外路径 | 否 |
+| `YISU_MAX_UPLOAD_MB` `YISU_OUTPUT_LONG_SIDE` `YISU_ENABLE_DISK_CACHE` | 上传上限、输出长边、结果缓存 | 否 |
+| `YISU_CORS_ORIGINS` | 跨域来源，同源部署留空 | 否 |
+
+### fitview-server/.env
+
+| 变量 | 用途 | 必填 |
+|---|---|---|
+| `PORT` | 服务端口，默认 8787 | 否 |
+| `ARK_API_KEY` `ARK_BASE_URL` `ARK_IMAGE_MODEL` `ARK_IMAGE_SIZE` | 豆包 Seedream 换装重绘 | 是（2D 链路） |
+| `MODEL3D_PROVIDER` | `tripo` / `hunyuan` / `hitem3d` / `off` | 是 |
+| `TRIPO_API_KEY` `TRIPO_MODEL` `TRIPO_TEXTURE_QUALITY` `TRIPO_GEOMETRY_QUALITY` `TRIPO_FACE_LIMIT` `TRIPO_SKIP_SIDE` | Tripo 生 3D 参数 | 用 tripo 时必填 KEY |
+| `HUNYUAN_API_KEY` `HUNYUAN_BASE_URL` `HUNYUAN_MODEL` `HUNYUAN_FACE` | 混元生 3D 参数 | 用 hunyuan 时必填 KEY |
+
+### 依赖清单
+
+| 模块 | 清单文件 | 主要依赖 |
+|---|---|---|
+| 前端 | `frontend/package.json` + `package-lock.json` | Vue 3、Vite、Element Plus、Tailwind、Three.js、MediaPipe、ECharts、Leaflet |
+| 主站后端 | `backend/requirements.txt` | FastAPI、Uvicorn、SQLAlchemy、PyMySQL、JWT、OpenAI SDK、Redis、ChromaDB |
+| 试穿旧版 | `tryon_service/requirements-core.txt` / `-ai.txt` / `-gpu.txt` / `-mysql.txt` / `-dev.txt` | FastAPI、OpenCV、MediaPipe、NumPy、Pillow、aiomysql、onnxruntime |
+| 试穿新版 | 无 | Node 18+ 内置模块（`http`/`fetch`/`fs`），零第三方依赖 |
+
+安装命令：
+
+```bash
+cd frontend && npm ci                 # 或 npm install
+cd backend && pip install -r requirements.txt
+cd tryon_service && pip install -r requirements-core.txt
+# 需要 GPU 推理时再加 -r requirements-gpu.txt；接 MySQL 时加 -r requirements-mysql.txt
+```
+
 ## 生产部署
 
 Nginx 关键规则（节选自 `yisu_nginx.conf`，与线上实况镜像）：
