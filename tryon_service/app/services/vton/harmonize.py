@@ -51,6 +51,7 @@ def lab_to_rgb(lab: np.ndarray) -> np.ndarray:
     delta = np.float32(6 / 29)
 
     def finv(t: np.ndarray) -> np.ndarray:
+        """Lab 反变换的 f 逆函数分段式：t 不超过 delta 走线性段，否则走三次项。"""
         return np.where(t > delta, t**3, 3 * delta**2 * (t - 4 / 29))
 
     ref = np.array([0.95047, 1.0, 1.08883], dtype=np.float32)

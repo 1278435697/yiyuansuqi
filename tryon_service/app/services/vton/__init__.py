@@ -87,6 +87,7 @@ def run(ctx: TryOnContext, requested: str | None = None) -> tuple[TryOnOutput, l
 
 
 def status() -> dict[str, object]:
+    """汇总各试穿后端的可用性，并给出 auto 模式最终解析到的后端与降级原因。"""
     out: dict[str, object] = {}
     for name in _PRIORITY:
         backend = _instance(name)

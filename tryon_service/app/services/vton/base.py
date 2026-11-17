@@ -29,6 +29,7 @@ class TryOnContext:
 
     @property
     def shape(self) -> tuple[int, int]:
+        """人像图的 (高, 宽)。"""
         return self.person_rgb.shape[:2]
 
 
@@ -47,9 +48,13 @@ class TryOnOutput:
 class VTONBackendProtocol(Protocol):
     name: str
 
-    def available(self) -> tuple[bool, str | None]: ...
+    def available(self) -> tuple[bool, str | None]:
+        """后端是否可用，返回 (是否可用, 不可用原因)。"""
+        ...
 
-    def run(self, ctx: TryOnContext) -> TryOnOutput: ...
+    def run(self, ctx: TryOnContext) -> TryOnOutput:
+        """执行一次试穿，返回结果图与中间产物。"""
+        ...
 
 
 def body_anchor_points(pose: PoseResult) -> dict[str, tuple[float, float]]:

@@ -18,9 +18,11 @@ class MockBackend:
     name = "mock"
 
     def available(self) -> tuple[bool, str | None]:
+        """永远可用：链路最后一级兜底，保证接口一定返回图像。"""
         return True, None
 
     def run(self, ctx: TryOnContext) -> TryOnOutput:
+        """不跑任何模型：按肩宽、领口、下摆锚点把服装缩放贴到人体上，用于前端联调与降级。"""
         anchors = body_anchor_points(ctx.pose)
         left = anchors["shoulder_L"][0]
         right = anchors["shoulder_R"][0]

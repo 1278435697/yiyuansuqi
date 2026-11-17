@@ -28,9 +28,11 @@ class ThinPlateSpline:
 
     @property
     def fitted(self) -> bool:
+        """是否已完成拟合。"""
         return self._weights is not None
 
     def fit(self, src: np.ndarray, dst: np.ndarray) -> "ThinPlateSpline":
+        """用控制点对求解 TPS 参数：组装 (K+lambda*I, P) 线性系统解出权重与仿射项，奇异时退化为最小二乘；返回 self 便于链式调用。"""
         src = np.asarray(src, dtype=np.float64)
         dst = np.asarray(dst, dtype=np.float64)
         if src.ndim != 2 or src.shape != dst.shape or src.shape[1] != 2:

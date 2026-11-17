@@ -68,6 +68,7 @@ class HRVITONBackend:
         return repo, None
 
     def available(self) -> tuple[bool, str | None]:
+        """探测 HR-VITON 是否就绪（torch、CUDA、权重、仓库入口脚本、命令模板），结果只探一次并缓存。"""
         if self._probed:
             return self._ok, self._reason
         self._probed = True
@@ -98,6 +99,7 @@ class HRVITONBackend:
 
     # ---------- 执行 ----------
     def run(self, ctx: TryOnContext) -> TryOnOutput:
+        """按配置的命令模板调用 HR-VITON 推理，取输出目录里最新的图像并缩放到原尺寸；临时工作目录无论成败都会删除。"""
         ok, reason = self.available()
         if not ok:
             raise TryOnFailedError(detail=reason or "HR-VITON 不可用")

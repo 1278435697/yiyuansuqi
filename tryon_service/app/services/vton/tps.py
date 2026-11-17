@@ -118,6 +118,7 @@ class TPSBackend:
     name = "tps"
 
     def available(self) -> tuple[bool, str | None]:
+        """是否可用取决于 scipy.interpolate 能否导入。"""
         try:
             import scipy.interpolate  # noqa: F401
         except Exception as exc:  # noqa: BLE001
@@ -178,6 +179,7 @@ class TPSBackend:
         v_scale = (hem_y - sh_y) / g_drop
 
         def proportional(key: str) -> tuple[float, float]:
+            """按体型比例把服装关键点映射到人体：水平以人体中线为基准缩放，垂直按肩线到下摆比例对齐。"""
             x, y = src[index[key]]
             return cx + (x - gcx) * scale, sh_y + (y - g_sh_y) * v_scale
 
@@ -204,6 +206,7 @@ class TPSBackend:
 
     # ---------- 主流程 ----------
     def run(self, ctx: TryOnContext) -> TryOnOutput:
+        """TPS 主流程：服装控制点映射到人体对应点做薄板样条变形，再按人体轮廓限幅、羽化融合，最后把手臂与头部压回服装之上。"""
         src = self._source_points(ctx)
         dst = self._target_points(ctx, src)
 

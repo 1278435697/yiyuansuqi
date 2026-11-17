@@ -28,6 +28,7 @@ class AccessoryDataMissing(RuntimeError):
 
 
 def data_path() -> str:
+    """返回配饰档案数据文件路径；按 DATA_CANDIDATES 顺序取第一个存在的，都找不到抛 AccessoryDataMissing。"""
     for p in DATA_CANDIDATES:
         if os.path.exists(p):
             return p
@@ -35,6 +36,7 @@ def data_path() -> str:
 
 
 def load() -> list[dict]:
+    """读取配饰档案列表；按文件路径与 mtime 缓存，文件没变就不重复解析。"""
     path = data_path()
     mtime = os.path.getmtime(path)
     with _lock:
@@ -58,6 +60,7 @@ def abs_paths(node):
 
 
 def find(item_id: str) -> dict | None:
+    """按 id 精确查找单条配饰档案，找不到返回 None。"""
     for e in load():
         if e.get("id") == item_id:
             return e

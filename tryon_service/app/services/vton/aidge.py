@@ -148,6 +148,7 @@ class AidgeBackend:
     name = "aidge"
 
     def available(self) -> tuple[bool, str | None]:
+        """云端试衣是否可用：AK/SK 与厂商可回访的 public_base_url 必须同时配置。"""
         settings = get_settings()
         if not (settings.aidge_access_key_id and settings.aidge_access_key_secret):
             return False, "missing_credentials"
@@ -204,6 +205,7 @@ class AidgeBackend:
         return data
 
     def run(self, ctx: TryOnContext) -> TryOnOutput:
+        """调用阿里云 Aidge 完成一次换装：人像与服装先进出箱目录换成一次性 URL，返回图再缩放回原尺寸；优先用平铺呈现图，避免展陈形被补成窄袖。"""
         settings = get_settings()
         person = outbox.put(_jpeg(_fit_sides(ctx.person_rgb)))
         # 有平铺呈现图就用它：展陈形对试衣模型是分布外输入，会把大袖补成窄袖插肩
