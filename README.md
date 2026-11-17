@@ -305,8 +305,6 @@ git log --oneline --date=short --pretty="%ad %h %s"
 
 ## 团队
 
-## 团队
-
 | 项目 | 内容 |
 |---|---|
 | 队名 | 衣源溯起 |
