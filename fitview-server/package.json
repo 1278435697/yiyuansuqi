@@ -1,0 +1,15 @@
+{
+  "name": "fitview-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "虚拟试穿新版后端：豆包 Seedream 换装重绘 + Tripo/混元生 3D，纯 Node 内置模块实现",
+  "main": "index.mjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node index.mjs",
+    "dev": "node --watch index.mjs"
+  }
+}
