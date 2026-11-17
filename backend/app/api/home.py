@@ -63,8 +63,8 @@ def news_list(
     db: Session = Depends(get_db),
 ):
     def _dress_ok(n: News) -> bool:
-        # 丝绸博物馆主题天然匹配；其他来源必须命中服饰主题判定
-        if n.source == "中国丝绸博物馆":
+        # 丝博/非遗网为服饰·传统工艺主题权威源，天然匹配；其他来源必须命中服饰主题判定
+        if n.source in ("中国丝绸博物馆", "中国非物质文化遗产网"):
             return True
         return dress_match((n.title or "") + (n.summary or ""))
 

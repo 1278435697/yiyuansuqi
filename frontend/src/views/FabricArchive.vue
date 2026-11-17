@@ -21,7 +21,7 @@
       ]" />
 
     <!-- 工具条：区块标题在左、搜索与创建在右（控件不变，只换皮） -->
-    <div class="acc-toolbar">
+    <div id="catalog" class="acc-toolbar">
       <AccSectionHead no="织" kicker="面料名录 · 九类" title="面料目录" :sub="`共 ${total} 种`" />
       <div class="acc-toolbar-tools">
         <el-input v-model="keyword" placeholder="搜索面料（如：罗、锦、缂丝）" clearable size="small"
@@ -137,7 +137,7 @@
                :no="`${pad(i + 1)} / ${total}`" :volume="f.category" :code="f.code"
                :tags="[f.category, f.raw_material, f.technique].filter(Boolean)"
                :badge="f.created_by || f.source_ref === '用户创建' ? '用户创建' : ''"
-               :tone="toneOf(f.category)" link-text="阅面料" @open="openSplit(f)">
+               :tone="toneOf(f.category)" link-text="阅面料" @open="openDetail(f)">
         <template #actions>
           <el-button v-if="f.created_by || f.source_ref === '用户创建'" size="small" text type="danger" class="del-btn"
                      @click.stop="removeFabric(f)">删除</el-button>
@@ -145,15 +145,6 @@
       </AccCard>
       <el-empty v-if="!loading && filteredList.length === 0" description="未找到匹配的面料" />
     </div>
-
-    <!-- 点击卡片：主图从中心放大、分裂翻转成三张素材卡片，点击任意一张进入详情 -->
-    <SplitReveal
-      :visible="splitVisible"
-      :title="splitTitle"
-      :cards="splitCards"
-      @close="splitVisible = false"
-      @select="onSplitSelect"
-    />
     </template>
 
     <!-- ==================== 详情模式（衣冠卷面排版） ==================== -->
@@ -289,7 +280,6 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { fetchFabrics, fetchFabricWebSearch, createFabric, deleteFabric } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
-import SplitReveal from "@/components/SplitReveal.vue";
 import AccCard from "@/components/acc/AccCard.vue";
 import AccSectionHead from "@/components/acc/AccSectionHead.vue";
 import AccSecHead from "@/components/acc/AccSecHead.vue";
@@ -382,50 +372,11 @@ async function load() {
 }
 
 function openDetail(f: any) {
+  window.scrollTo({ top: 0 });
   router.push(`/fabric/${f.id}`);
 }
 
-/* 点击卡片：主图从中心放大、分裂翻转成三张素材卡片 */
-const splitVisible = ref(false);
-const splitTitle = ref("");
-const splitCards = ref<any[]>([]);
-let splitTarget: any = null;
-function openSplit(f: any) {
-  splitTarget = f;
-  splitTitle.value = `${f.name} · 面料素材`;
-  const craft = f.craft || {};
-  const steps = (craft.steps || f.process_steps || []).slice(0, 4).map((s: any) => ({
-    label: (s.num_cn || "工序") + " · " + (s.label || s.title || ""),
-    value: s.desc || s.title || "",
-  }));
-  splitCards.value = [
-    {
-      image: f.image_url || undefined,
-      kicker: `${f.category || "面料"} · ${f.dynasty_peak || ""}`,
-      title: f.name,
-      text: `${f.raw_material || ""}${f.technique ? " · " + f.technique : ""}`,
-    },
-    {
-      image: craft.images?.overview || f.image_url || undefined,
-      kicker: "工艺流程",
-      title: "制作流程 · 完整示意",
-      text: (craft.history_note || f.process || "工艺资料整理中。").slice(0, 80),
-      list: steps,
-    },
-    {
-      image: craft.images?.detail || undefined,
-      kicker: "工艺细节",
-      title: "细节特写 · 史料依据",
-      text: (f.description || "（暂无简介）").slice(0, 80),
-      list: f.source_ref ? [{ label: "史料出处", value: f.source_ref }] : undefined,
-    },
-  ];
-  splitVisible.value = true;
-}
-function onSplitSelect() {
-  splitVisible.value = false;
-  if (splitTarget) router.push(`/fabric/${splitTarget.id}`);
-}
+/* 卡片直接进入面料详情（不再经过「面料素材」三卡选择层） */
 
 function onImgError(e: Event) {
   (e.target as HTMLImageElement).style.display = "none";
@@ -453,8 +404,8 @@ async function doWebSearch() {
 function openCreate() {
   const token = localStorage.getItem("yisu_token") || "";
   if (!token) {
-    ElMessage.warning("请先登录，再创建面料");
-    router.push("/login");
+    ElMessage.warning("创建面料档案需要先登录，正在打开登录页");
+    router.push({ path: "/user", query: { redirect: "/fabric" } });
     return;
   }
   createForm.value = { name: "", category: "", raw_material: "", dynasty_peak: "", technique: "", description: "", historyNote: "", stepsText: "", source_ref: "", poemsText: "", image_url: "" };

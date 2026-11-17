@@ -37,7 +37,10 @@
       <!-- 新闻信息流 -->
       <section class="news-stream">
         <div class="section-head">
-          <h2 class="ys-title">文博资讯</h2>
+          <div class="head-left">
+            <h2 class="ys-title">文博资讯</h2>
+            <span class="live-note">{{ liveNote }}</span>
+          </div>
           <div class="filters">
             <el-select v-model="dynasty" placeholder="按朝代筛选" clearable size="small" style="width: 130px" @change="loadNews">
               <el-option v-for="d in dynastyOptions" :key="d.name" :label="d.name" :value="d.name" />
@@ -73,29 +76,37 @@
         </div>
 
         <div v-loading="loading" class="news-cards">
-          <article v-for="n in news" :key="n.id" class="news-card ys-card" @click="openNews(n.id)">
-            <img v-if="n.cover_image" class="news-cover" :src="n.cover_image" :alt="n.title" loading="lazy" @error="hideImg($event)" />
+          <article
+            v-for="n in news"
+            :key="n.id"
+            class="news-card ys-card"
+            :class="{ 'no-cover': !n.cover_image }"
+            @click="openNews(n.id)"
+          >
+            <img v-if="n.cover_image" class="news-cover" :src="n.cover_image" :alt="n.title" loading="lazy" @error="coverFail($event)" />
             <div class="news-body">
               <div class="news-meta">
-                <span class="ai-badge">AI摘要</span>
+                <span class="ai-badge">摘要</span>
                 <span>{{ n.source }}</span>
                 <span class="date">{{ n.publish_time?.slice(0, 10) }}</span>
                 <a v-if="n.source_url" class="src-link" :href="n.source_url" target="_blank" rel="noopener" @click.stop>原文 ↗</a>
               </div>
               <h3 class="news-title">{{ n.title }}</h3>
-              <p class="news-summary">{{ n.summary }}</p>
+              <div class="news-summary">
+                <p v-for="(para, i) in splitPara(n.summary)" :key="i">{{ para }}</p>
+              </div>
               <div class="news-tags">
                 <span class="ys-tag" v-for="t in n.dynasty_tags" :key="t" @click.stop="jumpArchive(t)">{{ t }}</span>
                 <span class="ys-tag" v-for="t in n.entity_tags" :key="t" @click.stop="jumpArchive(t)">{{ t }}</span>
               </div>
               <div class="news-qa" v-if="n.ai_questions?.length">
-                <span class="qa-label">AI推荐提问：</span>
+                <span class="qa-label">推荐提问：</span>
                 <span v-for="q in n.ai_questions.slice(0, 2)" :key="q" class="qa-item" @click.stop="askAI(q)">{{ q }}</span>
               </div>
             </div>
           </article>
 
-          <div v-if="!loading && !news.length" class="ys-empty">暂无资讯，点击右侧「录入资讯」体验 AI 解析流水线</div>
+          <div v-if="!loading && !news.length" class="ys-empty">暂无资讯，点击右侧「录入资讯」体验 资讯解析流水线</div>
         </div>
 
         <el-pagination
@@ -131,12 +142,12 @@
         </div>
 
         <div class="ys-card">
-          <h3 class="ys-title">AI 资讯解析演示</h3>
+          <h3 class="ys-title">资讯解析演示</h3>
           <el-input v-model="manualTitle" placeholder="资讯标题" size="small" />
           <el-input v-model="manualContent" type="textarea" :rows="4" placeholder="资讯正文" size="small" style="margin: 8px 0" />
           <el-button type="primary" size="small" @click="manualParse">解析并生成摘要</el-button>
           <div v-if="parseResult" class="parse-result">
-            <p class="ai-badge">AI摘要</p>
+            <p class="ai-badge">摘要</p>
             <p>{{ parseResult.summary }}</p>
             <div class="news-tags">
               <span class="ys-tag" v-for="t in parseResult.entity_tags.split(',')" :key="t" v-show="t">{{ t }}</span>
@@ -181,6 +192,15 @@ const webKeyword = ref("");
 const webResults = ref<any[]>([]);
 const webNote = ref("");
 const heroImgFail = ref(false);
+const liveNote = ref("");
+let liveTimer: number | undefined;
+
+function markUpdated() {
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  liveNote.value = `更新于 ${hh}:${mm} · 每小时自动抓取`;
+}
 
 async function webSearch() {
   if (!keyword.value.trim()) return ElMessage.warning("请输入搜索关键词");
@@ -205,6 +225,7 @@ async function loadNews() {
     news.value = data.items;
     total.value = data.total;
     focusNews.value = data.focus || data.items.filter((n: any) => n.is_focus);
+    markUpdated();
   } finally {
     loading.value = false;
   }
@@ -254,13 +275,63 @@ function askAI(q: string) {
   router.push("/aiqa");
 }
 
+/**
+ * 摘要按句读切段：整段糊成一片最伤可读性。每段聚合到 78 字上下、最多两段，
+ * 后面还有内容就在末段收一个「…」，避免卡片里出现半截被裁掉的行。
+ */
+function splitPara(text?: string): string[] {
+  const t = (text || "").replace(/\s+/g, " ").trim();
+  if (!t) return [];
+  const PER = 78;
+  const MAX = 2;
+  const sentences = t.split(/(?<=[。！？；])/).filter((s) => s.trim());
+  const paras: string[] = [];
+  let buf = "";
+  for (const s of sentences) {
+    if (paras.length >= MAX) break;
+    if (buf && buf.length + s.length > PER) {
+      paras.push(buf);
+      buf = "";
+      if (paras.length >= MAX) break;
+    }
+    // 单句就超长时硬切，别让一段顶满整卡
+    if (!buf && s.length > PER) {
+      paras.push(s.slice(0, PER));
+      buf = "";
+      continue;
+    }
+    buf += s;
+  }
+  if (buf && paras.length < MAX) paras.push(buf);
+  if (paras.length && paras.join("").length < t.length) {
+    paras[paras.length - 1] = paras[paras.length - 1].replace(/[。；，、]$/, "") + "…";
+  }
+  return paras;
+}
+
 function hideImg(e: Event) {
   (e.target as HTMLImageElement).style.display = "none";
+}
+
+/**
+ * 资讯卡封面取不到（原文本来没图 / 图地址失效）时，直接把卡片切成「无图版」：
+ * 移除图片元素并补上 no-cover 类，让右栏文字的留白按纯文字卡重算，不留一块空洞。
+ */
+function coverFail(e: Event) {
+  const img = e.target as HTMLImageElement;
+  const card = img.closest(".news-card") as HTMLElement | null;
+  if (card) card.classList.add("no-cover");
+  img.remove();
 }
 
 onMounted(() => {
   loadNews();
   loadSide();
+  // 后台每 5 分钟静默重拉一次，服务端每小时抓取后前台能自动跟上
+  liveTimer = window.setInterval(() => {
+    if (webState.value === "idle" && !loading.value) loadNews();
+  }, 5 * 60 * 1000);
+
   // 开场动画结束后再播 Hero 入场动效；SPA 直接进入时稍作延迟直接播放
   const start = () => { heroAnim.value = true; };
   if ((window as any).__preloaderActive) {
@@ -270,10 +341,24 @@ onMounted(() => {
     window.setTimeout(start, 200);
   }
 });
-onBeforeUnmount(() => trendChart?.dispose());
+onBeforeUnmount(() => {
+  trendChart?.dispose();
+  if (liveTimer) window.clearInterval(liveTimer);
+});
 </script>
 
 <style scoped>
+/* 资讯区实时状态小字 */
+.head-left { display: flex; align-items: flex-end; gap: 10px; }
+.live-note {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--ys-ink-3);
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
+  padding-bottom: 3px;
+}
 /* Hero 大横幅 */
 .hero-banner {
   position: relative;
@@ -547,9 +632,50 @@ onBeforeUnmount(() => trendChart?.dispose());
 .src-link:hover { text-decoration: underline; }
 .ai-badge { background: var(--ys-red); color: #fff; padding: 1px 8px; border-radius: 10px; font-size: 11px; }
 .news-title { margin: 8px 0 6px; font-size: 17px; }
-.news-summary { margin: 0 0 8px; color: var(--ys-ink-2); font-size: 14px; line-height: 1.7; }
+.news-summary { margin: 0 0 8px; color: var(--ys-ink-2); font-size: 14px; line-height: 1.85; }
+.news-summary p { margin: 0; text-indent: 2em; }
+.news-summary p + p { margin-top: 8px; }
 .news-qa { font-size: 13px; color: var(--ys-ink-3); }
 .qa-item { color: var(--ys-red-deep); cursor: pointer; margin-right: 10px; text-decoration: underline dotted; }
+
+/* 无封面资讯卡：纯文字版式，原文没有配图时不再留空洞 */
+.news-card.no-cover {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: linear-gradient(180deg, #fffdf8 0%, #fbf6ea 100%);
+}
+.news-card.no-cover::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--ys-red) 0%, rgba(185, 138, 47, 0.55) 100%);
+}
+.news-card.no-cover .news-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 16px 22px;
+}
+.news-card.no-cover .news-title {
+  margin: 10px 0 11px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(185, 138, 47, 0.22);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+.news-card.no-cover .news-meta::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-left: 2px;
+  background: linear-gradient(90deg, rgba(185, 138, 47, 0.45), rgba(185, 138, 47, 0));
+}
+.news-card.no-cover .news-tags { margin-top: auto; }
 
 .home-side { display: flex; flex-direction: column; gap: 16px; }
 .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }

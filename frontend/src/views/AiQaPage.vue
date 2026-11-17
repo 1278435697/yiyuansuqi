@@ -1,13 +1,13 @@
 <template>
   <div class="aiqa-page">
-    <PageHero title="AI 智能溯源问答" kicker="AI Q&A · 溯源对话" sub="AI 权威溯源解答 + 社区勘误补充 · 每一个回答都可溯源、可纠错" seal="问" />
+    <PageHero title="智能溯源问答" kicker="溯源对话" sub="权威溯源解答 + 社区勘误补充 · 每一个回答都可溯源、可纠错" seal="问" />
 
     <div class="qa-layout anim-stagger">
       <div class="qa-main">
         <!-- 对话式溯源问答（接入豆包大模型，可连续追问） -->
         <div class="ask-card ys-card chat-card">
           <div class="chat-head">
-            <span class="ai-badge">AI 溯源对话</span>
+            <span class="ai-badge">溯源对话</span>
             <span class="chat-sub">已接入豆包大模型 · 可连续追问 · 回答可溯源</span>
             <el-button v-if="userStore.token" size="small" text type="danger" class="chat-clear-btn" @click="clearChat">清空对话</el-button>
           </div>
@@ -20,7 +20,7 @@
               <div :class="['chat-row', m.role]">
                 <div class="chat-bubble">
                   <template v-if="m.role === 'assistant'">
-                    <span class="chat-ai-tag">AI溯源</span>
+                    <span class="chat-ai-tag">溯源</span>
                   </template>
                   <img v-if="m.image" class="chat-thumb" :src="m.image" alt="截图" />
                   <p class="chat-content">
@@ -68,7 +68,7 @@
             </template>
             <div v-if="chatting" class="chat-row assistant">
               <div class="chat-bubble">
-                <span class="chat-ai-tag">AI溯源</span>
+                <span class="chat-ai-tag">溯源</span>
                 <p class="chat-content">正在考据史料，请稍候…</p>
               </div>
             </div>
@@ -82,35 +82,40 @@
           <div class="ai-quick-actions">
             <button class="quick-btn" @click="quickAction('poem')">
               <span class="quick-icon">✍️</span>
-              <span class="quick-name">AI 服饰写诗</span>
+              <span class="quick-name">服饰写诗</span>
               <span class="quick-desc">为选中服饰配一首古诗词</span>
             </button>
             <button class="quick-btn" @click="quickAction('compare')">
               <span class="quick-icon">⚖️</span>
-              <span class="quick-name">AI 朝代对比</span>
+              <span class="quick-name">朝代对比</span>
               <span class="quick-desc">对比两个朝代服饰差异</span>
             </button>
             <button class="quick-btn" @click="quickAction('outfit')">
               <span class="quick-icon">👗</span>
-              <span class="quick-name">AI 穿搭推荐</span>
+              <span class="quick-name">穿搭推荐</span>
               <span class="quick-desc">根据场合推荐汉服搭配</span>
             </button>
             <button class="quick-btn" @click="quickAction('pattern')">
               <span class="quick-icon">🎨</span>
-              <span class="quick-name">AI 纹样生成</span>
+              <span class="quick-name">纹样生成</span>
               <span class="quick-desc">描述风格生成传统纹样</span>
             </button>
             <button class="quick-btn" @click="quickAction('restore')">
               <span class="quick-icon">🏺</span>
-              <span class="quick-name">AI 服饰复原</span>
+              <span class="quick-name">服饰复原</span>
               <span class="quick-desc">上传残片推测完整服饰</span>
             </button>
+          </div>
+
+          <div class="chat-model-row">
+            <AiModelSelect v-model="aiModelId" />
+            <span class="cmr-hint">切换后本次及后续提问都用该模型</span>
           </div>
 
           <div class="chat-input-row">
             <input ref="fileInput" type="file" accept="image/*" hidden @change="onPickImage" />
             <button class="attach-btn" title="上传截图/照片" :disabled="chatting" @click="fileInput?.click()">📎</button>
-            <el-input v-model="chatInput" type="textarea" :rows="2" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="输入问题，可粘贴服饰截图让 AI 识图…" @keydown.enter.exact.prevent="sendChat" />
+            <el-input v-model="chatInput" type="textarea" :rows="2" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="输入问题，可粘贴服饰截图辅助识图…" @keydown.enter.exact.prevent="sendChat" />
             <el-button type="primary" :loading="chatting" @click="sendChat">发送</el-button>
           </div>
 
@@ -152,7 +157,7 @@
               <span class="ys-tag">{{ q.dynasty_tags }}</span>
             </div>
             <div class="q-ai-preview">
-              <span class="ai-badge">AI</span>{{ q.ai_answer }}
+              <span class="ai-badge">答</span>{{ q.ai_answer }}
             </div>
           </div>
           <div v-if="!loading && !questions.length" class="ys-empty">暂无问题，成为第一个提问者</div>
@@ -173,11 +178,11 @@
         <div class="ys-card">
           <h3 class="ys-title">社区勘误机制</h3>
           <p class="side-text">
-            用户可对任何回答提交补充与纠错；系统通过 AI 纠错标记者检测回答与权威知识库的冲突，
+            用户可对任何回答提交补充与纠错；系统通过 勘误标记者检测回答与权威知识库的冲突，
             保障社区科普内容的严谨性。
           </p>
           <el-divider />
-          <h4>AI 三重角色</h4>
+          <h4>三重角色</h4>
           <ul class="role-list">
             <li>初步回答生成者（RAG 知识库）</li>
             <li>辅助回答者（提供史料参考）</li>
@@ -191,7 +196,7 @@
     <el-dialog v-model="detailVisible" :title="questionDetail?.title" width="760px">
       <div v-if="questionDetail">
         <div class="ai-block">
-          <span class="ai-badge">AI溯源回答</span>
+          <span class="ai-badge">溯源回答</span>
           <p class="ai-text">{{ questionDetail.ai_answer }}</p>
           <p class="ai-ref">引用：{{ questionDetail.ai_source_ref }}</p>
         </div>
@@ -199,8 +204,8 @@
         <h4>社区回答（{{ questionDetail.answers?.length || 0 }}）</h4>
         <div v-for="a in questionDetail.answers" :key="a.id" class="answer-item">
           <div class="a-head">
-            <span :class="{ 'is-ai': a.is_ai_answer }">{{ a.is_ai_answer ? "AI" : `用户 #${a.user_id}` }}</span>
-            <el-button size="small" text type="warning" @click="verify(a.id)">AI纠错检测</el-button>
+            <span :class="{ 'is-ai': a.is_ai_answer }">{{ a.is_ai_answer ? "衣溯" : `用户 #${a.user_id}` }}</span>
+            <el-button size="small" text type="warning" @click="verify(a.id)">勘误检测</el-button>
           </div>
           <p class="a-content">{{ a.content }}</p>
           <p v-if="a.source_ref" class="ai-ref">引用：{{ a.source_ref }}</p>
@@ -219,31 +224,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute, useRouter, RouterLink } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { createQuestion, fetchAiChat, fetchAiRecommend, fetchQuestions, fetchQuestionDetail, addAnswer, aiVerifyAnswer, fetchWebSearch, questionToPost, deleteQuestion, fetchMe } from "@/api/modules";
 import PageHero from "@/components/PageHero.vue";
+import AiModelSelect from "@/components/AiModelSelect.vue";
 import { useUserStore } from "@/store/user";
 
 const router = useRouter();
 const userStore = useUserStore();
 const toPosting = ref(false);
 
-/* ---- 对话式溯源问答 ---- */
-const CHAT_KEY = "yisu_aiqa_chat_v1";
+/* ---- 对话式溯源问答：按用户隔离，登录用户各自一份，未登录为 guest ---- */
 const WEBQA_KEY = "yisu_aiqa_webqa_v1";
+let currentChatKey = "yisu_aiqa_chat_v1_guest";
+
+function chatKeyFor(uid: number | null | undefined) {
+  return uid ? `yisu_aiqa_chat_v1_u${uid}` : "yisu_aiqa_chat_v1_guest";
+}
 
 function loadChat(): any[] {
-  try { const v = JSON.parse(localStorage.getItem(CHAT_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch { return []; }
+  try { const v = JSON.parse(localStorage.getItem(currentChatKey) || "[]"); return Array.isArray(v) ? v : []; } catch { return []; }
 }
 function persistChat() {
-  try { localStorage.setItem(CHAT_KEY, JSON.stringify(chatMsgs.value.slice(-60))); } catch { /* ignore */ }
+  try { localStorage.setItem(currentChatKey, JSON.stringify(chatMsgs.value.slice(-60))); } catch { /* ignore */ }
+}
+
+/** 切换登录身份后：换 key 并重载该用户自己的对话记录 */
+function switchChatScope(uid: number | null | undefined) {
+  const next = chatKeyFor(uid);
+  if (next === currentChatKey) return;
+  currentChatKey = next;
+  chatMsgs.value = loadChat();
+  scrollChat();
 }
 
 const chatInput = ref("");
+const aiModelId = ref("");
 const chatting = ref(false);
-const chatMsgs = ref<any[]>(loadChat());
+const chatMsgs = ref<any[]>([]);
 const chatBox = ref<HTMLElement | null>(null);
 const pendingImage = ref("");
 const lookupCode = ref("");
@@ -292,7 +312,7 @@ const questionDetail = ref<any>(null);
 const myAnswer = ref("");
 const myUserId = ref<number | null>(null);
 
-/** 登录后获取当前用户 id，用于显示"仅自己的问题可删除" */
+/** 登录后获取当前用户 id，用于显示"仅自己的问题可删除"，并切换到该用户独立的对话记录 */
 onMounted(async () => {
   if (userStore.token) {
     try {
@@ -300,6 +320,17 @@ onMounted(async () => {
       myUserId.value = me?.id ?? null;
     } catch { /* 忽略 */ }
   }
+  switchChatScope(myUserId.value);
+});
+
+// 登录/登出切换时，立即换到对应身份的对话记录
+watch(() => userStore.token, async (tok) => {
+  if (tok) {
+    try { const me: any = await fetchMe(); myUserId.value = me?.id ?? null; } catch { /* ignore */ }
+  } else {
+    myUserId.value = null;
+  }
+  switchChatScope(myUserId.value);
 });
 
 function scrollChat() {
@@ -379,7 +410,7 @@ async function sendChat() {
   chatting.value = true;
   try {
     const history = chatMsgs.value.slice(0, -1).map((m) => ({ role: m.role, content: m.content }));
-    const res: any = await fetchAiChat({ question: q, history, image_base64: b64 });
+    const res: any = await fetchAiChat({ question: q, history, image_base64: b64, model: aiModelId.value || undefined });
     chatMsgs.value.push({
       role: "assistant", content: res.answer, ref: res.source_ref,
       sources: res.sources || [], question: q, imageNote: res.image_note || "",
@@ -446,7 +477,7 @@ async function clearChat() {
     await ElMessageBox.confirm("确定清空全部对话记录吗？此操作不可恢复。", "清空对话", { type: "warning", confirmButtonText: "清空", cancelButtonText: "取消" });
   } catch { return; }
   chatMsgs.value = [];
-  try { localStorage.removeItem(CHAT_KEY); } catch { /* ignore */ }
+  try { localStorage.removeItem(currentChatKey); } catch { /* ignore */ }
   ElMessage.success("对话记录已清空");
 }
 
@@ -619,6 +650,8 @@ onMounted(async () => {
 .quick-desc { display: block; font-size: 11px; color: #999; line-height: 1.3; }
 @media (max-width: 768px) { .ai-quick-actions { grid-template-columns: repeat(2, 1fr); } }
 
+.chat-model-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.cmr-hint { font-size: 11px; color: #a08e6c; }
 .chat-input-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
 .chat-input-row .el-input { flex: 1; }
 .attach-btn {

@@ -52,3 +52,19 @@ bg_candidates/
 *.psd
 *.sketch
 
+# ===== 交付期临时工作目录与打包产物 =====
+_bak_strip_ai/
+_inbox/
+_shots/
+_i*/
+frontend/dist.tar.gz
+*.bak
+*.bak_*
+*.tar.gz
+
+# ===== 大体积站点素材（约 500MB，单独走服务器/网盘，不进 git）=====
+frontend/public/mus3d/
+frontend/public/mus-app/
+frontend/public/acc-assets/
+frontend/public/pattern-assets/
+

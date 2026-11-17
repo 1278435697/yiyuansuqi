@@ -1,6 +1,7 @@
 <script setup>
 import { nextTick, ref, watch } from 'vue';
 import { askLocal, SUGGESTIONS } from '../data/knowledge.js';
+import { aiModel } from '@/utils/aiModel';
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -32,13 +33,13 @@ const askBackend = async (question) => {
     const res = await fetch(`${API_BASE}/api/aiqa/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, history }),
+      body: JSON.stringify({ question, history, model: aiModel() || undefined }),
       signal: controller.signal,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!data || !data.answer) throw new Error('empty answer');
-    return { answer: data.answer, source: data.source_ref || data.source || 'AI 溯源知识库' };
+    return { answer: data.answer, source: data.source_ref || data.source || '溯源知识库' };
   } finally {
     clearTimeout(timer);
   }

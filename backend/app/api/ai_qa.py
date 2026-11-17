@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.ai_engine.graphrag_engine import graphrag_answer, graphrag_chat, graphrag_chat_stream
+from app.ai_engine.model_catalog import available_models, pick_model
 from app.ai_engine.query_terms import build_dictionary, dynasties_in, extract_terms
 from app.ai_engine.retrieval import retrieve
 from app.core.config import settings
@@ -32,10 +33,21 @@ class ChatIn(BaseModel):
     question: str
     history: list[dict] = []
     image_base64: str = ""   # 可选：截图/照片（data:image/...;base64, 纯 base64 均可）
+    model: str = ""          # 可选：指定大模型 id（见 GET /api/aiqa/models）
+
+
+@router.get("/models")
+def list_models():
+    """问答可切换的大模型列表。"""
+    return {
+        "items": available_models(),
+        "default": settings.LLM_MODEL,
+        "note": "智谱 glm 系与火山方舟豆包系并列同一个下拉，可平级切换；档位越高越慢、越稳、越少放飞。",
+    }
 
 
 def _describe_outfit_image(image_b64: str) -> str:
-    """调用豆包视觉模型描述服饰图片，返回结构化文字描述。失败返回空串。"""
+    """调用视觉模型描述服饰图片，返回结构化文字描述。失败返回空串。"""
     if not image_b64:
         return ""
     url = image_b64 if image_b64.startswith("data:image") else f"data:image/jpeg;base64,{image_b64}"
@@ -84,12 +96,13 @@ def ai_chat(body: ChatIn, db: Session = Depends(get_db)):
         image_note = _describe_outfit_image(body.image_base64)
         if image_note and not image_note.startswith("["):
             q = f"{q}\n[参考截图识别] {image_note}\n请结合这张截图/照片回答。" if q else f"请识别并介绍这张服饰截图：{image_note}"
-    rag = graphrag_chat(q, body.history or [], db=db)
+    rag = graphrag_chat(q, body.history or [], db=db, model=pick_model(body.model))
     return {
         "answer": rag["answer"],
         "source_ref": rag["source_ref"],
         "sources": rag["sources"],
         "image_note": image_note,
+        "model": pick_model(body.model) or settings.LLM_MODEL,
         "note": "AI 溯源对话：回答优先依据衣溯史料知识库；带截图时已先做视觉识别。仅供参考。",
     }
 
@@ -113,7 +126,7 @@ def ai_chat_stream(body: ChatIn, db: Session = Depends(get_db)):
         # 先推图识别结果（前端可在等待时展示）
         if note:
             yield f"event: meta\ndata: {_json.dumps({'image_note': note}, ensure_ascii=False)}\n\n"
-        for ev, data in graphrag_chat_stream(q, body.history or [], db=db):
+        for ev, data in graphrag_chat_stream(q, body.history or [], db=db, model=pick_model(body.model)):
             if ev == "meta":
                 yield f"event: meta\ndata: {data}\n\n"
             elif ev == "delta":

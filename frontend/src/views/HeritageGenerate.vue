@@ -1,21 +1,22 @@
 <template>
   <div class="heritage-page">
-    <!-- Hero：衣脉传承 -->
-    <section class="heritage-hero">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <span class="hero-kicker">衣冠上国 · 礼仪之邦</span>
-          <h2 class="hero-title">
-            <span v-for="(ch, i) in heroTitleChars" :key="i" class="ht-ch"
-                  :style="{ animationDelay: (0.18 + i * 0.06) + 's' }">{{ ch }}</span>
-          </h2>
-          <p class="hero-sub" style="animation-delay: .9s">黄帝垂衣裳而天下治，衣冠文明绵延五千载——让每一次溯源，都成为一次传承</p>
-          <p class="hero-sub sub2" style="animation-delay: 1.1s">浏览档案、参与问答、复刻复原，你的每一步都在为华夏衣冠续写当代注脚</p>
-        </div>
-        <div class="hero-seal" aria-hidden="true">承</div>
-      </div>
-      <div class="hero-fret" aria-hidden="true"></div>
-    </section>
+    <!-- Hero：衣脉传承（与档案页同款大横幅） -->
+    <PageHero grand
+      title="传承"
+      eyebrow-en="HERITAGE · 文化共创"
+      eyebrow-index="VOL. 传承"
+      kicker="衣脉永续"
+      sub="黄帝垂衣裳而天下治，衣冠文明绵延五千载——浏览档案、参与问答、复刻复原，你的每一步都在为华夏衣冠续写当代注脚。"
+      seal="承"
+      vertical="浏览 · 问答 · 复原 · 共创"
+      primary-label="开始传承" primary-href="#profile"
+      secondary-label="回档案" secondary-href="/archive"
+      :stats="[
+        { n: '04', l: '共创环节' },
+        { n: '绘', l: '画像生成' },
+        { n: '01', l: '传承誓言' },
+        { n: '∞', l: '注脚待续' },
+      ]" />
 
     <div class="heritage-layout">
       <!-- 左列：传承画像 + 承诺书 -->
@@ -79,7 +80,7 @@
             <pre class="plan-text">{{ plan }}</pre>
           </template>
           <div v-else class="plan-hint">
-            <p>从朝代脉络到形制裁剪，从纹样色彩到礼俗象征——AI 将结合你的溯源足迹，排布两周可执行的学习路径，每一程都落在衣冠之上。</p>
+            <p>从朝代脉络到形制裁剪，从纹样色彩到礼俗象征——系统将结合你的溯源足迹，排布两周可执行的学习路径，每一程都落在衣冠之上。</p>
             <p class="hint-sub">点击下方"生成个性化学习方案"即刻开启。</p>
           </div>
         </div>
@@ -122,11 +123,10 @@
 import { ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { useUserStore } from "@/store/user";
+import PageHero from "@/components/PageHero.vue";
 import { fetchHeritageProfile, generatePlan, generateCard, generateCommitment } from "@/api/modules";
 
 const userStore = useUserStore();
-/* 首屏开场：标题逐字浮现（空格用不换行空格保证字形动画） */
-const heroTitleChars = "衣脉传承 · 文化共创".split("").map((ch) => (ch === " " ? "\u00A0" : ch));
 const profile = ref<any>(null);
 const plan = ref("");
 const genPlan = ref(false);
@@ -196,66 +196,6 @@ onMounted(loadProfile);
 </script>
 
 <style scoped>
-/* ---- Hero ---- */
-.heritage-hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  background:
-    radial-gradient(1100px 360px at 85% -60%, rgba(185, 138, 47, .34), transparent 62%),
-    linear-gradient(135deg, #7e2418 0%, #a93226 55%, #b98a2f 130%);
-  color: #fff;
-  padding: 30px 34px 34px;
-  margin-bottom: 18px;
-  box-shadow: 0 10px 26px rgba(122, 58, 32, .22);
-}
-.hero-inner { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.hero-kicker {
-  display: inline-block; font-size: 12px; letter-spacing: 3px; opacity: 0;
-  animation: kickerIn .7s ease-out forwards;
-}
-@keyframes kickerIn {
-  from { opacity: 0; letter-spacing: 10px; }
-  to { opacity: .85; letter-spacing: 3px; }
-}
-.hero-title { margin: 8px 0 6px; font-size: 30px; letter-spacing: 2px; font-weight: 800; line-height: 1.35; }
-.ht-ch { display: inline-block; opacity: 0; transform: translateY(16px); animation: charIn .55s cubic-bezier(.22, .9, .3, 1.2) forwards; }
-@keyframes charIn {
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero-sub { margin: 0; font-size: 14px; opacity: 0; transform: translateY(10px); animation: subIn .7s ease-out forwards; }
-.hero-sub.sub2 { font-size: 12.5px; opacity: 0; margin-top: 4px; color: rgba(255, 255, 255, .82); }
-@keyframes subIn {
-  to { opacity: .92; transform: translateY(0); }
-}
-.hero-seal {
-  flex: none; width: 64px; height: 64px; border: 3px solid rgba(255, 255, 255, .85);
-  display: grid; place-items: center; border-radius: 10px; font-size: 30px; font-weight: 800;
-  transform: rotate(8deg); color: #ffe9c9; background: rgba(126, 36, 24, .35);
-  opacity: 0; animation: sealIn .8s cubic-bezier(.3, 1.4, .5, 1) .25s forwards, sealFloat 5s ease-in-out 1.4s infinite;
-}
-@keyframes sealIn {
-  0% { opacity: 0; transform: scale(.5) rotate(-24deg); }
-  60% { opacity: 1; transform: scale(1.12) rotate(12deg); }
-  100% { opacity: 1; transform: scale(1) rotate(8deg); }
-}
-@keyframes sealFloat {
-  0%, 100% { transform: rotate(8deg); }
-  50% { transform: rotate(11deg) translateY(-3px); }
-}
-.hero-fret {
-  position: absolute; inset: -40px; z-index: 1; pointer-events: none; opacity: .16;
-  background-image:
-    repeating-linear-gradient(45deg, transparent 0 18px, rgba(255, 255, 255, .5) 18px 20px),
-    repeating-linear-gradient(-45deg, transparent 0 18px, rgba(255, 255, 255, .5) 18px 20px);
-  mask-image: linear-gradient(to bottom, transparent, #000 40%);
-  animation: fretDrift 26s linear infinite;
-}
-@keyframes fretDrift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(40px, 40px, 0); }
-}
-
 /* ---- 布局 ---- */
 .heritage-layout { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 16px; align-items: start; }
 .heritage-col { display: grid; gap: 16px; }

@@ -1,7 +1,70 @@
 <template>
   <div class="archive-page acc-scope">
+    <!-- 实例详情：独立一页（/archive/inst/:no） -->
+    <template v-if="instNo">
+      <div v-if="instItem" class="inst-page">
+        <article class="ip-card">
+        <div class="ip-bar">
+          <button class="ip-back" type="button" @click="goBackList">← 返回档案</button>
+          <span class="ip-no">NO.{{ String(instItem.no).padStart(2, "0") }}</span>
+          <em class="ip-crumb">文物实例 · 第 {{ instIndex + 1 }} 件 / 共 {{ instItems.length }} 件</em>
+        </div>
+        <div class="ip-main">
+        <header class="ip-head">
+          <p class="ip-eyebrow">COSTUME ARCHIVE · 文物实例考证</p>
+          <h1 class="ip-title">{{ instItem.name }}</h1>
+          <p v-if="instItem.alias" class="ip-alias">{{ instItem.alias }}</p>
+          <div class="ip-meta">
+            <span v-if="instItem.period || instItem.dyn">{{ instItem.period || instItem.dyn }}</span>
+            <span v-if="instItem.era">· {{ instItem.era }}</span>
+            <span v-if="instItem.museum">· {{ instItem.museum }}</span>
+            <span v-if="instItem.idNo">· 文物号 {{ instItem.idNo }}</span>
+            <span v-if="instItem.srcType">· {{ instItem.srcType }}</span>
+            <span v-if="instItem.place">· {{ instItem.place }}</span>
+          </div>
+        </header>
+        <div class="ip-body">
+          <figure class="ip-figure">
+            <div class="ip-figure-frame">
+              <img
+                v-if="instItem.img && !instImgErr.has(instItem.no)"
+                :src="'/archive-book/' + instItem.img"
+                :alt="instItem.name"
+                @error="onInstImgErr(instItem.no)"
+              />
+              <div v-else class="ip-figure-empty">NO.{{ String(instItem.no).padStart(2, "0") }} · 暂无实物照片</div>
+            </div>
+            <figcaption v-if="instItem.imgCap">{{ instItem.imgCap }}</figcaption>
+          </figure>
+          <div class="ip-fields">
+            <div v-for="f in instPageFields" :key="f.k" class="ip-field">
+              <b>{{ f.l }}</b>
+              <p>{{ f.v }}</p>
+            </div>
+          </div>
+        </div>
+        <nav class="ip-nav">
+          <button v-if="instPrev" class="ip-nav-btn" type="button" @click="gotoInst(instPrev.no)">
+            ← NO.{{ String(instPrev.no).padStart(2, "0") }} {{ instPrev.name }}
+          </button>
+          <span v-else></span>
+          <button v-if="instNext" class="ip-nav-btn ip-nav-next" type="button" @click="gotoInst(instNext.no)">
+            NO.{{ String(instNext.no).padStart(2, "0") }} {{ instNext.name }} →
+          </button>
+        </nav>
+        </div>
+        </article>
+      </div>
+      <div v-if="!instItem" class="inst-missing">
+        <p v-if="!instItems.length">正在载入文物实例…</p>
+        <template v-else>
+          <p>没有找到 NO.{{ route.params.no }} 这一件实例</p>
+          <el-button size="small" @click="goBackList">返回档案</el-button>
+        </template>
+      </div>
+    </template>
     <!-- 档案列表模式 -->
-    <template v-if="!currentId">
+    <template v-else-if="!currentId">
       <PageHero grand
         title="档案"
         eyebrow-en="COSTUME ARCHIVE · 时空图谱"
@@ -12,16 +75,88 @@
         vertical="先秦 · 秦汉 · 魏晋 · 隋唐 · 两宋 · 明代 · 清代"
         primary-label="浏览本卷" primary-href="#catalog"
         secondary-label="看出土地图" secondary-href="/geomap"
-        :stats="[
-          { n: '09', l: '朝代卷帙' },
-          { n: '93', l: '全量条目' },
-          { n: '16', l: '本期服饰' },
-          { n: '08', l: '阅读板块' },
-        ]" />
-      <!-- 工具条：区块标题在左、朝代类别筛选与创建在右（控件不变，只换皮） -->
-      <div class="acc-toolbar">
-        <AccSectionHead no="档" kicker="服饰名录 · 五类" title="服饰档案" :sub="`共 ${total} 件`" />
-        <div class="acc-toolbar-tools">
+        :stats="heroStats" />
+      <!-- 服饰档案主区：文物实例（96 件实物）与款式类型（46 条）合并成一卷，页签切换 -->
+      <div id="catalog" class="acc-vault">
+        <div class="ib-head">
+          <span class="ib-tag">档</span>
+          <div class="ib-copy">
+            <b>服饰档案</b>
+            <em>{{ instItems.length }} 件文物实例 · {{ total }} 条款式类型 · 点实例进入七字段考证页</em>
+          </div>
+          <div v-if="vaultTab === 'inst'" class="ib-filter">
+            <button
+              v-for="e in instEras"
+              :key="e"
+              type="button"
+              class="ib-chip"
+              :class="{ on: instEra === e }"
+              @click="instSetEra(e)"
+            >
+              {{ e }}
+            </button>
+          </div>
+        </div>
+
+        <div class="acc-tabs" role="tablist">
+          <button class="acc-tab" :class="{ on: vaultTab === 'inst' }" type="button" @click="vaultTab = 'inst'">
+            文物实例 <em>{{ instItems.length }}</em>
+          </button>
+          <button class="acc-tab" :class="{ on: vaultTab === 'dress' }" type="button" @click="vaultTab = 'dress'">
+            款式类型 <em>{{ total }}</em>
+          </button>
+        </div>
+
+        <!-- 文物实例：实物照片 + 编号 + 朝代 · 馆藏；点开进入独立考证页 -->
+        <div v-if="vaultTab === 'inst'">
+          <div class="acc-toolbar">
+            <AccSectionHead title="文物实例" :sub="`共 ${instFiltered.length} 件`" size="sm" />
+            <div class="acc-toolbar-tools">
+              <el-select v-model="instEra" placeholder="按朝代" clearable size="small" style="width: 120px">
+                <el-option v-for="e in instEras" :key="e" :label="e" :value="e" />
+              </el-select>
+              <el-select v-model="instMuseum" placeholder="按馆藏" clearable size="small" style="width: 168px">
+                <el-option v-for="m in instMuseums" :key="m" :label="m" :value="m" />
+              </el-select>
+              <el-input v-model="instKey" placeholder="搜索名称 / 朝代 / 馆藏 / 编号 28" clearable size="small" style="width: 190px" />
+              <el-button size="small" type="danger" plain @click="openCreate">＋ 创建档案</el-button>
+            </div>
+          </div>
+          <div v-if="!instFiltered.length" class="ib-empty">没有匹配的实例，换个词试试</div>
+          <div class="ib-grid">
+            <button
+              v-for="it in instShown"
+              :key="it.no"
+              class="ib-card"
+              type="button"
+              @click="openInst(it)"
+            >
+              <span class="ib-pic" :class="{ empty: !it.img || instImgErr.has(it.no) }">
+                <img
+                  v-if="it.img && !instImgErr.has(it.no)"
+                  :src="'/archive-book/' + it.img"
+                  :alt="it.name"
+                  @error="onInstImgErr(it.no)"
+                />
+                <i v-else>NO.{{ it.no }}</i>
+              </span>
+              <span class="ib-no">NO.{{ String(it.no).padStart(2, "0") }}</span>
+              <b class="ib-name">{{ it.name }}</b>
+              <em class="ib-meta">{{ it.dyn }}{{ it.museum ? " · " + it.museum : "" }}</em>
+            </button>
+          </div>
+          <div v-if="instFiltered.length > 16" class="ib-foot">
+            <button class="ib-more" type="button" @click="instMore = !instMore">
+              {{ instMore ? "收起" : `展开全部 ${instFiltered.length} 件 ↓` }}
+            </button>
+          </div>
+        </div>
+
+        <!-- 款式类型：工具条 + 用户作品 + 全网结果 + 46 条卡片 -->
+        <div v-else>
+          <div class="acc-toolbar">
+            <AccSectionHead title="款式类型" :sub="`共 ${total} 件`" size="sm" />
+            <div class="acc-toolbar-tools">
           <el-select v-model="dynasty" placeholder="按朝代" clearable size="small" style="width: 120px" @change="load">
             <el-option v-for="e in eras" :key="e.name" :label="e.name" :value="e.name" />
           </el-select>
@@ -128,23 +263,16 @@
                  :image="c.image_url" :alt="c.name" :meta="c.dynasty" :summary="c.description"
                  :no="`${pad(i + 1)} / ${total}`" :volume="c.category"
                  :tags="cardTags(c)" :badge="c.created_by || c.source_type === '用户创建' ? '用户创建' : ''"
-                 :tone="toneOf(c.category)" link-text="阅档案" @open="openSplit(c)">
+                 :tone="toneOf(c.category)" link-text="阅档案" @open="gotoDetail(c)">
           <template #actions>
             <el-button v-if="c.source_type === '用户创建'" size="small" text type="danger" class="del-btn"
                        @click.stop="removeCostume(c)">删除</el-button>
           </template>
         </AccCard>
         <el-empty v-if="!loading && !costumes.length" description="暂无档案，稍后接入数据后展示" />
+          </div>
+        </div>
       </div>
-
-      <!-- 点击卡片：主图从中心放大、分裂翻转成三张素材卡片，点击任意一张进入详情 -->
-      <SplitReveal
-        :visible="splitVisible"
-        :title="splitTitle"
-        :cards="splitCards"
-        @close="splitVisible = false"
-        @select="onSplitSelect"
-      />
     </template>
 
     <!-- 档案详情模式（衣冠卷面排版：主栏分节 + 右栏基础信息与 AI 对话） -->
@@ -230,7 +358,7 @@
             </el-descriptions>
           </div>
           <div class="acc-aside-card chat-card">
-            <AccSectionHead title="AI 第一人称对话" size="sm" />
+            <AccSectionHead title="第一人称对话" size="sm" />
             <div class="chat-box" ref="chatBox">
               <div v-for="(m, i) in messages" :key="i" class="chat-msg" :class="m.role">
                 <div class="chat-bubble">{{ m.content }}</div>
@@ -259,11 +387,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { fetchCostumes, fetchCostumeDetail, fetchEras, chatWithCostume, fetchArchiveWebSearch, createCostume, deleteCostume } from "@/api/modules";
+import { aiModel } from "@/utils/aiModel";
 import PageHero from "@/components/PageHero.vue";
-import SplitReveal from "@/components/SplitReveal.vue";
 import AccCard from "@/components/acc/AccCard.vue";
 import AccSectionHead from "@/components/acc/AccSectionHead.vue";
 import AccSecHead from "@/components/acc/AccSecHead.vue";
@@ -273,60 +401,131 @@ import { ElMessage, ElMessageBox } from "element-plus";
 const route = useRoute();
 const router = useRouter();
 
+/* ---------------- 96 件文物实例（同源 instances.json，点开页内展开七字段详情） ---------------- */
+interface InstItem {
+  no: number;
+  name: string;
+  alias?: string;
+  dyn?: string;
+  era?: string;
+  period?: string;
+  place?: string;
+  museum?: string;
+  srcType?: string;
+  idNo?: string;
+  craft?: string[];
+  img?: string;
+  imgCap?: string;
+  caption?: string;
+  fields?: Record<string, string>;
+}
+const instItems = ref<InstItem[]>([]);
+const instEra = ref("");
+const instEras = computed(() => {
+  const counts = new Map<string, number>();
+  instItems.value.forEach((i) => { if (i.era) counts.set(i.era, (counts.get(i.era) || 0) + 1); });
+  return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 7).map((kv) => kv[0]);
+});
+const instMore = ref(false);
+const instKey = ref("");
+const instMuseum = ref("");
+/** 馆藏下拉：取出现最多的 12 家，避免下拉过长 */
+const instMuseums = computed(() => {
+  const counts = new Map<string, number>();
+  instItems.value.forEach((i) => { if (i.museum) counts.set(i.museum, (counts.get(i.museum) || 0) + 1); });
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map((kv) => kv[0]);
+});
+/** 图片 404 兜底：加载失败就显示编号占位，不留黑块 */
+const instImgErr = ref<Set<number>>(new Set());
+function onInstImgErr(no: number) {
+  const next = new Set(instImgErr.value);
+  next.add(no);
+  instImgErr.value = next;
+}
+const vaultTab = ref<"inst" | "dress">("inst");
+const instFiltered = computed(() => {
+  let list = instItems.value;
+  if (instEra.value) list = list.filter((i) => i.era === instEra.value);
+  if (instMuseum.value) list = list.filter((i) => i.museum === instMuseum.value);
+  const raw = instKey.value.trim();
+  if (!raw) return list;
+  // 编号检索：去掉 NO. / # / 编号 前缀后若为纯数字，先按档案编号命中，再退到文物号包含
+  const key = raw.replace(/^\s*(no\.?|#|编号|档案号)\s*/i, "").replace(/\s+/g, "");
+  const noStr = (n: number) => `NO.${String(n).padStart(2, "0")}`;
+  if (/^\d+$/.test(key)) {
+    const n = Number(key);
+    const hitNo = list.filter((i) => i.no === n);
+    // 编号能精确命中就只给那一件；命不中才退到「文物号包含」的兜底
+    if (hitNo.length) return hitNo;
+    return list.filter((i) => (i.idNo || "").replace(/\s+/g, "").includes(key));
+  }
+  const kw = raw.toLowerCase();
+  return list.filter((i) =>
+    [i.name, i.alias, i.dyn, i.era, i.museum, i.place, i.idNo, noStr(i.no), i.craft?.join(" ")]
+      .filter(Boolean).join(" ").toLowerCase().includes(kw)
+  );
+});
+const instShown = computed(() => (instMore.value ? instFiltered.value : instFiltered.value.slice(0, 16)));
+/** hero 统计：跟着实际数据走，实例 96、款式 46，数据未到时先用兜底数 */
+const heroStats = computed(() => [
+  { n: "09", l: "朝代卷帙" },
+  { n: String(instItems.value.length || 96), l: "文物实例" },
+  { n: String(total.value || 46), l: "款式类型" },
+  { n: "08", l: "阅读板块" },
+]);
+function instSetEra(e: string) {
+  instEra.value = instEra.value === e ? "" : e;
+  instMore.value = false;
+}
+
+/* 实例详情独立页：形制／穿着者／来源／面料／纹样／服色／同群器物 七字段 */
+function buildFields(it: InstItem) {
+  const f = it.fields || {};
+  const rows: Array<{ k: string; l: string; v: string }> = [
+    { k: "form", l: "形制", v: f.form || "" },
+    { k: "wearer", l: "穿着者", v: f.wearer || "" },
+    { k: "source", l: "来源", v: f.source || "" },
+    { k: "fabric", l: "面料", v: f.fabric || "" },
+    { k: "pattern", l: "纹样", v: f.pattern || "" },
+    { k: "color", l: "服色", v: f.color || "" },
+    { k: "group", l: "同群器物", v: f.group || "" },
+    { k: "note", l: "备注", v: f.note || "" },
+  ].filter((r) => r.v);
+  if (it.caption) {
+    rows.push({ k: "caption", l: "款式说明", v: it.caption });
+  }
+  return rows;
+}
+
+/* 路由 /archive/inst/:no → 独立详情页 */
+const instNo = computed(() => {
+  if (route.name !== "archive-inst") return 0;
+  const n = Number(route.params.no);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+});
+const instItem = computed(() => instItems.value.find((i) => i.no === instNo.value) || null);
+const instIndex = computed(() => instItems.value.findIndex((i) => i.no === instNo.value));
+const instPrev = computed(() => (instIndex.value > 0 ? instItems.value[instIndex.value - 1] : null));
+const instNext = computed(() => (instIndex.value >= 0 && instIndex.value < instItems.value.length - 1 ? instItems.value[instIndex.value + 1] : null));
+const instPageFields = computed(() => (instItem.value ? buildFields(instItem.value) : []));
+function gotoInst(no: number) {
+  router.push(`/archive/inst/${no}`);
+}
+function openInst(it: InstItem) {
+  listScrollY = window.scrollY;
+  router.push(`/archive/inst/${it.no}`);
+}
+
 const costumes = ref<any[]>([]);
 const detail = ref<any>(null);
 
-/* 点击卡片：主图从中心放大、分裂翻转成三张素材卡片 */
-const splitVisible = ref(false);
-const splitTitle = ref("");
-const splitCards = ref<any[]>([]);
-let splitTarget: any = null;
-function openSplit(c: any) {
-  splitTarget = c;
-  splitTitle.value = `${c.name} · 素材档案`;
-  const dd = COSTUME_DETAILS[c.name] || {};
-  const ex = EXTRA_IMAGES[c.name] || {};
-  const sections = dd.sections || [];
-  // 去重取图：三张卡绝不重复，池子充足时优先"实例→形制→史料"
-  const used: string[] = [];
-  const pick = (...cands: Array<string | undefined>) => {
-    for (const cnd of cands) {
-      if (cnd && !used.includes(cnd)) { used.push(cnd); return cnd; }
-    }
-    return undefined;
-  };
-  splitCards.value = [
-    {
-      image: pick(dd.relicImage, c.image_url, ex.structure, ex.literature),
-      kicker: "权威实例图",
-      title: c.name,
-      text: dd.relicCaption || "出土实物 / 传世文献对应的权威实例。",
-    },
-    {
-      image: pick(ex.structure, ex.literature, dd.relicImage, c.image_url),
-      kicker: "形制结构",
-      title: "形制 · 面料 · 纹样",
-      text: c.description || "（暂无形制说明）",
-      list: [
-        { label: "穿着者", value: c.wearer || "待考" },
-        { label: "面料", value: c.fabric || "待考" },
-        { label: "纹样", value: c.pattern || "待考" },
-        { label: "服色", value: c.color || "待考" },
-      ],
-    },
-    {
-      image: pick(ex.literature, ex.structure, c.image_url, dd.relicImage),
-      kicker: "史料详析",
-      title: "考据文本",
-      text: (sections[0]?.body || "史料整理中。").slice(0, 80) + (sections.length ? "…" : ""),
-      list: sections.slice(0, 3).map((s: any) => ({ label: s.title, value: s.body.slice(0, 26) + "…" })),
-    },
-  ];
-  splitVisible.value = true;
-}
-function onSplitSelect() {
-  splitVisible.value = false;
-  if (splitTarget) router.push(`/archive/${splitTarget.id}`);
+/* 点击卡片直接进入档案详情（不再经过「素材档案」三卡选择层） */
+function gotoDetail(c: any) {
+  window.scrollTo({ top: 0 });
+  router.push(`/archive/${c.id}`);
 }
 const eras = ref<any[]>([]);
 const categories = ["上衣", "下裳", "首服", "配饰", "袍服"];
@@ -359,8 +558,8 @@ const createForm = ref({
 function openCreate() {
   const token = localStorage.getItem("yisu_token") || localStorage.getItem("token") || "";
   if (!token) {
-    ElMessage.warning("请先登录，再创建档案");
-    router.push("/login");
+    ElMessage.warning("创建档案需要先登录，正在打开登录页");
+    router.push({ path: "/user", query: { redirect: "/archive" } });
     return;
   }
   createForm.value = { name: "", dynasty: "", category: "", wearer: "", source_type: "用户创建", fabric: "", pattern: "", color: "", description: "", image_url: "" };
@@ -401,7 +600,11 @@ const webResults = ref<any[]>([]);
 const webLoading = ref(false);
 const webError = ref("");
 const webQuery = ref("");
-const currentId = ref<number | null>(null);
+/* 直接由路由派生，避免 push 后视图不切换 */
+const currentId = computed(() => {
+  const id = Number(route.params.id);
+  return Number.isFinite(id) && id > 0 ? id : null;
+});
 const messages = ref<any[]>([]);
 const question = ref("");
 const chatLoading = ref(false);
@@ -885,7 +1088,7 @@ async function sendChat() {
   question.value = "";
   chatLoading.value = true;
   try {
-    const res: any = await chatWithCostume(currentId.value, q);
+    const res: any = await chatWithCostume(currentId.value, q, aiModel() || undefined);
     messages.value.push({ role: "assistant", content: res.answer, source: res.source_ref });
   } finally {
     chatLoading.value = false;
@@ -894,11 +1097,14 @@ async function sendChat() {
 }
 
 onMounted(async () => {
+  // 96 件文物实例：与图册同源，仅列表页展示（详情走 /archive/inst/:no）
+  fetch("/archive-book/instances.json", { cache: "no-cache" })
+    .then((r) => (r.ok ? r.json() : []))
+    .then((d) => { if (Array.isArray(d)) instItems.value = d; })
+    .catch(() => {});
   eras.value = ((await fetchEras() as any).eras || []);
-  const id = Number(route.params.id);
-  if (id) {
-    currentId.value = id;
-    loadDetail(id);
+  if (currentId.value) {
+    loadDetail(currentId.value);
   } else {
     load();
     loadUserWorks();
@@ -910,9 +1116,22 @@ onMounted(async () => {
 });
 
 watch(() => route.params.id, (id) => {
-  currentId.value = id ? Number(id) : null;
   if (id) loadDetail(Number(id));
   else load();
+});
+
+/* 进出实例考证页：进入时回到顶部，返回时还原列表滚动位置 */
+let listScrollY = 0;
+watch(() => route.fullPath, () => {
+  if (instNo.value) window.scrollTo({ top: 0 });
+});
+async function goBackList() {
+  await router.push("/archive");
+  requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: listScrollY })));
+}
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = "";
 });
 </script>
 
@@ -954,7 +1173,7 @@ watch(() => route.params.id, (id) => {
 .sec-title { margin: 0 0 6px; font-size: 14px; color: var(--acc-red, #7a221c); letter-spacing: 1px; }
 .sec-body { margin: 0; color: var(--acc-ink-2, #5c4c3a); line-height: 1.85; font-size: 13.5px; }
 
-/* AI 第一人称对话（随右栏一起 sticky） */
+/* 第一人称对话（随右栏一起 sticky） */
 .chat-box { margin-top: 10px; height: 340px; overflow-y: auto; border: 1px solid var(--acc-line, #e6dcc8); border-radius: 8px; padding: 12px; background: var(--acc-card-solid, #fffdf8); display: flex; flex-direction: column; gap: 10px; }
 .chat-msg { display: flex; flex-direction: column; }
 .chat-msg.user { align-items: flex-end; }
@@ -989,5 +1208,154 @@ watch(() => route.params.id, (id) => {
 
 @media (max-width: 900px) {
   .detail-layout { grid-template-columns: 1fr; }
+}
+
+/* ---- 服饰档案主区：文物实例 + 款式类型并成一卷，页签切换 ---- */
+.acc-vault { margin: 0 0 30px; padding: 0; border: none; background: none; }
+.acc-tabs {
+  display: flex; gap: 4px; margin: 6px 0 20px;
+  border-bottom: 1px solid rgba(122, 34, 28, .16);
+}
+.acc-tab {
+  cursor: pointer; font-family: inherit; font-size: 14.5px; letter-spacing: .08em;
+  padding: 9px 18px 11px; margin-bottom: -1px; color: #7a6a55; background: none; border: none;
+  border-bottom: 2px solid transparent; transition: .16s;
+}
+.acc-tab em { font-style: normal; font-size: 12px; color: #a58c5c; margin-left: 5px; }
+.acc-tab:hover { color: #7a221c; }
+.acc-tab.on { color: #7a221c; border-bottom-color: #7a221c; font-weight: 600; }
+.acc-tab.on em { color: #7a221c; }
+.ib-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.ib-tag {
+  flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 3px;
+  font-size: 14px; color: #fdf3dd; background: linear-gradient(140deg, #7a221c, #a5302a);
+  box-shadow: inset 0 0 0 1px rgba(201, 162, 39, .4);
+}
+.ib-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 320px; }
+.ib-copy b { font-size: 16.5px; letter-spacing: .05em; color: var(--acc-red, #7a221c); }
+.ib-copy em { font-style: normal; font-size: 12px; line-height: 1.6; color: var(--acc-ink-3, #94836d); }
+.ib-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+.ib-chip {
+  cursor: pointer; font-family: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px;
+  color: #7a6a55; background: rgba(255, 255, 255, .68);
+  border: 1px solid rgba(122, 34, 28, .18); transition: .16s;
+}
+.ib-chip:hover { border-color: rgba(122, 34, 28, .4); color: #7a221c; }
+.ib-chip.on { color: #fdf3dd; background: linear-gradient(140deg, #7a221c, #a5302a); border-color: rgba(201, 162, 39, .5); }
+.ib-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); gap: 16px;
+}
+.ib-card {
+  cursor: pointer; text-align: left; font-family: inherit; text-decoration: none; color: inherit;
+  box-sizing: border-box;
+  padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, .86);
+  border: 1px solid rgba(201, 162, 39, .26); transition: .18s;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ib-card:hover { transform: translateY(-3px); border-color: rgba(122, 34, 28, .4); box-shadow: 0 8px 22px rgba(90, 60, 30, .16); }
+.ib-pic {
+  position: relative; display: grid; place-items: center; width: 100%; height: 224px;
+  border-radius: 5px; overflow: hidden; background: #241d16;
+}
+.ib-pic img { width: 100%; height: 100%; object-fit: cover; }
+.ib-pic i { font-style: normal; font-size: 12px; letter-spacing: .1em; color: rgba(214, 176, 106, .9); }
+.ib-pic.empty { background: linear-gradient(150deg, #f7f0e2, #efe6d6); }
+.ib-pic.empty i { color: #a58c5c; }
+.ib-no { font-size: 11px; letter-spacing: .16em; color: #a58c5c; }
+.ib-name {
+  font-size: 14px; line-height: 1.4; color: #3b2b20; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ib-meta { font-style: normal; font-size: 11.5px; color: #94836d; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ib-foot { display: flex; justify-content: center; margin: 22px 0 2px; }
+.ib-more {
+  cursor: pointer; font-family: inherit; font-size: 13px; letter-spacing: .08em;
+  padding: 8px 22px; border-radius: 999px; color: #7a221c; background: rgba(255, 255, 255, .8);
+  border: 1px solid rgba(122, 34, 28, .28); transition: .16s;
+}
+.ib-more:hover { background: linear-gradient(140deg, #7a221c, #a5302a); color: #fdf3dd; border-color: rgba(201, 162, 39, .5); }
+
+/* 实例工具条已并入 .acc-toolbar（与款式类型同款），仅保留空态 */
+.ib-empty { padding: 44px 0; text-align: center; font-size: 13px; letter-spacing: .06em; color: #94836d; }
+
+/* ---- 实例详情独立页（/archive/inst/:no）：内容装进米纸卡片，避免文字压在页底纹样上 ---- */
+.inst-page { max-width: 1080px; margin: 26px auto 56px; padding: 0 4px; }
+
+.ip-card {
+  background: linear-gradient(180deg, #fdf9f0, #faf3e5);
+  border: 1px solid rgba(201, 162, 39, .42);
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(60, 32, 16, .12);
+}
+.ip-bar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 13px 22px; border-radius: 13px 13px 0 0;
+  background: linear-gradient(140deg, #7a221c, #a5302a); color: #f7e7c2;
+}
+.ip-back {
+  flex: none; cursor: pointer; font-family: inherit; font-size: 12px; letter-spacing: .06em;
+  color: #f7e7c2; background: rgba(255, 244, 214, .12);
+  border: 1px solid rgba(246, 231, 191, .42); border-radius: 999px; padding: 5px 13px;
+}
+.ip-back:hover { background: rgba(255, 244, 214, .26); }
+.ip-no { flex: none; font-size: 11.5px; letter-spacing: .16em; color: rgba(247, 231, 194, .82); }
+.ip-crumb { margin-left: auto; font-style: normal; font-size: 12px; letter-spacing: .08em; color: rgba(247, 231, 194, .7); }
+
+.ip-main { padding: 26px 36px 30px; }
+.ip-head { padding-bottom: 18px; border-bottom: 1px solid rgba(201, 162, 39, .38); }
+.ip-eyebrow { margin: 0; font-size: 11px; letter-spacing: .2em; color: #a58c5c; }
+.ip-title {
+  margin: 10px 0 6px; font-size: clamp(22px, 2.6vw, 30px); line-height: 1.35; letter-spacing: .05em;
+  color: #7a221c; font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", serif;
+}
+.ip-alias { margin: 0 0 9px; font-size: 12.5px; letter-spacing: .04em; color: #8a755a; }
+.ip-meta { display: flex; gap: 4px 6px; flex-wrap: wrap; font-size: 12.5px; line-height: 1.8; color: #6b5844; }
+
+.ip-body {
+  display: grid; grid-template-columns: minmax(0, 396px) minmax(0, 1fr); gap: 38px;
+  margin-top: 26px; align-items: start;
+}
+.ip-figure { margin: 0; position: sticky; top: 84px; align-self: start; }
+.ip-figure-frame {
+  border-radius: 8px; overflow: hidden; background: #fff;
+  border: 1px solid rgba(201, 162, 39, .32);
+  box-shadow: 0 10px 26px rgba(60, 32, 16, .1);
+}
+.ip-figure-frame img { display: block; width: 100%; height: auto; max-height: 540px; object-fit: contain; background: #fdf8ec; }
+.ip-figure-empty {
+  display: grid; place-items: center; height: 320px;
+  font-size: 13px; letter-spacing: .1em; color: #a58c5c;
+  background: linear-gradient(150deg, #f7f0e2, #efe6d6);
+}
+.ip-figure figcaption { margin-top: 10px; font-size: 11.5px; line-height: 1.75; color: #94836d; }
+
+.ip-fields { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.ip-field { padding-left: 14px; border-left: 2px solid rgba(122, 34, 28, .18); }
+.ip-field b { display: block; margin-bottom: 5px; font-size: 12.5px; letter-spacing: .14em; color: #9e2b25; }
+.ip-field p { margin: 0; font-size: 14px; line-height: 2; color: #3f3126; }
+
+.ip-nav {
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  margin-top: 34px; padding-top: 18px; border-top: 1px solid rgba(201, 162, 39, .32);
+}
+.ip-nav-btn {
+  cursor: pointer; font-family: inherit; font-size: 12.5px; letter-spacing: .04em; line-height: 1.6;
+  color: #7a221c; background: rgba(255, 255, 255, .8);
+  border: 1px solid rgba(122, 34, 28, .26); border-radius: 999px; padding: 7px 16px;
+  max-width: 47%; text-align: left;
+}
+.ip-nav-btn:hover { background: #fff; border-color: rgba(122, 34, 28, .5); }
+.ip-nav-next { margin-left: auto; text-align: right; }
+
+.inst-missing { padding: 96px 0; text-align: center; color: #7d6a52; font-size: 14px; letter-spacing: .06em; }
+.inst-missing .el-button { margin-top: 14px; }
+
+@media (max-width: 860px) {
+  .inst-page { margin: 16px auto 40px; }
+  .ip-main { padding: 20px 18px 24px; }
+  .ip-body { grid-template-columns: 1fr; gap: 22px; }
+  .ip-figure { position: static; }
+  .ip-figure-frame img { max-height: 360px; }
+  .ip-nav-btn { max-width: 100%; }
 }
 </style>

@@ -29,7 +29,7 @@
         <div class="stage-head">
           <h3>{{ currentStage.dynasty }} <span>{{ currentStage.year }}</span></h3>
           <span class="stage-counts">
-            档案 {{ currentStage.costume_count }} 件 · 文物 {{ currentStage.relic_count }} 件
+            款式 {{ currentStage.costume_count }} 件 · 实物实例 {{ instCount }} 件
           </span>
         </div>
 
@@ -120,9 +120,29 @@
           </div>
         </div>
 
+        <!-- 文物实例（NO.01—96 图册，与档案页实例库同源） -->
+        <div class="stage-inst" v-if="eraInstances.length">
+          <h4 class="ys-title">
+            文物实例 · {{ eraInstances.length }} 件
+            <span class="inst-hint">NO.01—96 编号体系 · 点开看逐件考证</span>
+          </h4>
+          <div class="inst-grid">
+            <button v-for="it in eraInstances" :key="it.no" class="inst-card" type="button"
+                    @click="$router.push(`/archive/inst/${it.no}`)">
+              <span class="inst-pic">
+                <img v-if="it.img" :src="'/archive-book/' + it.img" :alt="it.name"
+                     @error="$event.target.style.display='none'" />
+                <i>NO.{{ String(it.no).padStart(2, "0") }}</i>
+              </span>
+              <b class="inst-name">{{ it.name }}</b>
+              <em class="inst-meta">{{ it.dyn }}{{ it.museum ? " · " + it.museum : "" }}</em>
+            </button>
+          </div>
+        </div>
+
         <!-- 出土文物 -->
         <div class="stage-relics" v-if="detail?.relics?.length">
-          <h4 class="ys-title">出土文物 · {{ detail.relics.length }} 件</h4>
+          <h4 class="ys-title">出土记录 · {{ detail.relics.length }} 件 <span class="inst-hint">点开在地图上定位</span></h4>
           <div v-for="r in detail.relics" :key="r.id" class="relic-card" @click="$router.push(`/geomap?relic=${r.id}`)">
             <div class="relic-row">
               <b>{{ r.name }}</b>
@@ -177,6 +197,27 @@ const scrollEl = ref<HTMLDivElement>();
 const trackWidth = computed(() => `${stages.value.length * 220 + 80}px`);
 const currentStage = computed(() => stages.value[selected.value]);
 
+/* 文物实例图册（public/archive-book/instances.json，96 件，与档案页实例库同源）
+   时间轴朝代 → 图册 era 字段的对应关系 */
+const instances = ref<any[]>([]);
+const ERA_KEY: Record<string, string> = {
+  上古: "",
+  先秦: "先秦",
+  秦汉: "汉",
+  魏晋: "魏晋南北朝",
+  隋唐: "隋唐",
+  宋: "宋辽金",
+  元: "元",
+  明: "明",
+  清: "清",
+};
+const eraInstances = computed(() => {
+  const key = ERA_KEY[currentStage.value?.dynasty] || "";
+  if (!key) return [];
+  return instances.value.filter((it) => it.era === key);
+});
+const instCount = computed(() => eraInstances.value.length || currentStage.value?.relic_count || 0);
+
 function nodeStyle(i: number) {
   return { left: `${i * 220 + 40}px` };
 }
@@ -201,6 +242,11 @@ async function loadDetail() {
 
 onMounted(async () => {
   loading.value = true;
+  // 实例图册与后端时间轴并行拉取，图册失败不影响主流程
+  fetch("/archive-book/instances.json")
+    .then((r) => r.json())
+    .then((d) => { if (Array.isArray(d)) instances.value = d; })
+    .catch(() => {});
   try {
     const data: any = await fetchTimeline();
     stages.value = data.stages;
@@ -317,6 +363,31 @@ onMounted(async () => {
 .cc-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--ys-ink-3); }
 .cc-foot { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ys-ink-3); border-top: 1px dashed var(--ys-line); padding-top: 6px; }
 .cc-foot i { font-style: normal; color: var(--ys-red-deep); margin-left: auto; }
+
+/* 文物实例网格（NO.01—96 图册） */
+.stage-inst { margin: 6px 0 16px; }
+.inst-hint { font-style: normal; font-weight: 400; font-size: 12px; color: var(--ys-ink-3); margin-left: 10px; }
+.inst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 12px; margin-top: 10px; }
+.inst-card {
+  border: 1px solid var(--ys-line); background: #fffdf8; border-radius: 10px; padding: 0;
+  overflow: hidden; cursor: pointer; text-align: left; display: flex; flex-direction: column;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.inst-card:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(122, 75, 42, .14); }
+.inst-pic { position: relative; display: block; aspect-ratio: 4 / 3; background: #f3ead8; overflow: hidden; }
+.inst-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.inst-pic i {
+  position: absolute; left: 8px; bottom: 6px; font-style: normal; font-size: 11px;
+  color: #fff; background: rgba(122, 34, 28, .78); border-radius: 3px; padding: 1px 6px; letter-spacing: .5px;
+}
+.inst-name {
+  font-size: 13px; color: var(--ys-ink); padding: 8px 10px 0; line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.inst-meta {
+  font-style: normal; font-size: 11px; color: var(--ys-ink-3); padding: 4px 10px 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 .stage-relics { margin: 6px 0 16px; }
 .relic-card { border-left: 3px solid var(--ys-red); background: #f6efe4; border-radius: 6px; padding: 8px 14px; margin-bottom: 8px; cursor: pointer; transition: background 0.15s; }

@@ -21,6 +21,9 @@ SILK_BASE = "https://www.chinasilkmuseum.com"
 GUGONG_HOME = "https://www.dpm.org.cn/"
 GUGONG_DYNAMIC = "https://www.dpm.org.cn/about/dynamic.html"
 GUGONG_BASE = "https://www.dpm.org.cn"
+# 中国非物质文化遗产网（文旅部主管）：非遗 / 传统工艺 / 织绣染织资讯，更新较勤
+IHCHINA_LIST = "https://www.ihchina.cn/news"
+IHCHINA_BASE = "https://www.ihchina.cn"
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 MAX_NEW = 80          # 每轮最多入库条数
@@ -201,6 +204,66 @@ def fetch_gugong_list():
     return items
 
 
+# 纯政务/流程类标题关键词（非遗网里常见，无资讯价值）
+IHCHINA_BAN = (
+    "新闻发布会", "政策解读", "征求意见", "公示", "招募",
+    "征集公告", "中标", "招标", "培训通知", "会议通知",
+)
+
+
+def fetch_ihchina_list():
+    """抓中国非物质文化遗产网资讯列表：标题 + 日期 + 缩略图，近半年内。
+
+    该站为文旅部主管权威源，内容天然围绕非遗 / 传统工艺，不再做服饰词过滤。
+    """
+    seen, items = set(), []
+    now = datetime.datetime.now()
+    try:
+        html = _get(IHCHINA_LIST)
+    except Exception:
+        return items
+    for m in re.finditer(
+        r'<a[^>]+href="(/news_details/\d+\.html)"[^>]*>(.*?)</a>', html, re.S
+    ):
+        link = m.group(1)
+        title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", m.group(2))).strip()
+        if not re.search(r"[\u4e00-\u9fff]", title) or len(title) < 6:
+            continue
+        if link in seen:
+            continue
+        seen.add(link)
+        if any(w in title for w in BAN_WORDS) or any(w in title for w in IHCHINA_BAN):
+            continue
+        dm = re.search(r"(20\d{2})[-./年](\d{1,2})[-./月](\d{1,2})", html[m.end():m.end() + 300])
+        date = None
+        if dm:
+            try:
+                date = datetime.datetime.strptime(
+                    "%s-%s-%s" % (dm.group(1), dm.group(2).zfill(2), dm.group(3).zfill(2)), "%Y-%m-%d"
+                )
+            except Exception:
+                date = None
+        if date and date < now - HALF_YEAR:
+            continue
+        prev = html[max(0, m.start() - 500):m.start()]
+        imgs = list(re.finditer(r'<img[^>]+src="([^"]+)"', prev))
+        cover = ""
+        if imgs:
+            src = imgs[-1].group(1)
+            if src.startswith("/"):
+                cover = IHCHINA_BASE + src
+            elif src.startswith("http"):
+                cover = src
+        items.append({
+            "title": title,
+            "url": IHCHINA_BASE + link,
+            "date": date,
+            "cover": cover,
+            "source": "中国非物质文化遗产网",
+        })
+    return items
+
+
 # 全网服饰新闻补源：排除百科/电商/问答/字典/游戏/品牌官网等非资讯来源
 WEB_BAD_DOMAINS = (
     "baike.baidu.com", "zh.wikipedia.org", "zh.wikisource.org",
@@ -320,22 +383,25 @@ def fetch_detail(url: str, title: str):
     # 微信风控/验证页：正文不可用，摘要兜底用标题
     if "当前环境异常" in html or "完成验证后" in html or "verify" in html[:2000].lower():
         return None, title, "", ""
+    cover = ""
+    for m in re.finditer(r'<img[^>]+src="([^"]+)"', html):
+        src = m.group(1)
+        if ("/Uploads/image/" in src or "uploadfiles" in src.lower()) \
+                and "static" not in src and "icon" not in src:
+            base = "https://www.ihchina.cn" if "ihchina" in url else "https://www.dpm.org.cn"
+            cover = src if src.startswith("http") else base + src
+            break
+    txt = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", "", html)
+    # 日期只在可见文本里找：<img>/<a> 路径中的 2018/11/01、版权行 ©2018 会污染日期
+    plain = re.sub(r"<[^>]+>", " ", txt)
     date = None
-    dm = re.search(r"20\d{2}[-/年]\d{1,2}[-/月]\d{1,2}", html)
+    dm = re.search(r"20\d{2}[-/年]\d{1,2}[-/月]\d{1,2}", plain)
     if dm:
         d = re.sub(r"[年月]", "-", dm.group(0)).replace("/", "-")
         try:
             date = datetime.datetime.strptime(d[:10], "%Y-%m-%d")
         except Exception:
             date = None
-    cover = ""
-    for m in re.finditer(r'<img[^>]+src="([^"]+)"', html):
-        src = m.group(1)
-        if ("/Uploads/image/" in src or "uploadfiles" in src.lower()) \
-                and "static" not in src and "icon" not in src:
-            cover = src if src.startswith("http") else "https://www.dpm.org.cn" + src
-            break
-    txt = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", "", html)
     # 正文优先用 <p> 段落（微信推文/故宫详情页正文均为 <p>）
     paras = []
     for p in re.findall(r"<p[^>]*>(.*?)</p>", txt, re.S):
@@ -403,9 +469,13 @@ def run():
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
     silk_items = fetch_silk_list()
     gugong_items = fetch_gugong_list()
+    ihchina_items = fetch_ihchina_list()
     web_items = fetch_web_dress() if RUN_WEB else []
-    items = silk_items + gugong_items + web_items
-    print(f"[fetch] 丝博 {len(silk_items)} + 故宫服饰 {len(gugong_items)} + 全网服饰 {len(web_items)} = {len(items)} 条")
+    items = silk_items + gugong_items + ihchina_items + web_items
+    print(
+        f"[fetch] 丝博 {len(silk_items)} + 故宫服饰 {len(gugong_items)} + 非遗网 {len(ihchina_items)}"
+        f" + 全网服饰 {len(web_items)} = {len(items)} 条"
+    )
     if "--dry-run" in sys.argv:
         for it in items[:MAX_NEW]:
             d, s, c, _ = fetch_detail(it["url"], it["title"])
@@ -430,7 +500,7 @@ def run():
             if it["title"] not in exists_titles and it["url"] not in exists_urls
         ][:MAX_NEW]
         # 重置故宫/丝博来源的旧「今日焦点」
-        for src in ("故宫博物院", "中国丝绸博物馆"):
+        for src in ("故宫博物院", "中国丝绸博物馆", "中国非物质文化遗产网"):
             db.query(News).filter(News.source == src, News.is_focus.is_(True)).update(
                 {"is_focus": False}
             )
@@ -450,7 +520,9 @@ def run():
                 except Exception:
                     date, summary, cover, full = it["date"], it["snippet"][:500], it["cover"], it["snippet"][:500]
             else:
-                date, summary, cover, full = fetch_detail(it["url"], it["title"])
+                # 详情页常把页脚/版权里的旧日期解析出来，列表页日期优先
+                d2, summary, c2, full = fetch_detail(it["url"], it["title"])
+                date, cover = it["date"] or d2, c2 or it["cover"]
             # 正文缺失（微信链接风控等）时用 AI 生成简介
             if len(summary) < 20 or summary == it["title"]:
                 ai = _ai_summary(it["title"], src, date or it["date"], full)
@@ -484,7 +556,7 @@ def run():
         ban_conds = [~News.title.contains(w) for w in BAN_WORDS]
         fresh = (
             db.query(News)
-            .filter(News.source.in_(["故宫博物院", "中国丝绸博物馆"]), *ban_conds)
+            .filter(News.source.in_(["故宫博物院", "中国丝绸博物馆", "中国非物质文化遗产网"]), *ban_conds)
             .order_by(News.publish_time.desc(), News.id.desc())
             .limit(FOCUS_KEEP)
             .all()

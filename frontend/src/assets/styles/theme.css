@@ -187,12 +187,8 @@ body {
 }
 
 /* ========== 全站页面开场动画 ========== */
-/* 路由切换：旧页淡出 → 新页淡入上浮 */
-.page-enter-active { transition: opacity .42s ease-out, transform .42s ease-out; }
-.page-enter-from { opacity: 0; transform: translateY(18px); }
-.page-enter-to { opacity: 1; transform: translateY(0); }
-.page-leave-active { transition: opacity .18s ease-in; }
-.page-leave-to { opacity: 0; }
+/* 路由切换统一由 <component :key="route.path"> 直接换页，不再用过渡：
+   过渡会把页面停在离场帧（本机浏览器帧被节流时更明显），导致点卡片后「页面没反应」。 */
 
 /* 页面 hero（面料页 / 首页等）：整块上浮 + 内部文字错峰渐显 */
 .page-hero,
@@ -519,8 +515,17 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(60, 20, 12, 0.36);
 }
+/* 数字馆：返回栏上移到语音讲解卡上方，避开馆内底部操作提示 */
+.ys-back-fab.in-museum {
+  left: 20px; bottom: 128px; z-index: 70;
+  background: rgba(158, 42, 32, 0.96);
+  border-color: rgba(243, 213, 151, 0.92);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+  backdrop-filter: none;
+}
 .ys-back-arrow { font-size: 16px; line-height: 1; }
 .ys-back-text { white-space: nowrap; }
 @media (max-width: 680px) {
   .ys-back-fab { left: 14px; bottom: 14px; padding: 7px 12px; font-size: 13px; }
+  .ys-back-fab.in-museum { left: 12px; bottom: 138px; }
 }

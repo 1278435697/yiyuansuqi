@@ -59,8 +59,21 @@ class Settings(BaseSettings):
     LLM_BASE_URL: str = "https://api.deepseek.com/v1"
     LLM_API_KEY: str = "sk-your-deepseek-api-key"
     LLM_MODEL: str = "deepseek-chat"
+    # 识图/鉴定用的模型或接入点；留空则复用 LLM_MODEL（多模态模型可直接吃图）
+    VISION_MODEL: str = ""
     EMBED_MODEL: str = "text-embedding-ada-002"
     EMBED_API_KEY: str = ""
+
+    # 第二家 provider：火山方舟（豆包）。模型 id 以 doubao- 开头时自动走这里，
+    # 其余仍走上面的智谱配置，前端依旧共用一个下拉。
+    ARK_BASE_URL: str = "https://ark.cn-beijing.volces.com/api/v3"
+    ARK_API_KEY: str = ""
+    ARK_MODEL: str = "doubao-seed-2-1-pro-260915"
+
+    # 第三家 provider：DeepSeek 官方（V4.1 / V4-Pro）。模型 id 以 deepseek- 开头时走这里
+    DEEPSEEK_BASE_URL: str = "https://api.deepseek.com/v1"
+    DEEPSEEK_API_KEY: str = ""
+    DEEPSEEK_MODEL: str = "deepseek-flash"
 
     # 多模态复原（Stable Diffusion API，ComfyUI/SD-WebUI 均兼容）
     SD_API_URL: str = "http://127.0.0.1:7860/sdapi/v1/txt2img"

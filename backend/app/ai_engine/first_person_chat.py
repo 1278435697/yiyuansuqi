@@ -23,14 +23,15 @@ def first_person_chat(
     user_message: str,
     costume: Costumes,
     db: Session | None = None,
+    model: str | None = None,
 ) -> dict[str, Any]:
     # 先经 GraphRAG 召回史料
-    retrieval = graphrag_answer(user_message, costume=costume, db=db)
+    retrieval = graphrag_answer(user_message, costume=costume, db=db, model=model)
     messages = [
         {"role": "system", "content": build_persona(costume)},
         {"role": "user", "content": user_message},
     ]
-    answer = chat_completion(messages)
+    answer = chat_completion(messages, model=model)
     if answer.startswith("[演示模式]") or answer.startswith("[服务暂不可用]"):
         # 降级：用检索到的史料组织第一人称回复，保证演示可看
         answer = (

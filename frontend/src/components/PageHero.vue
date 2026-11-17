@@ -14,7 +14,7 @@
   </section>
 
   <!-- ============ 大横幅 · 衣冠同款（档案 / 面料 / 纹样） ============ -->
-  <section v-else class="gh-banner">
+  <section v-else ref="grandRef" class="gh-banner">
     <div class="gh-pattern" aria-hidden="true"></div>
     <div class="gh-inner">
       <div class="gh-copy">
@@ -26,7 +26,7 @@
         <RevealTitle :text="title" tag="h1" cls="gh-title" :delay="0.3" :step="0.18" />
         <p class="gh-sub">{{ sub }}</p>
         <div class="gh-actions">
-          <a class="gh-btn gh-btn-gold" :href="primaryHref">{{ primaryLabel }}<span>↘</span></a>
+          <a class="gh-btn gh-btn-gold" :href="primaryHref" @click="onPrimary">{{ primaryLabel }}<span>↘</span></a>
           <a class="gh-btn gh-btn-ghost" :href="secondaryHref">{{ secondaryLabel }}<span>↗</span></a>
         </div>
       </div>
@@ -46,8 +46,9 @@
 
 <script setup lang="ts">
 import RevealTitle from "./RevealTitle.vue";
+import { ref } from "vue";
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   title: string;
   kicker: string;
   sub: string;
@@ -78,6 +79,23 @@ withDefaults(defineProps<{
     { n: "08", l: "阅读板块" },
   ],
 });
+
+const grandRef = ref<HTMLElement | null>(null);
+
+/**
+ * 「浏览本卷」：锚点式跳转（#catalog）在列表页曾因页面没有对应 id 而毫无反应。
+ * 这里改成主动定位：优先滚到 #catalog，找不到就滚到横幅后的第一个内容块，
+ * 并统一用平滑滚动（朴素 href 跳转在 sticky 顶栏下还会把标题顶到栏后）。
+ */
+function onPrimary(event: MouseEvent) {
+  const href = props.primaryHref || "";
+  if (!href.startsWith("#")) return; // 外链 / 站内路径照常跳转
+  event.preventDefault();
+  const target = document.querySelector<HTMLElement>(href);
+  const fallback = grandRef.value?.nextElementSibling as HTMLElement | null;
+  const anchor = target ?? fallback;
+  anchor?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 </script>
 
 <style scoped>
@@ -174,11 +192,8 @@ withDefaults(defineProps<{
 /* ================= 大横幅 · 衣冠同款（1:1 复刻配饰 hero-banner） ================= */
 .gh-banner {
   position: relative;
-  min-height: 320px;
-  padding: 36px 50px 78px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
-  gap: 24px;
+  min-height: 395px;
+  padding: 42px 36px 92px;
   overflow: hidden;
   color: #f8e7c8;
   border-radius: 16px;
@@ -187,6 +202,14 @@ withDefaults(defineProps<{
     linear-gradient(120deg, #58130f 0%, #762019 48%, #9b3725 100%);
   box-shadow: 0 24px 70px rgba(86, 34, 20, 0.2);
   margin-bottom: 22px;
+}
+.gh-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(240px, 1fr);
+  gap: 24px;
+  align-items: center;
 }
 /* 斜纹暗格 */
 .gh-banner::before {
@@ -253,7 +276,7 @@ withDefaults(defineProps<{
 .gh-title {
   margin: 12px 0 14px;
   font-family: "KaiTi", "STKaiti", "Kaiti SC", "SimSun", serif;
-  font-size: clamp(60px, 6vw, 92px);
+  font-size: clamp(68px, 10vw, 96px);
   font-weight: 400;
   line-height: 0.84;
   letter-spacing: 0.06em;
@@ -310,7 +333,7 @@ withDefaults(defineProps<{
 .gh-art {
   position: relative;
   z-index: 1;
-  min-height: 200px;
+  min-height: 260px;
   color: rgba(238, 205, 139, 0.62);
 }
 .gh-orbit {
@@ -394,18 +417,18 @@ withDefaults(defineProps<{
 
 @media (max-width: 900px) {
   .gh-banner {
-    grid-template-columns: 1fr;
-    padding: 36px 26px 90px;
+    padding: 32px 24px 84px;
   }
+  .gh-inner { grid-template-columns: 1fr; gap: 0; }
   .gh-art { min-height: 220px; opacity: .55; }
-  .gh-stats { left: 26px; right: 26px; }
+  .gh-stats { left: 24px; right: 24px; }
 }
 @media (max-width: 640px) {
   .page-hero-full { padding: 22px 20px 26px; }
   .ph-title { font-size: 22px; }
   .ph-seal { width: 52px; height: 52px; font-size: 24px; }
-  .gh-banner { padding: 28px 20px 100px; }
-  .gh-title { font-size: 64px; }
+  .gh-banner { padding: 26px 20px 94px; }
+  .gh-title { font-size: 62px; }
   .gh-stats { grid-template-columns: repeat(2, 1fr); row-gap: 14px; left: 20px; right: 20px; }
 }
 </style>

@@ -74,7 +74,7 @@ const activeImage = computed(() => (props.exhibit ? props.exhibit.images[activeI
 
           <div class="actions">
             <button v-if="exhibit.tryonId" class="primary" @click="emit('tryon', exhibit)">试穿此服饰</button>
-            <button class="secondary" @click="emit('ask', exhibit)">问 AI 关于它</button>
+            <button class="secondary" @click="emit('ask', exhibit)">问它</button>
           </div>
         </div>
       </div>

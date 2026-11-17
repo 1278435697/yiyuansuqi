@@ -1,5 +1,5 @@
 <template>
-  <!-- 全局悬浮 AI 助手：可拖动的印章球 + 跟随球开合的对话面板 -->
+  <!-- 全局悬浮助手：可拖动的印章球 + 跟随球开合的对话面板 -->
   <div class="ai-float" :class="{ 'is-snapping': snapping }" :style="floatStyle">
     <!-- 对话面板 -->
     <transition name="af-pop">
@@ -11,6 +11,7 @@
             <b>衣源溯起</b>
             <i>溯源 · 复原 · 传承</i>
           </div>
+          <AiModelSelect v-model="aiModelId" compact />
           <button class="af-close" title="收起" aria-label="收起助手面板" @click="open = false">×</button>
         </div>
 
@@ -71,6 +72,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from "vue";
 import { fetchAiChat } from "@/api/modules";
+import AiModelSelect from "@/components/AiModelSelect.vue";
+
+const aiModelId = ref("");
 
 const open = ref(false);
 const input = ref("");
@@ -349,7 +353,7 @@ async function request(q: string, imageB64 = "") {
     const resp = await fetch("/api/aiqa/chat/stream", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: q, history, image_base64: imageB64 }),
+      body: JSON.stringify({ question: q, history, image_base64: imageB64, model: aiModelId.value || undefined }),
     });
     if (!resp.ok || !resp.body) throw new Error("stream fail");
     const reader = resp.body.getReader();

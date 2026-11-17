@@ -7,23 +7,23 @@
         eyebrow-en="PATTERN · 纹以载道"
         eyebrow-index="VOL. 纹·十类"
         kicker="纹以载道"
-        sub="十大类 321 条纹样——从云雷回旋到缠枝卷草，读懂织物之上的华夏语言。"
+        :sub="heroSub"
         seal="纹"
         vertical="云雷 · 龙凤 · 缠枝 · 卷草 · 八宝 · 吉祥"
         primary-label="浏览本卷" primary-href="#catalog"
         secondary-label="看出土地图" secondary-href="/geomap"
         :stats="[
-          { n: '10', l: '纹样大类' },
-          { n: '321', l: '全量纹样' },
-          { n: '16', l: '本期精选' },
+          { n: String(categories.length || 10), l: '纹样大类' },
+          { n: String(total || 321), l: '全量纹样' },
+          { n: String(withImgTotal), l: '有图纹样' },
           { n: '08', l: '阅读板块' },
         ]" />
 
       <!-- 工具条：区块标题在左、搜索与创建在右（控件不变，只换皮） -->
-      <div class="acc-toolbar anim-rise" style="animation-delay: .5s">
+      <div id="catalog" class="acc-toolbar anim-rise" style="animation-delay: .5s">
         <AccSectionHead no="纹" kicker="纹样名录 · 十类" title="纹样目录" :sub="`共 ${total} 条`" />
         <div class="acc-toolbar-tools">
-          <el-input v-model="keyword" placeholder="搜索纹样（如：云纹、龙纹、缠枝）" clearable size="small"
+          <el-input v-model="keyword" placeholder="搜索纹样（名称或编号，如：云纹、#12）" clearable size="small"
                     style="width: 210px" @keyup.enter="load" @clear="load" />
           <el-button size="small" type="primary" plain @click="load">搜索</el-button>
           <el-button size="small" type="danger" plain @click="openCreate">＋ 创建纹样</el-button>
@@ -154,12 +154,34 @@
             </template>
           </div>
 
-          <!-- 实物文物图：主图大图 + 张数徽标，点击灯箱轮播（contain 不裁原图） -->
+          <!-- 实物纹样图：主图大图 + 张数徽标，点击灯箱轮播（contain 不裁原图） -->
           <div class="img-row">
             <div v-if="firstImg" class="img-col" data-lb-native @click="openLightbox()">
               <img :src="firstImg" :alt="detail?.name" @error="onImgError" />
-              <div v-if="detail?.images?.length > 1" class="count-badge">{{ detail.images.length }}张</div>
-              <div class="label">实物文物图</div>
+              <div v-if="photoImages.length > 1" class="count-badge">{{ photoImages.length }}张</div>
+              <div class="label">实物纹样</div>
+            </div>
+          </div>
+
+          <!-- 线稿图谱：可点开大图，供临摹与设计取用 -->
+          <div v-if="lineImages.length" class="line-block">
+            <div class="line-head">
+              <span class="line-title">线稿图谱</span>
+              <span class="line-count">{{ lineImages.length }} 幅 · 可点开大图</span>
+            </div>
+            <div class="line-grid">
+              <el-image
+                v-for="(im, i) in lineImages"
+                :key="i"
+                class="line-cell"
+                :src="im.thumb || im.url"
+                fit="contain"
+                loading="lazy"
+                :preview-src-list="lineUrls"
+                :initial-index="i"
+                preview-teleported
+                hide-on-click-modal
+              />
             </div>
           </div>
 
@@ -212,7 +234,7 @@
           <div v-if="has('常见搭配纹样')" class="section">
             <AccSecHead :no="secNo('常见搭配纹样')" title="常见搭配纹样" sub="点击卡片可跳转至对应纹样" />
             <div class="partner-grid">
-              <div v-for="(pn, i) in detail.pairs" :key="i" class="partner-card" data-lb-native role="link" tabindex="0"
+              <div v-for="(pn, i) in pairCards" :key="i" class="partner-card" data-lb-native role="link" tabindex="0"
                    @click="jumpPair(pn)" @keydown.enter="jumpPair(pn)">
                 <div class="imgs">
                   <img v-if="pairImgs[pn]" :src="pairImgs[pn]" :alt="pn" @error="onImgError" />
@@ -231,7 +253,7 @@
               <span class="graph-node"><i>类别</i>{{ detail?.category }}</span>
               <span class="graph-node"><i>盛行朝代</i>{{ detail?.dynasty || "待考" }}</span>
               <span class="graph-node"><i>文物图</i>{{ detail?.images?.length || 0 }} 幅</span>
-              <span class="graph-node"><i>常见搭配</i>{{ detail?.pairs?.length || 0 }} 种</span>
+              <span class="graph-node"><i>常见搭配</i>{{ pairCards.length }} 种</span>
               <span class="graph-node"><i>名录编号</i>{{ detail?.code || "待考" }}</span>
             </div>
           </div>
@@ -278,13 +300,31 @@ const category = ref("");
 const keyword = ref("");
 const items = ref<any[]>([]);
 const total = ref(0);
+const withImgTotal = ref(0);
 const loading = ref(false);
+
+/* 首屏数据回来之前先沿用名录基数，避免数字从 0 跳变 */
+const heroSub = computed(() => `十大类 ${total.value || 321} 条纹样——从云雷回旋到缠枝卷草，读懂织物之上的华夏语言。`);
 
 const detail = ref<any>(null);
 const relicLightbox = ref(false);
 const lightboxList = ref<string[]>([]);
 const pairImgs = ref<Record<string, string>>({});
-let pairIdMap: Record<string, number> = {};
+const pairIds = ref<Record<string, number>>({});
+/* 搭配纹样名清洗：去掉尾部句号/顿号等标点，再与库内名称比对 */
+function normPair(n: any) {
+  return String(n || "").replace(/[。．、，,．.\s]+$/g, "").trim();
+}
+/* 只保留库里真实存在的搭配纹样卡片——库中没有的条目点了也只会跳到空搜索 */
+const pairCards = computed<string[]>(() => {
+  const ids = pairIds.value;
+  const out: string[] = [];
+  (detail.value?.pairs || []).forEach((raw: any) => {
+    const n = normPair(raw);
+    if (n && ids[n] && !out.includes(n)) out.push(n);
+  });
+  return out;
+});
 
 /* 用户创建纹样 */
 const createVisible = ref(false);
@@ -357,7 +397,8 @@ async function load() {
   try {
     const r: any = await fetchPatternItems({ category: category.value || undefined, q: keyword.value || undefined });
     items.value = r.items || [];
-    total.value = r.total || 0;
+    // 搜索/分类只影响结果数；hero 与卡片分母的「全量纹样」不能被覆盖
+    if (!keyword.value && !category.value) total.value = r.total || 0;
   } catch (e) {
     ElMessage.error("纹样数据加载失败");
   } finally {
@@ -369,6 +410,7 @@ async function loadCategories() {
   try {
     const r: any = await fetchPatternCategories();
     categories.value = r.categories || [];
+    withImgTotal.value = r.with_images || 0;
     if (!total.value) total.value = r.total || 0;
   } catch (e) {
     /* 忽略分类失败 */
@@ -393,6 +435,7 @@ async function loadUserWorks() {
 async function loadDetail(id: number) {
   detail.value = null;
   pairImgs.value = {};
+  pairIds.value = {};
   try {
     const r: any = await fetchPatternDetail(id);
     detail.value = r || null;
@@ -400,11 +443,14 @@ async function loadDetail(id: number) {
     try {
       const all: any = await fetchPatternItems({});
       const map: Record<string, { id: number; image_url: string }> = {};
-      (all.items || []).forEach((it: any) => { if (it.name) map[it.name] = { id: it.id, image_url: it.image_url }; });
-      pairIdMap = Object.fromEntries(Object.entries(map).map(([k, v]) => [k, v.id]));
+      (all.items || []).forEach((it: any) => { if (it.name) map[normPair(it.name)] = { id: it.id, image_url: it.image_url }; });
+      pairIds.value = Object.fromEntries(Object.entries(map).map(([k, v]) => [k, v.id]));
       const pairs = (r?.pairs || []);
       const imgs: Record<string, string> = {};
-      pairs.forEach((n: string) => { if (map[n]?.image_url) imgs[n] = map[n].image_url; });
+      pairs.forEach((raw: any) => {
+        const n = normPair(raw);
+        if (map[n]?.image_url) imgs[n] = map[n].image_url;
+      });
       pairImgs.value = imgs;
     } catch (e) { /* 搭配图加载失败不阻塞 */ }
   } catch (e) {
@@ -412,11 +458,19 @@ async function loadDetail(id: number) {
   }
 }
 
-const firstImg = computed(() => detail.value?.images?.[0]?.url || "");
+/* 实物纹样（含旧藏文物图）与线稿分开取用；kind 缺省的按实物处理 */
+const photoImages = computed(() =>
+  (detail.value?.images || []).filter((i: any) => i?.url && i?.kind !== "线稿")
+);
+const lineImages = computed(() =>
+  (detail.value?.images || []).filter((i: any) => i?.url && i?.kind === "线稿")
+);
+const lineUrls = computed(() => lineImages.value.map((i: any) => i.url));
+const firstImg = computed(() => photoImages.value[0]?.url || "");
 
-/* 打开灯箱：全部实物文物图轮播 */
+/* 打开灯箱：全部实物图轮播 */
 function openLightbox() {
-  const urls = (detail.value?.images || []).map((i: any) => i.url).filter(Boolean);
+  const urls = photoImages.value.map((i: any) => i.url).filter(Boolean);
   if (!urls.length) return;
   lightboxList.value = urls;
   relicLightbox.value = true;
@@ -424,7 +478,7 @@ function openLightbox() {
 
 /* 点击常见搭配 → 直接进入该纹样详情（维护跳转链，可逐层返回） */
 function jumpPair(name: string) {
-  const id = pairIdMap[name];
+  const id = pairIds.value[name];
   if (id) {
     const chain = [...navStack.value];
     if (route.params.id) chain.push(Number(route.params.id));
@@ -464,7 +518,7 @@ const detailSections = computed<string[]>(() => {
   if (d?.dynasties?.length) out.push("朝代脉络");
   if (d?.meanings?.length) out.push("寓意");
   if (propsList.value.length) out.push("属性");
-  if (d?.pairs?.length) out.push("常见搭配纹样");
+  if (pairCards.value.length) out.push("常见搭配纹样");
   out.push("知识图谱关联");
   return out;
 });
@@ -507,6 +561,12 @@ onMounted(() => {
 /* 页面容器宽度与调色由 acc-scope.css 统一接管，这里只补本页独有的版式 */
 .pattern-page { padding: 0 0 60px; }
 
+/* 纹样多为 1:1 实物图，衣冠卡片 188px 的定高 + 28px 内缩会让封面显得过小；
+   这里单独把纹样目录的图片区加高、内缩收窄，让纹样撑满画面又不裁原图 */
+.pattern-page :deep(.acc-visual) { height: 238px; }
+.pattern-page :deep(.acc-photo) { inset: 8px 10px; width: calc(100% - 20px); height: calc(100% - 16px); }
+.pattern-page :deep(.acc-seal) { inset: 8px 10px; font-size: 78px; }
+
 /* 卡片是裸 div 补了 tabindex 的，全站没有默认焦点环，这里自己给一个 */
 .uw-card:focus-visible, .partner-card:focus-visible {
   outline: 2px solid var(--acc-gold, #c9a227); outline-offset: 2px;
@@ -522,12 +582,21 @@ onMounted(() => {
 .graph-node { border: 1px solid var(--acc-line, #e6dcc8); background: var(--acc-card-solid, #fffdf8); border-radius: 6px; padding: 4px 10px; font-size: 13px; color: var(--acc-ink-2, #5c4c3a); }
 .graph-node i { font-style: normal; color: var(--acc-red, #7a221c); margin-right: 6px; }
 
-/* 实物文物图：定高 + contain，原图不裁 */
+/* 实物文物图：按宽度自适应高度（160:100）+ contain，原图不裁；原先定高 300/232 会让图缩在中间一条 */
 .img-row { margin: 18px 0 6px; }
-.img-col { width: 100%; height: 300px; border-radius: 10px; background: #f8f0e1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: var(--acc-ink-3, #94836d); border: 1px solid var(--acc-line, #e6dcc8); cursor: zoom-in; position: relative; overflow: hidden; }
+.img-col { width: 100%; aspect-ratio: 16 / 10; max-height: 520px; border-radius: 10px; background: #f8f0e1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: var(--acc-ink-3, #94836d); border: 1px solid var(--acc-line, #e6dcc8); cursor: zoom-in; position: relative; overflow: hidden; }
 .img-col img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 .img-col .count-badge { position: absolute; bottom: 26px; right: 8px; background: rgba(58, 47, 36, .72); color: #fff8e8; font-size: 10px; padding: 2px 7px; border-radius: 8px; }
 .img-col .label { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-size: 11px; letter-spacing: 2px; color: var(--acc-red, #7a221c); background: rgba(255, 253, 248, .82); border-top: 1px solid var(--acc-line-gold, rgba(201, 162, 39, .34)); padding: 3px 0; }
+
+/* 线稿图谱：白底线描小图阵，点击进灯箱 */
+.line-block { margin: 16px 0 4px; }
+.line-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.line-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--acc-red, #7a221c); }
+.line-count { font-size: 11px; color: var(--acc-ink-3, #94836d); letter-spacing: 1px; }
+.line-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; }
+.line-cell { width: 100%; aspect-ratio: 1 / 1; background: #fffdf8; border: 1px solid var(--acc-line, #e6dcc8); border-radius: 8px; cursor: zoom-in; transition: border-color .2s, transform .2s; }
+.line-cell:hover { border-color: rgba(201, 162, 39, .55); transform: translateY(-2px); }
 
 /* 分节内的正文块（标题由 AccSecHead 负责） */
 .section { margin-top: 30px; }
@@ -572,7 +641,7 @@ onMounted(() => {
 
 @media (max-width: 900px) {
   .detail-layout { grid-template-columns: 1fr; }
-  .img-col { height: 232px; }
+  .img-col { aspect-ratio: 4 / 3; max-height: none; }
 }
 
 @media (max-width: 480px) {

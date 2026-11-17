@@ -76,6 +76,7 @@ def graphrag_answer(
     question: str,
     costume: Costumes | None = None,
     db: Session | None = None,
+    model: str | None = None,
 ) -> dict[str, Any]:
     """多路召回 + LLM 生成，返回 answer + source_ref。"""
     # 1. 实体级召回（知识图谱/档案字段）
@@ -118,7 +119,7 @@ def graphrag_answer(
             ),
         },
     ]
-    answer = chat_completion(messages)
+    answer = chat_completion(messages, model=model)
     if not answer:
         # 未配置大模型：回退「知识库直答」——依据召回资料给出可溯源回答，不编造
         if hits_text:
@@ -152,6 +153,7 @@ def graphrag_chat(
     question: str,
     history: list[dict] | None = None,
     db: Session | None = None,
+    model: str | None = None,
 ) -> dict[str, Any]:
     """多轮溯源对话：站内档案召回 + 豆包生成（支持连续追问）。
 
@@ -180,7 +182,7 @@ def graphrag_chat(
     })
 
     # 3. 调用豆包生成
-    answer = chat_completion(messages)
+    answer = chat_completion(messages, model=model)
     if not answer:
         # 未配置大模型：回退「知识库直答」
         if hits_text:
@@ -198,7 +200,8 @@ def graphrag_chat(
     }
 
 
-def graphrag_chat_stream(question: str, history: list[dict] | None = None, db: Session | None = None):
+def graphrag_chat_stream(question: str, history: list[dict] | None = None, db: Session | None = None,
+                         model: str | None = None):
     """流式版本：先 yield 元信息（source_ref），再逐 token yield 回答片段。
 
     产出约定：
@@ -232,7 +235,7 @@ def graphrag_chat_stream(question: str, history: list[dict] | None = None, db: S
     }, ensure_ascii=False))
 
     got = False
-    for piece in chat_completion_stream(messages):
+    for piece in chat_completion_stream(messages, model=model):
         got = True
         yield ("delta", piece)
 

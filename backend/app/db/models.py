@@ -401,3 +401,22 @@ class TryonRecord(Base):
     warnings = Column(JSON)
     timings = Column(JSON)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)
+
+
+class FitviewGeneration(Base):
+    """FitView 试穿产出（2D 换装图 / 3D 模型），按用户存服务端，换设备可见。
+
+    /fitview 独立页原先只把记录写在浏览器 IndexedDB，换浏览器就丢；
+    这张表承接登录用户的记录，图片落 uploads/fitview/ 只存 URL。
+    """
+    __tablename__ = "fitview_generations"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    outfit_id = Column(String(64), default="")
+    outfit_name = Column(String(128), default="")
+    views = Column(JSON)                       # 图片 URL 数组（2D 换装三视图）
+    triangles = Column(Integer, default=0)     # 3D 模型面数，0 = 纯 2D 换装
+    tryon_only = Column(Integer, default=1)    # 1 = 只生成了 2D 换装图
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)
+

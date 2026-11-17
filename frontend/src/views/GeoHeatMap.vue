@@ -11,7 +11,7 @@
               <el-radio-button label="marker">标注</el-radio-button>
               <el-radio-button label="heat">热力</el-radio-button>
             </el-radio-group>
-            <el-button size="small" :type="ancient ? 'danger' : 'default'" plain @click="toggleAncient">古代舆图</el-button>
+            <el-button size="small" :type="showAncient ? 'danger' : 'default'" plain @click="showAncient = true">古代舆图</el-button>
           </div>
           <div ref="mapEl" class="map-canvas"></div>
           <p class="map-note">点击标注点查看出土文物与关联服饰档案</p>
@@ -55,6 +55,23 @@
         </div>
       </aside>
     </div>
+
+    <!-- 古代舆图：完整《禹迹图》独立查看，不与现代底图叠压错位 -->
+    <div v-if="showAncient" class="ancient-mask" @click.self="showAncient = false">
+      <div class="ancient-panel">
+        <div class="ancient-head">
+          <div class="ah-text">
+            <h3>禹迹图 · 南宋石刻</h3>
+            <p>阜昌七年（1136）刻石，原石现存西安碑林。计里画方，每方折地百里；上北下南，古今天下之名并列。</p>
+          </div>
+          <button class="ancient-x" @click="showAncient = false">×</button>
+        </div>
+        <div class="ancient-img-box">
+          <img src="/images/map/yuji_map.jpg?v=1136" alt="南宋《禹迹图》石刻拓本" />
+        </div>
+        <p class="ancient-foot">图上约 380 个地名——河流 80、湖泊 6、山脉 70 余，范围北至长城内外，南抵南海与中南半岛；重点画黄河、长江、珠江诸水。此图为宋人测绘制图之实证，方位示意，不等于现代测绘。</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,7 +87,7 @@ import PageHero from "@/components/PageHero.vue";
 
 const dynasty = ref("");
 const heatMode = ref("marker");
-const ancient = ref(false);
+const showAncient = ref(false);
 const router = useRouter();
 const route = useRoute();
 const dynastyOptions = ["上古", "先秦", "秦汉", "魏晋", "隋唐", "宋", "元", "明", "清"];
@@ -81,14 +98,14 @@ const dynastyChart = ref<HTMLDivElement>();
 const locChart = ref<HTMLDivElement>();
 let map: any = null;
 let tileLayer: any = null;
-let ancientLayer: any = null;
 let customLayers: any[] = [];
 let charts: echarts.ECharts[] = [];
 
 async function loadRelics() {
   const data: any = await fetchRelics({ dynasty: dynasty.value });
   relics.value = data.items;
-  renderMap();
+  // 必须等地图实例建好，否则 ?relic= 深链拿不到 map 而无法定位
+  await renderMap();
 }
 
 async function renderMap() {
@@ -98,11 +115,6 @@ async function renderMap() {
     map = L.map(mapEl.value, { center: cfg.default_center, zoom: cfg.default_zoom, scrollWheelZoom: true, minZoom: cfg.min_zoom || 3 });
     tileLayer = L.tileLayer(cfg.tile_url, { attribution: cfg.attribution, subdomains: cfg.subdomains || "abc", maxZoom: cfg.max_zoom || 10 });
     tileLayer.addTo(map);
-    if (ancient.value) {
-      ancientLayer = L.imageOverlay(buildAncientImage(), [[15, 70], [55, 140]], { opacity: 0.95, interactive: false });
-      ancientLayer.addTo(map);
-      tileLayer.setOpacity(0.18);
-    }
   }
   // 移除旧的自定义图层
   customLayers.forEach((layer) => map.removeLayer(layer));
@@ -234,7 +246,9 @@ const COSTUME_IMG: Record<string, string> = {
       hgroup.get(key)!.items.push(r);
     }
     hgroup.forEach((g) => {
-      const count = buildSelectedItems(g.items).length;
+      /* 角标＝该地点真实文物件数，与右侧「按朝代分布 / 出土热点」口径一致；
+         关联服饰档案只在弹窗里展开，不计入数量 */
+      const count = g.items.length;
       const circle = L.circle([g.lat, g.lng], {
         radius: 20000 + count * 16000,
         color: "#a93226", fillColor: "#a93226", fillOpacity: 0.22 + Math.min(0.5, count * 0.09),
@@ -262,7 +276,8 @@ const COSTUME_IMG: Record<string, string> = {
     mgroup.get(key)!.items.push(r);
   }
   mgroup.forEach((g) => {
-    const count = buildSelectedItems(g.items).length;
+    /* 角标＝该地点真实文物件数，与右侧统计同口径 */
+    const count = g.items.length;
     const icon = L.divIcon({
       html: `<span class="relic-dot">${count > 1 ? `<em class="dot-cnt">${count}</em>` : ""}</span>`,
       className: "relic-marker",
@@ -280,26 +295,8 @@ const COSTUME_IMG: Record<string, string> = {
   });
 }
 
-/* 古代舆图：真实宋代石刻《禹迹图》拓本高清图（计里画方、覆盖全境，公共领域文物图），叠加到 Leaflet */
-const ANCIENT_MAP_URL = "/images/map/yuji_map.jpg";
-function buildAncientImage() {
-  return ANCIENT_MAP_URL;
-}
-
-function toggleAncient() {
-  ancient.value = !ancient.value;
-  if (!map || !tileLayer) return;
-  if (ancient.value) {
-    if (!ancientLayer) {
-      ancientLayer = L.imageOverlay(buildAncientImage(), [[15, 70], [55, 140]], { opacity: 0.95, interactive: false });
-    }
-    ancientLayer.addTo(map);
-    tileLayer.setOpacity(0.18);
-  } else {
-    if (ancientLayer) map.removeLayer(ancientLayer);
-    tileLayer.setOpacity(1);
-  }
-}
+/* 古代舆图：完整《禹迹图》拓本（公共领域文物图），以独立面板查看，
+   不再以 imageOverlay 叠在现代底图上——宋人"计里画方"与现代经纬投影不一致，叠压必然错位 */
 
 async function loadStats() {
   const stats: any = await fetchGeoStats();
@@ -330,7 +327,9 @@ async function loadStats() {
   }
 }
 
+const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") showAncient.value = false; };
 onMounted(async () => {
+  window.addEventListener("keydown", onEsc);
   await loadRelics();
   loadStats();
   // 支持 /geomap?relic=ID：从时间轴/其他页面跳入时自动定位并选中该文物
@@ -344,6 +343,7 @@ onMounted(async () => {
   }
 });
 onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onEsc);
   map?.remove();
   charts.forEach((c) => c.dispose());
 });
@@ -376,6 +376,32 @@ onBeforeUnmount(() => {
 @media (max-width: 900px) {
   .map-layout { grid-template-columns: 1fr; }
 }
+/* 古代舆图查看面板 */
+.ancient-mask {
+  position: fixed; inset: 0; z-index: 9000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(42, 28, 18, .62); backdrop-filter: blur(2px);
+}
+.ancient-panel {
+  width: min(640px, 96vw); max-height: 94vh; overflow: auto;
+  background: #f2e8d2; border: 1px solid #cbb68a; border-radius: 10px;
+  box-shadow: 0 18px 60px rgba(30, 18, 8, .45); padding: 18px 20px 14px;
+}
+.ancient-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.ah-text h3 { margin: 0 0 6px; font-size: 19px; letter-spacing: .08em; color: #6b2418; }
+.ah-text p { margin: 0; font-size: 12.5px; line-height: 1.8; color: #7a6247; max-width: 720px; }
+.ancient-x {
+  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid #c9b28a; background: transparent; cursor: pointer;
+  font-size: 18px; line-height: 1; color: #7a6247;
+}
+.ancient-x:hover { background: #7e2418; color: #f8f1e3; border-color: #7e2418; }
+.ancient-img-box {
+  margin-top: 14px; border: 1px solid #dccdaa; border-radius: 8px; overflow: hidden;
+  background: #f7efdb; display: flex; justify-content: center;
+}
+.ancient-img-box img { display: block; width: auto; height: auto; max-width: 100%; max-height: 70vh; margin: 0 auto; }
+.ancient-foot { margin: 12px 0 0; font-size: 12px; line-height: 1.9; color: #8a7250; }
 </style>
 
 <style>

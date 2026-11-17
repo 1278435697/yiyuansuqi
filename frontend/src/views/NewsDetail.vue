@@ -8,7 +8,7 @@
       <img v-if="news.cover_image" class="detail-cover" :src="news.cover_image" :alt="news.title" @error="hideImg($event)" />
       <div class="detail-body">
         <div class="detail-meta">
-          <span class="ai-badge">AI摘要</span>
+          <span class="ai-badge">摘要</span>
           <span>{{ news.source }}</span>
           <span class="date">{{ news.publish_time?.slice(0, 10) }}</span>
           <span v-if="news.code" class="date">编号 {{ news.code }}</span>
@@ -21,8 +21,8 @@
         </div>
 
         <section class="detail-section">
-          <h2 class="sec-title">AI 摘要</h2>
-          <p class="ai-note">本摘要由 AI 自动生成，仅供参考，事实以原文与史料为准。</p>
+          <h2 class="sec-title">摘要</h2>
+          <p class="ai-note">本摘要自动生成，仅供参考，事实以原文与史料为准。</p>
           <p class="summary-text">{{ news.summary }}</p>
         </section>
 
@@ -32,7 +32,7 @@
         </section>
 
         <section class="detail-section" v-if="news.ai_questions?.length">
-          <h2 class="sec-title">AI 推荐提问</h2>
+          <h2 class="sec-title">推荐提问</h2>
           <div class="qa-list">
             <span v-for="q in news.ai_questions" :key="q" class="qa-item" @click="askAI(q)">{{ q }}</span>
           </div>

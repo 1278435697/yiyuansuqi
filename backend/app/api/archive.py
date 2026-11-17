@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.ai_engine.archive_codes import code_of
 from app.ai_engine.first_person_chat import first_person_chat
 from app.ai_engine.graphrag_engine import graphrag_answer
+from app.ai_engine.model_catalog import pick_model
 from app.db.database import get_db
 from app.db.models import Costumes, CostumeRelations, AiConversations, Users
 from app.core.security import get_current_user, get_optional_user
@@ -17,6 +18,7 @@ router = APIRouter()
 class ChatIn(BaseModel):
     costume_id: int | None = None
     message: str
+    model: str = ""          # 可选：指定大模型 id（见 GET /api/aiqa/models）
 
 
 class CostumeIn(BaseModel):
@@ -147,7 +149,7 @@ def chat(
     costume = db.get(Costumes, body.costume_id)
     if not costume:
         return {"error": "档案不存在"}
-    result = first_person_chat(body.message, costume, db)
+    result = first_person_chat(body.message, costume, db, model=pick_model(body.model))
     # 记录对话
     if user is not None:
         db.add(AiConversations(user_id=user.id, costume_id=costume.id,
@@ -163,7 +165,7 @@ def chat(
 def ask(body: ChatIn, db: Session = Depends(get_db)):
     """无档案约束的溯源问答。"""
     costume = db.get(Costumes, body.costume_id) if body.costume_id else None
-    return graphrag_answer(body.message, costume=costume, db=db)
+    return graphrag_answer(body.message, costume=costume, db=db, model=pick_model(body.model))
 
 
 @router.get("/eras")

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from app.ai_engine.archive_codes import code_of
 from app.db.database import get_db
@@ -40,7 +40,16 @@ def pattern_categories(db: Session = Depends(get_db)):
         n = db.query(PatternLibrary).filter_by(category=c).count()
         cats.append({"name": c, "count": n})
     cats.sort(key=lambda x: -x["count"])
-    return {"total": db.query(PatternLibrary).count(), "categories": cats}
+    with_images = (
+        db.query(PatternLibrary)
+        .filter(func.json_length(PatternLibrary.images) > 0)
+        .count()
+    )
+    return {
+        "total": db.query(PatternLibrary).count(),
+        "with_images": with_images,
+        "categories": cats,
+    }
 
 
 @router.get("/items")
@@ -49,12 +58,23 @@ def pattern_items(
     q: str | None = None,
     db: Session = Depends(get_db),
 ):
-    """纹样列表：支持分类筛选 + 名称关键词搜索。"""
+    """纹样列表：支持分类筛选 + 名称关键词搜索；输入编号（1 / 01 / #1 / NO.1）按名录编号命中。"""
     query = db.query(PatternLibrary)
     if category:
         query = query.filter(PatternLibrary.category == category)
     if q:
-        query = query.filter(PatternLibrary.name.contains(q.strip()))
+        qs = q.strip()
+        name_cond = PatternLibrary.name.contains(qs)
+        digits = "".join(ch for ch in qs if ch.isdigit())
+        # 纯编号输入（最多 5 位，且除数字外只允许 #/no/编号 之类的标记）才按编号检索，
+        # 避免「云纹3」这类关键词被误当成编号
+        marker_rest = qs.replace(digits, "").strip().lower()
+        plain_code = bool(digits) and len(digits) <= 5 and marker_rest in ("", "#", "no", "no.", "编号", "号")
+        if plain_code:
+            num = int(digits)
+            query = query.filter(or_(name_cond, PatternLibrary.code == num))
+        else:
+            query = query.filter(name_cond)
     items = query.order_by(PatternLibrary.code.asc(), PatternLibrary.id).all()
     result = []
     for p in items:
@@ -66,7 +86,7 @@ def pattern_items(
             "category": p.category,
             "dynasty": p.dynasty or "",
             "meaning": p.meaning or "",
-            "image_url": imgs[0]["url"] if imgs else "",
+            "image_url": (imgs[0].get("thumb") or imgs[0]["url"]) if imgs else "",
             "image_count": len(imgs),
             "created_by": p.created_by or 0,
         })

@@ -160,6 +160,8 @@
 
 /* 工具条：标题与筛选同行、底部分金线（对照 .catalog-head L802–809） */
 .acc-toolbar {
+  /* 顶栏是 sticky 的，滚到本区块时留出它的高度，标题不会被压住 */
+  scroll-margin-top: 92px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;

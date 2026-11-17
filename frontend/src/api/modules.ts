@@ -53,8 +53,8 @@ export const fetchFabricWebSearch = (query: string) =>
   request.get("/fabrics/web-search", { params: { q: query, n: 8 } });
 export const createFabric = (data: Record<string, any>) => request.post("/fabrics", data);
 export const deleteFabric = (id: number) => request.delete(`/fabrics/${id}`);
-export const chatWithCostume = (costumeId: number, message: string) =>
-  request.post("/archive/chat", { costume_id: costumeId, message });
+export const chatWithCostume = (costumeId: number, message: string, model?: string) =>
+  request.post("/archive/chat", { costume_id: costumeId, message, model: model || undefined });
 
 /* ---------- 模块3 · 千年衣脉时间轴 ---------- */
 export const fetchTimeline = () => request.get("/timeline/timeline");
@@ -65,9 +65,10 @@ export const fetchRelics = (params: Record<string, any>) => request.get("/geomap
 export const fetchGeoStats = () => request.get("/geomap/geo-stats");
 export const fetchMapConfig = () => request.get("/geomap/map-config");
 
-/* ---------- 模块6 · AI 溯源问答 ---------- */
+/* ---------- 模块6 · 溯源问答 ---------- */
 export const createQuestion = (body: Record<string, any>) => request.post("/aiqa/questions", body);
-export const fetchAiChat = (body: Record<string, any>) => request.post("/aiqa/chat", body);
+export const fetchAiChat = (body: Record<string, any>) =>
+  request.post("/aiqa/chat", body, { timeout: 210000 });
 export const fetchAiRecommend = (params: Record<string, any>) => request.get("/aiqa/recommend", { params });
 export const fetchQuestions = (params: Record<string, any>) => request.get("/aiqa/questions", { params });
 export const fetchQuestionDetail = (id: number) => request.get(`/aiqa/questions/${id}`);

@@ -136,15 +136,15 @@ const metricRows = computed(() =>
 
 /* 朝代 → 写实复原图映射 */
 const ERA_IMG: Record<string, string> = {
-  "上古": "/images/dynasty_shanggu.jpg",
-  "先秦": "/images/dynasty_xianqin.jpg",
-  "秦汉": "/images/dynasty_qinhan.jpg",
-  "魏晋": "/images/dynasty_weijin.jpg",
-  "隋唐": "/images/dynasty_suitang.jpg",
-  "宋": "/images/dynasty_song.jpg",
-  "元": "/images/dynasty_yuan.jpg",
-  "明": "/images/dynasty_ming.jpg",
-  "清": "/images/dynasty_qing.jpg",
+  "上古": "/images/dynasty_shanggu.png",
+  "先秦": "/images/dynasty_xianqin.png",
+  "秦汉": "/images/dynasty_qinhan.png",
+  "魏晋": "/images/dynasty_weijin.png",
+  "隋唐": "/images/dynasty_suitang.png",
+  "宋": "/images/dynasty_song.png",
+  "元": "/images/dynasty_yuan.png",
+  "明": "/images/dynasty_ming.png",
+  "清": "/images/dynasty_qing.png",
 };
 
 /* 朝代 → 主纹样类型 */

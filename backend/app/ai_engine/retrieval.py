@@ -288,11 +288,19 @@ def retrieve(question: str, db: Session, per_type: int = 3, limit: int = 8) -> l
             return items
     terms = extract_terms(question, build_dictionary(db))
     dyns = dynasties_in(question)
-    return retrieve_items(terms, dyns, db, per_type=per_type, limit=limit)
+    items = retrieve_items(terms, dyns, db, per_type=per_type, limit=limit)
+    # 96 件文物实例（图册数据）单独一路：粒度是实物，不并入 46 条款式档案
+    try:
+        from app.ai_engine import archive_instances
+        items = archive_instances.merge(items, terms, limit=limit, question=question)
+    except Exception:
+        pass
+    return items
 
 
 PROMPT_BUDGET = 1500
-_TYPE_CN = {"costume": "服饰档案", "pattern": "纹样", "fabric": "面料", "news": "资讯", "accessory": "配饰"}
+_TYPE_CN = {"costume": "服饰档案", "pattern": "纹样", "fabric": "面料", "news": "资讯",
+            "accessory": "配饰", "instance": "文物实例"}
 
 
 def prompt_lines(items: list[dict], budget: int = PROMPT_BUDGET) -> list[str]:
