@@ -122,7 +122,7 @@
               <el-button size="small" type="danger" plain @click="openCreate">＋ 创建档案</el-button>
             </div>
           </div>
-          <div v-if="!instFiltered.length" class="ib-empty">没有匹配的实例，换个词试试</div>
+          <div v-if="!instFiltered.length" class="ib-empty">{{ instEmptyTip || "没有匹配的实例，换个词试试" }}</div>
           <div class="ib-grid">
             <button
               v-for="it in instShown"
@@ -457,6 +457,9 @@ const instFiltered = computed(() => {
   const noStr = (n: number) => `NO.${String(n).padStart(2, "0")}`;
   if (/^\d+$/.test(key)) {
     const n = Number(key);
+    // 编号是 NO.01—maxNo 的封闭序列，超出即「无此档案」，不再拿文物号模糊兜底
+    const maxNo = Math.max(0, ...instItems.value.map((i) => i.no || 0));
+    if (n < 1 || n > maxNo) return [];
     const hitNo = list.filter((i) => i.no === n);
     // 编号能精确命中就只给那一件；命不中才退到「文物号包含」的兜底
     if (hitNo.length) return hitNo;
@@ -469,6 +472,16 @@ const instFiltered = computed(() => {
   );
 });
 const instShown = computed(() => (instMore.value ? instFiltered.value : instFiltered.value.slice(0, 16)));
+/** 编号超范围时的空态文案：明确告诉用户「无此档案」，而不是让模糊兜底凑出结果 */
+const instEmptyTip = computed(() => {
+  const raw = instKey.value.trim();
+  const key = raw.replace(/^\s*(no\.?|#|编号|档案号)\s*/i, "").replace(/\s+/g, "");
+  if (!/^\d+$/.test(key)) return "";
+  const maxNo = Math.max(0, ...instItems.value.map((i) => i.no || 0));
+  const n = Number(key);
+  if (n >= 1 && n <= maxNo) return "";
+  return `无此编号：档案编号只到 NO.${String(maxNo).padStart(2, "0")}（共 ${maxNo} 件）`;
+});
 /** hero 统计：跟着实际数据走，实例 96、款式 46，数据未到时先用兜底数 */
 const heroStats = computed(() => [
   { n: "09", l: "朝代卷帙" },
